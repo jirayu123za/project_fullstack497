@@ -8,9 +8,9 @@ import (
 
 type Submission struct {
 	SubmissionID     int       `gorm:"primaryKey;autoIncrement"`
-	UserID           int       `gorm:"not null"`
-	AssignmentID     int       `gorm:"not null"`
-	SubmissionFileID int       `gorm:"not null"`
+	UserID           string    `gorm:"not null"`
+	AssignmentID     string    `gorm:"not null"`
+	SubmissionFileID string    `gorm:"not null"`
 	SubmittedAt      time.Time `gorm:"not null"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time

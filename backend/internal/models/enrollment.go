@@ -7,9 +7,9 @@ import (
 )
 
 type Enrollment struct {
-	EnrollmentID int `gorm:"primaryKey;autoIncrement"`
-	UserID       int `gorm:"not null"`
-	CourseID     int `gorm:"not null"`
+	EnrollmentID int    `gorm:"primaryKey;autoIncrement"`
+	UserID       string `gorm:"not null"`
+	CourseID     string `gorm:"not null"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"index"`

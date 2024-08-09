@@ -7,10 +7,11 @@ import (
 )
 
 type AssignmentFile struct {
-	AssignmentFileID   int    `gorm:"primaryKey;autoIncrement"`
-	AssignmentID       int    `gorm:"not null"`
+	AssignmentFileID   string `gorm:"primaryKey;autoIncrement"`
+	AssignmentID       string `gorm:"not null"`
 	AssignmentFileName string `gorm:"type:varchar(255);not null"`
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
+	Uploads            []Upload       `gorm:"foreignKey:AssignmentFileID"`
 }
