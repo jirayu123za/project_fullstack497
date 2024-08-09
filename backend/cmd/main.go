@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend_fullstack/internal/models"
 	"fmt"
 	"log"
 	"os"
@@ -71,6 +72,21 @@ func ConnectPostgres(dsn string) (*gorm.DB, error) {
 	fmt.Println("Connected to database successfully")
 
 	// Migration
+	err = db.AutoMigrate(
+		&models.User{},
+		&models.UserGroup{},
+		&models.Course{},
+		&models.Assignment{},
+		&models.AssignmentFile{},
+		&models.Enrollment{},
+		&models.InstructorList{},
+		&models.Submission{},
+		&models.Upload{},
+	)
+	if err != nil {
+		log.Fatal("Failed to migrate database: ", err)
+	}
+	fmt.Println("Database migration completed!")
 
 	return db, err
 }
