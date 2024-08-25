@@ -1,6 +1,8 @@
 package main
 
 import (
+	"backend_fullstack/internal/adapters"
+	"backend_fullstack/internal/adapters/auth"
 	"backend_fullstack/internal/models"
 	"fmt"
 	"log"
@@ -36,12 +38,19 @@ func main() {
 	}
 
 	// Init routes
+	auth.GoogleOauth()
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"message": "Server is running",
 			"error":   err,
 		})
 	})
+
+	authGroup := app.Group("/auth")
+	googleGroup := authGroup.Group("/google")
+	googleGroup.Get("/login", adapters.GoogleLogin)
+	googleGroup.Get("/callback", adapters.GoogleCallback)
 
 	port := os.Getenv("PORT")
 	err = app.Listen(":" + port)
