@@ -1,7 +1,18 @@
 import React from "react";
 import img from "../../src/img/BrazucaPlanning.png";
+import { useNavigate } from "react-router-dom";
 
 export default function SelectRoleSignup() {
+  const navigate = useNavigate();
+  const SignUpAsIns = () => {
+    const role = "Instructor";
+    navigate("/signup", { state: { role } });
+  };
+  const SignUpAsStd = () => {
+    const role = "Student";
+    navigate("/signup", { state: { role } });
+  };
+
   return (
     <section className="bg-white min-h-[800px] py-6 font-poppins">
       <div className="container mx-auto min-h-[800px] flex justify-center items-center">
@@ -19,10 +30,16 @@ export default function SelectRoleSignup() {
               What is your role ?
             </div>
             <div className="space-y-3 flex flex-col justify-center items-center lg:flex-row lg:space-y-0 lg:space-x-5">
-              <button className="bg-B1 hover:bg-blue-500 text-white font-medium text-2xl w-72 h-14 rounded">
+              <button
+                className="bg-B1 hover:bg-blue-500 text-white font-medium text-2xl w-72 h-14 rounded"
+                onClick={SignUpAsIns}
+              >
                 Instructor
               </button>
-              <button className="bg-B1 hover:bg-blue-500 text-white font-medium text-2xl w-72 h-14 rounded">
+              <button
+                className="bg-B1 hover:bg-blue-500 text-white font-medium text-2xl w-72 h-14 rounded"
+                onClick={SignUpAsStd}
+              >
                 Student
               </button>
             </div>
