@@ -7,8 +7,8 @@ import (
 )
 
 type UserGroup struct {
-	GroupID   int    `gorm:"primaryKey;autoIncrement"`
-	GroupName string `gorm:"type:varchar(50);not null"`
+	GroupID   uint   `gorm:"primaryKey;autoIncrement" json:"group_id"`
+	GroupName string `gorm:"type:varchar(50);not null" json:"group_name"`
 	Users     []User `gorm:"foreignKey:GroupID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
