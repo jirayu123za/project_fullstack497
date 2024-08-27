@@ -13,6 +13,7 @@ type Course struct {
 	Term              string           `gorm:"type:varchar(50);not null"`
 	Assignments       []Assignment     `gorm:"foreignKey:CourseID"`
 	InstructorLists   []InstructorList `gorm:"foreignKey:CourseID"`
+	Enrollments       []Enrollment     `gorm:"foreignKey:CourseID"`
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt `gorm:"index"`
