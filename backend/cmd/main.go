@@ -3,6 +3,7 @@ package main
 import (
 	"backend_fullstack/internal/adapters"
 	"backend_fullstack/internal/adapters/auth"
+	"backend_fullstack/internal/core/services"
 	"backend_fullstack/internal/models"
 	"fmt"
 	"log"
@@ -32,7 +33,7 @@ func main() {
 
 	}
 
-	_, err = ConnectPostgres(dsn)
+	db, err := ConnectPostgres(dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,6 +52,26 @@ func main() {
 	googleGroup := authGroup.Group("/google")
 	googleGroup.Get("/login", adapters.GoogleLogin)
 	googleGroup.Get("/callback", adapters.GoogleCallback)
+
+	userRepo := adapters.NewGormUserRepository(db)
+	userService := services.NewUserService(userRepo)
+	userHandler := adapters.NewHttpUserHandler(userService)
+
+	adminRepo := adapters.NewGormAdminRepository(db)
+	adminService := services.NewAdminService(adminRepo)
+	adminHandler := adapters.NewHttpAdminHandler(adminService)
+
+	app.Post("/CreateUser", userHandler.CreateUser)
+	app.Get("/QueryUserById", userHandler.GetUserByID)
+	app.Get("/QueryUsers", userHandler.GetUsers)
+	app.Put("/UpdateUser", userHandler.UpdateUser)
+	app.Delete("/DeleteUser", userHandler.DeleteUser)
+
+	app.Post("/CreateUserGroup", adminHandler.CreateUserGroup)
+	app.Get("/QueryUserGroupById", adminHandler.GetUserGroupByID)
+	app.Get("/QueryUserGroups", adminHandler.GetUserGroups)
+	app.Put("/UpdateUserGroup", adminHandler.UpdateUserGroup)
+	app.Delete("/DeleteUserGroup", adminHandler.DeleteUserGroup)
 
 	port := os.Getenv("PORT")
 	err = app.Listen(":" + port)
@@ -82,8 +103,8 @@ func ConnectPostgres(dsn string) (*gorm.DB, error) {
 
 	// Migration
 	err = db.AutoMigrate(
-		&models.User{},
 		&models.UserGroup{},
+		&models.User{},
 		&models.Course{},
 		&models.Assignment{},
 		&models.AssignmentFile{},
