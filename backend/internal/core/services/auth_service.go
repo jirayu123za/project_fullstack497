@@ -11,7 +11,7 @@ import (
 
 type AuthService interface {
 	Login(userName string, password string) (string, error)
-	//Logout(token string) error
+	Logout(token string) error
 }
 
 type AuthServiceImpl struct {
@@ -60,4 +60,15 @@ func (s *AuthServiceImpl) generateJWT(user *models.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(s.jwtSecret))
+}
+
+func (s *AuthServiceImpl) Logout(token string) error {
+	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte(s.jwtSecret), nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return s.repo.DeleteJWTToken(token)
 }
