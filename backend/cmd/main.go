@@ -38,8 +38,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Init routes
-	auth.GoogleOauth()
+	// Init GoogleOAut configured
+	auth.InitializeGoogleOAuth()
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -48,10 +48,9 @@ func main() {
 		})
 	})
 
-	authGroup := app.Group("/auth")
-	googleGroup := authGroup.Group("/google")
-	googleGroup.Get("/login", adapters.GoogleLogin)
-	googleGroup.Get("/callback", adapters.GoogleCallback)
+	googleOAuthRepo := adapters.NewOAuthRepository()
+	googleOAuthService := services.NewOAuthService(googleOAuthRepo)
+	googleOAuthHandler := adapters.NewHttpOAuthHandler(googleOAuthService)
 
 	userRepo := adapters.NewGormUserRepository(db)
 	userService := services.NewUserService(userRepo)
@@ -60,6 +59,11 @@ func main() {
 	adminRepo := adapters.NewGormAdminRepository(db)
 	adminService := services.NewAdminService(adminRepo)
 	adminHandler := adapters.NewHttpAdminHandler(adminService)
+
+	authGroup := app.Group("/auth")
+	googleGroup := authGroup.Group("/google")
+	googleGroup.Get("/login", googleOAuthHandler.GetGoogleLoginURL)
+	googleGroup.Get("/callback", googleOAuthHandler.GetGoogleCallback)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
