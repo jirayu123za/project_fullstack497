@@ -24,6 +24,11 @@ func main() {
 		log.Fatal("Error loading .env file: ", err)
 	}
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET is not set in the environment")
+	}
+
 	// Init fiber server
 	app := fiber.New()
 
@@ -56,6 +61,10 @@ func main() {
 	userService := services.NewUserService(userRepo)
 	userHandler := adapters.NewHttpUserHandler(userService)
 
+	authRepo := adapters.NewAuthRepository(db)
+	authService := services.NewAuthService(authRepo, userRepo, jwtSecret)
+	authHandler := adapters.NewHttpAuthHandler(authService)
+
 	adminRepo := adapters.NewGormAdminRepository(db)
 	adminService := services.NewAdminService(adminRepo)
 	adminHandler := adapters.NewHttpAdminHandler(adminService)
@@ -64,6 +73,8 @@ func main() {
 	googleGroup := authGroup.Group("/google")
 	googleGroup.Get("/login", googleOAuthHandler.GetGoogleLoginURL)
 	googleGroup.Get("/callback", googleOAuthHandler.GetGoogleCallback)
+
+	app.Post("/login", authHandler.Login)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
