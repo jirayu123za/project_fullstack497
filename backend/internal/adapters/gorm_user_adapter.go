@@ -39,6 +39,14 @@ func (r *GormUserRepository) FindUserByID(userID uuid.UUID) (*models.User, error
 	return user, nil
 }
 
+func (r *GormUserRepository) FindUserByUserName(userName string) (*models.User, error) {
+	var user *models.User
+	if result := r.db.Where("user_name = ?", userName).First(&user); result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
+}
+
 func (r *GormUserRepository) FindUsers() ([]*models.User, error) {
 	var users []*models.User
 	if result := r.db.Find(&users); result.Error != nil {
