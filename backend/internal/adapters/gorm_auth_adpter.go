@@ -37,4 +37,6 @@ func (r *AuthRepository) AuthenticateUser(username string, password string) (str
 	return selectedUser.UserID.String(), nil
 }
 
-// func (r *AuthRepository) DeleteJWTToken(token string) error { return nil }
+func (r *AuthRepository) DeleteJWTToken(token string) error {
+	return nil
+}
