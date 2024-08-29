@@ -75,6 +75,7 @@ func main() {
 	googleGroup.Get("/callback", googleOAuthHandler.GetGoogleCallback)
 
 	app.Post("/login", authHandler.Login)
+	app.Post("/logout", authHandler.Logout)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
