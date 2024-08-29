@@ -12,6 +12,7 @@ import (
 type UserService interface {
 	CreateUser(user *models.User) error
 	GetUserByID(userID uuid.UUID) (*models.User, error)
+	GetUserByUserName(userName string) (*models.User, error)
 	GetUsers() ([]*models.User, error)
 	UpdateUser(user *models.User) error
 	DeleteUser(user *models.User) error
@@ -44,6 +45,14 @@ func (s *UserServiceImpl) CreateUser(user *models.User) error {
 
 func (s *UserServiceImpl) GetUserByID(userID uuid.UUID) (*models.User, error) {
 	user, err := s.repo.FindUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (s *UserServiceImpl) GetUserByUserName(userName string) (*models.User, error) {
+	user, err := s.repo.FindUserByUserName(userName)
 	if err != nil {
 		return nil, err
 	}
