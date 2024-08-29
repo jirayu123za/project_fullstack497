@@ -63,6 +63,7 @@ func main() {
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
+	app.Get("/QueryUserByUserName", userHandler.GetUserByUserName)
 	app.Get("/QueryUsers", userHandler.GetUsers)
 	app.Put("/UpdateUser", userHandler.UpdateUser)
 	app.Delete("/DeleteUser", userHandler.DeleteUser)
