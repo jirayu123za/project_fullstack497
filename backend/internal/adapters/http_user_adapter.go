@@ -119,6 +119,22 @@ func (h *HttpUserHandler) GetUserByID(c *fiber.Ctx) error {
 	})
 }
 
+func (h *HttpUserHandler) GetUserByUserName(c *fiber.Ctx) error {
+	userName := c.Query("user_name")
+	user, err := h.services.GetUserByUserName(userName)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "User not found",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "User found from query",
+		"user":    user,
+	})
+}
+
 func (h *HttpUserHandler) GetUsers(c *fiber.Ctx) error {
 	users, err := h.services.GetUsers()
 	if err != nil {
