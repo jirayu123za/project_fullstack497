@@ -48,3 +48,26 @@ func (h *HttpAuthHandler) Login(c *fiber.Ctx) error {
 		"token":   token,
 	})
 }
+
+func (h *HttpAuthHandler) Logout(c *fiber.Ctx) error {
+	token := c.Cookies("jwt-token")
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Unauthorized",
+		})
+	}
+
+	err := h.services.Logout(token)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to logout",
+			"error":   err.Error(),
+		})
+	}
+
+	c.ClearCookie("jwt-token")
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Logout successful",
+	})
+}
