@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Register(user *models.User) error
 	FindUserByID(userID uuid.UUID) (*models.User, error)
+	FindUserByUserName(userName string) (*models.User, error)
 	FindUsers() ([]*models.User, error)
 	ModifyUser(user *models.User) error
 	RemoveUser(user *models.User) error
