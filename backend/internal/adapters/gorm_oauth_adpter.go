@@ -2,15 +2,14 @@ package adapters
 
 import (
 	"backend_fullstack/internal/adapters/auth"
+	"backend_fullstack/internal/config"
 	"backend_fullstack/internal/models"
 	"context"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
@@ -34,10 +33,7 @@ func (r *OAuthRepository) GetGoogleToken(code string) (*oauth2.Token, error) {
 }
 
 func (r *OAuthRepository) GetGoogleUserInfo(accessToken string) (*models.GoogleUserInfo, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
+	config.LoadEnv()
 	userInfoURL := os.Getenv("USERINFO")
 
 	client := auth.AppConfig.GoogleLoginConfig.Client(context.Background(), &oauth2.Token{AccessToken: accessToken})
