@@ -3,6 +3,7 @@ package adapters
 import (
 	"backend_fullstack/internal/core/services"
 	"backend_fullstack/internal/core/utils"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,8 +29,10 @@ func (h *HttpOAuthHandler) GetGoogleLoginURL(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:  "oauth_state",
-		Value: state,
+		Name:     "oauth_state",
+		Value:    state,
+		Expires:  time.Now().Add(10 * time.Minute),
+		HTTPOnly: true,
 	})
 
 	loginURL := h.services.GetGoogleLoginURL(state)
