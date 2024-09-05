@@ -1,10 +1,9 @@
 package auth
 
 import (
-	"log"
+	"backend_fullstack/internal/config"
 	"os"
 
-	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -16,11 +15,7 @@ type Config struct {
 var AppConfig Config
 
 func InitializeGoogleOAuth() oauth2.Config {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
-
+	config.LoadEnv()
 	userInfoEmail := os.Getenv("USERINFO_EMAIL")
 	userInfoProfile := os.Getenv("USERINFO_PROFILE")
 
