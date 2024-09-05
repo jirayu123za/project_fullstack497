@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
@@ -24,6 +25,9 @@ func main() {
 
 	// Init fiber server
 	app := fiber.New()
+	app.Use(logger.New(logger.Config{
+		Format: "[${time}] FROM IP: ${ip}  STATUS: ${status} LATENCY: ${latency} METHOD: ${method} PATH: ${path}\n",
+	}))
 
 	db := database.ConnectPostgres(true)
 
