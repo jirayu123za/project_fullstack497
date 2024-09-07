@@ -8,9 +8,9 @@ import (
 )
 
 type InstructorList struct {
-	ListID    int       `gorm:"primaryKey;autoIncrement"`
-	UserID    uuid.UUID `gorm:"not null"`
-	CourseID  uuid.UUID `gorm:"not null"`
+	ListID    uuid.UUID `gorm:"primaryKey" json:"list_id"`
+	UserID    uuid.UUID `gorm:"not null" json:"user_id"`
+	CourseID  uuid.UUID `gorm:"not null" json:"course_id"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
