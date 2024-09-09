@@ -43,7 +43,7 @@ export default function LandingPage() {
       >
         <div className="container mx-auto flex lg:justify-between items-center justify-center">
           <a href="#">
-            <img src={Logo} alt="" />
+            <img src={Logo} alt="Logo" />
           </a>
           <div className="lg:flex font-semibold gap-4 md:gap-7 text-xl items-center hidden">
             <a
