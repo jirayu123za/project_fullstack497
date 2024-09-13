@@ -15,3 +15,10 @@ type InstructorList struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
+
+func (instructorList *InstructorList) BeforeCreate(tx *gorm.DB) (err error) {
+	if instructorList.ListID == uuid.Nil {
+		instructorList.ListID = uuid.New()
+	}
+	return
+}
