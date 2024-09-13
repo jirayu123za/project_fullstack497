@@ -57,6 +57,10 @@ func main() {
 	adminService := services.NewAdminService(adminRepo)
 	adminHandler := adapters.NewHttpAdminHandler(adminService)
 
+	instructorRepo := adapters.NewGormInstructorRepository(db)
+	instructorService := services.NewInstructorService(instructorRepo)
+	instructorHandler := adapters.NewHttpInstructorHandler(instructorService)
+
 	authGroup := app.Group("/auth")
 	googleGroup := authGroup.Group("/google")
 	googleGroup.Get("/login", googleOAuthHandler.GetGoogleLoginURL)
@@ -77,6 +81,18 @@ func main() {
 	app.Get("/QueryUserGroups", adminHandler.GetUserGroups)
 	app.Put("/UpdateUserGroup", adminHandler.UpdateUserGroup)
 	app.Delete("/DeleteUserGroup", adminHandler.DeleteUserGroup)
+
+	app.Post("/CreateCourse", instructorHandler.CreateCourse)
+	app.Get("/QueryCourseById", instructorHandler.GetCourseByID)
+	app.Get("/QueryCourses", instructorHandler.GetCourses)
+	app.Put("/UpdateCourse", instructorHandler.UpdateCourse)
+	app.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
+
+	app.Post("/CreateInstructorList", instructorHandler.CreateInstructorList)
+	app.Get("/QueryInstructorList", instructorHandler.GetInstructorsList)
+	app.Get("/QueryInstructorListByCourseId", instructorHandler.GetInstructorsListByCourseID)
+	app.Get("/QueryInstructorListByListId", instructorHandler.GetInstructorsListByListID)
+	app.Delete("/DeleteInstructorList", instructorHandler.DeleteInstructorList)
 
 	port := os.Getenv("PORT")
 	if err := app.Listen(":" + port); err != nil {
