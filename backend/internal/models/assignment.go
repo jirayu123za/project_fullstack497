@@ -19,3 +19,25 @@ type Assignment struct {
 	UpdatedAt             time.Time
 	DeletedAt             gorm.DeletedAt `gorm:"index"`
 }
+
+type SubmissionFile struct {
+	SubmissionFileID string         `gorm:"primaryKey;autoIncrement" json:"submission_file_id"`
+	SubmissionID     string         `gorm:"not null" json:"submission_id"`
+	FileName         string         `gorm:"type:varchar(255);not null" json:"file_name"`
+	FileURL          string         `gorm:"type:varchar(255);not null" json:"file_url"`
+	CreatedAt        time.Time      `json:"created_at"`
+	UpdatedAt        time.Time      `json:"updated_at"`
+	DeletedAt        gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+}
+
+type AssignmentWithSubmission struct {
+	Assignment
+	SubmissionID *string    `json:"submission_id,omitempty"`
+	SubmittedAt  *time.Time `json:"submitted_at,omitempty"`
+}
+
+type AssignmentDashboardItem struct {
+	AssignmentWithSubmission
+	Status       string `json:"status"`
+	DaysUntilDue int    `json:"days_until_due"`
+}
