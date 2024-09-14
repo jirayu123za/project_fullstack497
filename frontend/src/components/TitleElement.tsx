@@ -1,7 +1,7 @@
 import React from 'react';
 import { LuBox } from 'react-icons/lu'; 
 
-const CourseTitle: React.FC = () => {
+const TitleElement: React.FC = () => {
   return (
     <div className="flex items-center text-black mb-4">
       <LuBox className="mr-2" size={24} /> 
@@ -10,4 +10,4 @@ const CourseTitle: React.FC = () => {
   );
 };
 
-export default CourseTitle;
+export default TitleElement;
