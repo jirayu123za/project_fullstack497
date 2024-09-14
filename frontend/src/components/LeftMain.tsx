@@ -1,4 +1,3 @@
-// src/components/board.tsx
 import React from "react";
 import { FaChild } from "react-icons/fa"; 
 
@@ -6,7 +5,7 @@ interface BoardProps {
   name: string;
 }
 
-const Board: React.FC<BoardProps> = ({ name }) => {
+const LeftMain: React.FC<BoardProps> = ({ name }) => {
   return (
     <div className="flex items-center p-4 h-[900px] flex-col justify-start">
       <div className="flex items-center w-full mb-2 border-b">
@@ -17,4 +16,4 @@ const Board: React.FC<BoardProps> = ({ name }) => {
   );
 };
 
-export default Board;
+export default LeftMain;
