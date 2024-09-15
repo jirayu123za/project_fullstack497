@@ -3,6 +3,7 @@ package services
 import (
 	"backend_fullstack/internal/core/repositories"
 	"backend_fullstack/internal/models"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -12,6 +13,7 @@ import (
 type AuthService interface {
 	Login(userName string, password string) (string, error)
 	Logout(token string) error
+	VerifyToken(token string) error
 }
 
 type AuthServiceImpl struct {
@@ -60,6 +62,22 @@ func (s *AuthServiceImpl) generateJWT(user *models.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(s.jwtSecret))
+}
+
+func (s *AuthServiceImpl) VerifyToken(token string) error {
+	parsedToken, err := jwt.ParseWithClaims(token, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(s.jwtSecret), nil
+	})
+	if err != nil {
+		return err
+	}
+
+	if claims, ok := parsedToken.Claims.(*jwt.MapClaims); ok && parsedToken.Valid {
+		fmt.Println(claims)
+		return nil
+	} else {
+		return fmt.Errorf("invalid token")
+	}
 }
 
 func (s *AuthServiceImpl) Logout(token string) error {

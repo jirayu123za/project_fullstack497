@@ -19,6 +19,25 @@ func NewHttpAuthHandler(services services.AuthService) *HttpAuthHandler {
 	}
 }
 
+// Add fuc verify jwt
+func (h *HttpAuthHandler) VerifyToken(c *fiber.Ctx) error {
+	token := c.Cookies("jwt-token")
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Missing JWT token",
+		})
+	}
+
+	err := h.services.VerifyToken(token)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Unauthorized",
+		})
+	}
+
+	return c.Next()
+}
+
 func (h *HttpAuthHandler) Login(c *fiber.Ctx) error {
 	var loginUser models.User
 	if err := c.BodyParser(&loginUser); err != nil {
