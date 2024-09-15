@@ -72,6 +72,7 @@ func main() {
 	// use middleware to verify token
 	apiGroup := app.Group("/api", authHandler.VerifyToken)
 	apiGroup.Get("/QueryUsers", userHandler.GetUsers)
+	apiGroup.Post("/CreateCourse", instructorHandler.CreateCourse)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
@@ -86,7 +87,7 @@ func main() {
 	app.Put("/UpdateUserGroup", adminHandler.UpdateUserGroup)
 	app.Delete("/DeleteUserGroup", adminHandler.DeleteUserGroup)
 
-	app.Post("/CreateCourse", instructorHandler.CreateCourse)
+	//app.Post("/CreateCourse", instructorHandler.CreateCourse)
 	app.Get("/QueryCourseById", instructorHandler.GetCourseByID)
 	app.Get("/QueryCourses", instructorHandler.GetCourses)
 	app.Put("/UpdateCourse", instructorHandler.UpdateCourse)
