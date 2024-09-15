@@ -1,10 +1,14 @@
 package adapters
 
 import (
+	"backend_fullstack/internal/config"
 	"backend_fullstack/internal/core/services"
 	"backend_fullstack/internal/models"
+	"fmt"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 )
 
@@ -35,28 +39,34 @@ func (h *HttpInstructorHandler) CreateCourse(c *fiber.Ctx) error {
 		})
 	}
 
-	/*
-		userToken := c.Locals("user").(*jwt.Token) // คุณอาจใช้ JWT middleware เช่น fiber middleware
-		claims := userToken.Claims.(jwt.MapClaims)
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
 
-		userID, err := uuid.Parse(claims["user_id"].(string)) // สมมติว่า user_id ถูกเก็บใน claims
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	/*
+		userIDParam := c.Query("user_id")
+		userID, err := uuid.Parse(userIDParam)
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"message": "Invalid user_id in JWT",
+				"message": "Invalid instructor_id",
 				"error":   err.Error(),
 			})
 		}
 	*/
-
-	// under line 52-59 should be change to use jwt token to get user_id
-	userIDParam := c.Query("user_id")
-	userID, err := uuid.Parse(userIDParam)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid instructor_id",
-			"error":   err.Error(),
-		})
-	}
 
 	instructorList := models.InstructorList{
 		CourseID: course.CourseID,
