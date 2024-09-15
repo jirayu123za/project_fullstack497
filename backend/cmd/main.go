@@ -69,10 +69,14 @@ func main() {
 	app.Post("/login", authHandler.Login)
 	app.Post("/logout", authHandler.Logout)
 
+	// use middleware to verify token
+	apiGroup := app.Group("/api", authHandler.VerifyToken)
+	apiGroup.Get("/QueryUsers", userHandler.GetUsers)
+
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
 	app.Get("/QueryUserByUserName", userHandler.GetUserByUserName)
-	app.Get("/QueryUsers", userHandler.GetUsers)
+	//app.Get("/QueryUsers", userHandler.GetUsers)
 	app.Put("/UpdateUser", userHandler.UpdateUser)
 	app.Delete("/DeleteUser", userHandler.DeleteUser)
 
