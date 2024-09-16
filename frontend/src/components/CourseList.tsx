@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TitleElement from "./TitleElement";
+import courseData from "";
 
 interface Course {
   id: number;
@@ -14,14 +15,33 @@ interface Course {
 const CourseList: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:3000/api/courses")
+  //     .then((response) => {
+  //       const fetchedCourses = response.data.map(
+  //         (course: any, index: number) => ({
+  //           ...course,
+  //           colorClass: getColorClass(index),
+  //         })
+  //       );
+  //       setCourses(fetchedCourses);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching courses:", error);
+  //     });
+  // }, []);
+
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/courses")
+      .get("/course.json")
       .then((response) => {
-        const fetchedCourses = response.data.map((course: any, index: number) => ({
-          ...course,
-          colorClass: getColorClass(index),
-        }));
+        const fetchedCourses = response.data.map(
+          (course: any, index: number) => ({
+            ...course,
+            colorClass: getColorClass(index),
+          })
+        );
         setCourses(fetchedCourses);
       })
       .catch((error) => {
@@ -42,8 +62,11 @@ const CourseList: React.FC = () => {
   return (
     <div className="p-4 max-w-full">
       <TitleElement />
-      <div className="overflow-x-auto scrollbar-hide w-6/12 mt-4">
-        <div className="flex space-x-4 flex-nowrap whitespace-nowrap" style={{ width: 'calc(4 * 20rem)' }}>
+      <div className="overflow-x-auto scrollbar-hide w-[1109px] mt-4">
+        <div
+          className="flex space-x-4 flex-nowrap whitespace-nowrap"
+          style={{ width: "calc(4 * 20rem)" }}
+        >
           {courses.map((course) => (
             <div
               key={course.id}
@@ -54,8 +77,12 @@ const CourseList: React.FC = () => {
                 alt="Course"
                 className="w-48 h-24 object-cover mb-2 rounded-md"
               />
-              <p className="text-left text-sm font-medium w-full">{course.name}</p>
-              <p className="text-left text-sm font-medium w-full">({course.code})</p>
+              <p className="text-left text-sm font-medium w-full">
+                {course.name}
+              </p>
+              <p className="text-left text-sm font-medium w-full">
+                ({course.code})
+              </p>
               <span
                 className={`block text-xs text-center mt-2 px-2 py-1 rounded-full ${course.colorClass}`}
               >

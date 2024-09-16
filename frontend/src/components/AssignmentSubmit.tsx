@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
-interface AssigmentSubmitProps {
+interface AssignmentSubmitProps {
   StdCode: string;
   Status: string;
 }
 
-export default function AssigmentSubmit({
+export default function AssignmentSubmit({
   StdCode,
   Status,
-}: AssigmentSubmitProps) {
+}: AssignmentSubmitProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const [isVisible, setIsVisible] = useState(true);

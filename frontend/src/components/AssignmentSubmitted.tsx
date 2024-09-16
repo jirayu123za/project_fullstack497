@@ -1,5 +1,5 @@
 import React from "react";
-import AssignmentSubmit from "./AssigmentSubmit";
+import AssignmentSubmit from "./AssignmentSubmit";
 
 interface AssignmentSubmittedProps {
   ConfigAssignment: { StdCode: string; Status: string }[];

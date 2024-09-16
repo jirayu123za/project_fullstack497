@@ -6,6 +6,7 @@ import App from "./App.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import "./index.css";
 import SignUpPage from "./pages/SignUpPage.tsx";
+import InstructorDashboard from "./pages/InstructorDashboard.tsx";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignUpPage />,
+  },
+  {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
   },
 ]);
 

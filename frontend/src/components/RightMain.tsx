@@ -12,7 +12,7 @@ export default function RightMain({ icons, links }: RightMainProps) {
 
   return (
     <div>
-      <div className="bg-white shadow-2xl rounded-xl h-[900px] w-[200px] flex flex-col items-center justify-between py-8">
+      <div className="bg-white rounded-xl h-[900px] w-[200px] flex flex-col items-center justify-between py-8">
         <div className="flex flex-col justify-center items-center gap-10">
           {/* Profile image */}
           <div>
