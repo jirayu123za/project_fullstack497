@@ -38,24 +38,27 @@ const AssignmentList: React.FC = () => {
   const getColorClasses = (index: number) => {
     const colorClasses = [
       {
-        colorClass: "border border-purple-300",
-        iconColorClass: "text-purple-300",
+        colorClass: "border border-R1 border-opacity-60",
+        iconColorClass: "text-R1",
       },
       {
-        colorClass: "border border-yellow-300",
-        iconColorClass: "text-yellow-300",
+        colorClass: "border border-R2 border-opacity-60",
+        iconColorClass: "text-R2",
       },
       {
-        colorClass: "border border-green-300",
-        iconColorClass: "text-green-300",
+        colorClass: "border border-R4 border-opacity-60",
+        iconColorClass: "text-R4",
       },
-      { colorClass: "border border-pink-300", iconColorClass: "text-pink-300" },
+      {
+        colorClass: "border border-R3 border-opacity-60",
+        iconColorClass: "text-R3",
+      },
     ];
     return colorClasses[index % colorClasses.length];
   };
 
   return (
-    <div className="p-4 max-h-[402px] overflow-hidden">
+    <div className="p-4 max-h-[402px] overflow-hidden font-poppins text-E1">
       <div className="flex items-center mb-4">
         <TitleElement name="Assignment" icon={Assicon} />
       </div>
@@ -65,7 +68,7 @@ const AssignmentList: React.FC = () => {
             key={assignment.id}
             className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm w-[460px] h-[87px] ${assignment.colorClass}`}
           >
-            <p>{assignment.title}</p>
+            <p className="text-2xl">{assignment.title}</p>
             <div className="flex space-x-2">
               <FaDownload
                 className={`cursor-pointer ${assignment.iconColorClass}`}
