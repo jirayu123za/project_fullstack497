@@ -5,18 +5,66 @@ import { useLocation } from "react-router-dom";
 
 export default function SignUpPage() {
   const location = useLocation();
-  const role = location.state?.role || "Role";
+  const role = location.state?.role || localStorage.getItem("role") || "Role";
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    let roleValue = 0;
+    console.log("Role received: ", role);
+
+    if (role === "Student") {
+      roleValue = 1;
+    } else if (role === "Instructor") {
+      roleValue = 2;
+    }
+
+    const formData = {
+      email,
+      username,
+      firstName,
+      lastName,
+      password,
+      confirmPassword,
+      role: roleValue,
+    };
+    console.log(formData);
+
+    try {
+      const response = await fetch("/api/CreateUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Form submitted successfully");
+        window.location.href = "/landing";
+      } else {
+        console.error("Form submission failed");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
   useEffect(() => {
+    if (role !== "Role") {
+      localStorage.setItem("role", role);
+    }
+
     const fetchEmail = async () => {
       try {
         const response = await fetch("/data.json");
         const data = await response.json();
-        console.log(data);
-
         setEmail(data.email);
         setFirstName(data.firstName);
         setLastName(data.lastName);
@@ -26,7 +74,7 @@ export default function SignUpPage() {
     };
 
     fetchEmail();
-  }, []);
+  }, [role]);
 
   return (
     <div
@@ -69,7 +117,10 @@ export default function SignUpPage() {
             <div className="font-medium text-xl text-center">as a {role}</div>
           </div>
           <div>
-            <form className="px-8 text-xl flex flex-col gap-5">
+            <form
+              className="px-8 text-xl flex flex-col gap-5"
+              onSubmit={handleSubmit}
+            >
               <div>
                 <label className="flex justify-start mb-2" htmlFor="email">
                   Email
@@ -77,9 +128,10 @@ export default function SignUpPage() {
                 <input
                   className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                   id="email"
-                  type="text"
+                  type="email"
                   value={email}
                   readOnly
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
@@ -90,6 +142,7 @@ export default function SignUpPage() {
                   className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                   id="username"
                   type="text"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div className="flex gap-2">
@@ -105,6 +158,7 @@ export default function SignUpPage() {
                     id="Firstname"
                     type="text"
                     value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
                 <div>
@@ -116,6 +170,7 @@ export default function SignUpPage() {
                     id="Lastname"
                     type="text"
                     value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
               </div>
@@ -126,7 +181,8 @@ export default function SignUpPage() {
                 <input
                   className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                   id="password"
-                  type="text"
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div>
@@ -136,15 +192,18 @@ export default function SignUpPage() {
                 <input
                   className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                   id="ConPass"
-                  type="text"
+                  type="password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+              </div>
+              {/* Submit button */}
+              <div className="flex justify-center">
+                <button className="w-[200px] h-[55px] bg-M1 text-white rounded-full hover:bg-blue-500 text-2xl">
+                  Submit
+                </button>
               </div>
             </form>
           </div>
-          {/* Submit button */}
-          <button className="w-[200px] h-[55px] bg-M1 text-white rounded-full hover:bg-blue-500 text-2xl">
-            <a href="/landing">Submit</a>
-          </button>
         </div>
         {/* right */}
         <div className="flex-auto bg-[#F8F7F7] flex flex-col justify-center items-center rounded-b-3xl lg:rounded-r-3xl lg:rounded-l-none mt-8 pt-8 lg:mt-0 lg:pt-0">

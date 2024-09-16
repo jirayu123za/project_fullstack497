@@ -50,7 +50,7 @@ const CourseList: React.FC = () => {
 
   return (
     <div className="p-4 max-w-full">
-      <TitleElement name="course" icon={box} />
+      <TitleElement name="Course" icon={box} />
       <div className="overflow-x-auto scrollbar-hide w-[1109px] mt-4">
         <div
           className="flex space-x-4 flex-nowrap whitespace-nowrap"
