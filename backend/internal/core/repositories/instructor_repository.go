@@ -15,6 +15,15 @@ type InstructorRepository interface {
 	ModifyCourse(Course *models.Course) error
 	RemoveCourse(Course *models.Course) error
 
+	// CRUD operations for Courses using jwt
+	FindCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
+	FindNameByUserID(UserID uuid.UUID) (string, error)
+	FindUserGroupByUserID(UserID uuid.UUID) (string, error)
+	FindAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
+
+	// CRUD operations for Assignments
+	AddAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error
+
 	// CRD operations for Instructor lists
 	AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error  // Create a new instructor list
 	FindInstructorsList() ([]*models.InstructorList, error)                             // Find all instructor lists
