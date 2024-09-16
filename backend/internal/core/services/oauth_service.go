@@ -1,9 +1,13 @@
 package services
 
 import (
+	"backend_fullstack/internal/config"
 	"backend_fullstack/internal/core/repositories"
 	"backend_fullstack/internal/models"
+	"os"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/oauth2"
 )
 
@@ -12,6 +16,7 @@ type OAuthService interface {
 	GetGoogleLoginURL(state string) string
 	GetGoogleToken(code string) (*oauth2.Token, error)
 	GetGoogleUserInfo(accessToken string) (*models.GoogleUserInfo, error)
+	GenerateGoogleJWT(googleUser *models.GoogleUserInfo) (string, error)
 }
 
 type OAuthServiceImpl struct {
@@ -38,4 +43,20 @@ func (s *OAuthServiceImpl) GetGoogleUserInfo(accessToken string) (*models.Google
 		return nil, err
 	}
 	return userInfo, nil
+}
+
+func (s *OAuthServiceImpl) GenerateGoogleJWT(googleUser *models.GoogleUserInfo) (string, error) {
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+
+	claims := jwt.MapClaims{
+		"email":     googleUser.Email,
+		"fullName":  googleUser.Name,
+		"firstName": googleUser.GivenName,
+		"lastName":  googleUser.FamilyName,
+		"exp":       time.Now().Add(time.Hour * 1).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(jwtSecret))
 }
