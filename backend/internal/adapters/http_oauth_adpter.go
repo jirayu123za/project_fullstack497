@@ -65,10 +65,23 @@ func (h *HttpOAuthHandler) GetGoogleCallback(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
+	/*
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"message": "User is logged in by Google OAuth2",
+			"token":   token,
+			"user":    userInfo,
+		})
+	*/
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "User is logged in by Google OAuth2",
-		"token":   token,
-		"user":    userInfo,
-	})
+	jwtToken, err := h.services.GenerateGoogleJWT(userInfo)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to generate JWT token",
+			"error":   err.Error(),
+		})
+	}
+
+	redirectURL := "http://localhost:5173/signup?token=" + jwtToken
+	return c.Redirect(redirectURL, fiber.StatusTemporaryRedirect)
+
 }
