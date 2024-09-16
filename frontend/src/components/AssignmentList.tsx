@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaTrash, FaDownload, FaList } from "react-icons/fa";
 import axios from "axios";
+import TitleElement from "./TitleElement";
+import Assicon from "../icons/ion_list.png";
 
 interface Assignment {
   id: number;
@@ -55,8 +57,7 @@ const AssignmentList: React.FC = () => {
   return (
     <div className="p-4 max-h-[402px] overflow-hidden">
       <div className="flex items-center mb-4">
-        <FaList className="text-gray-600 mr-2" />
-        <h2 className="text-base font-bold">Assignment List</h2>
+        <TitleElement name="Assignment" icon={Assicon} />
       </div>
       <div className="max-h-[350px] overflow-y-scroll scrollbar-hide">
         {assignments.slice(0, 10).map((assignment) => (

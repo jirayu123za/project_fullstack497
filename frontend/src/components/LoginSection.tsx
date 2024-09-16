@@ -9,7 +9,9 @@ export default function LoginSection() {
           <div className="flex-1 relative">
             <div className="mt-16 size-[568px] border-8 border-B1 bg-white rounded-xl">
               <div className="bg-B1 w-full h-24 text-M1 font-bold text-3xl flex justify-start items-center">
-                <div className="ml-7">Login</div>
+                <div className="ml-7">
+                  <a href=""></a>
+                </div>
               </div>
               {/* Username and Input form */}
               <form className="px-8 pt-6 mb-4 text-M1 text-xl font-medium">

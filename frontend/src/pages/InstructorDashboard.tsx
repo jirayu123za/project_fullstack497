@@ -16,7 +16,7 @@ export default function InstructorDashboard() {
   return (
     <div className="bg-B1 h-screen flex justify-center items-center gap-8">
       <div className="w-[1174px] h-[900px] bg-white rounded-2xl">
-        <LeftMain name="Natacha" />
+        <LeftMain title="Natacha" icon={dashicon} />
         <div
           className="mb-16 mx-10
         "

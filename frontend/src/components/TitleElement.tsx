@@ -1,11 +1,15 @@
-import React from 'react';
-import { LuBox } from 'react-icons/lu'; 
+import React from "react";
 
-const TitleElement: React.FC = () => {
+interface TitleElementProps {
+  name: string;
+  icon: string;
+}
+
+const TitleElement: React.FC<TitleElementProps> = ({ name, icon }) => {
   return (
-    <div className="flex items-center text-black mb-4">
-      <LuBox className="mr-2" size={24} /> 
-      <h2 className="text-xl font-bold">Course</h2>
+    <div className="flex items-center text-E1 mb-4 gap-3">
+      <img src={icon} alt="icon" />
+      <h2 className="text-xl">{name}</h2>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TitleElement from "./TitleElement";
 import UpcomingAssignment from "./UpcomingAssignment";
 import axios from "axios";
+import upcomingIcon from "../icons/carbon_event-schedule.png";
 
 interface Assignment {
   percentage: string;
@@ -39,8 +40,8 @@ export default function UpcomingElement() {
 
   return (
     <div>
-      <div className="w-[442px] max-h-[402px]">
-        <TitleElement />
+      <div className="w-[470px] p-4 max-h-[402px] overflow-hidden">
+        <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
         {/* Loop assignment */}
         <div className="w-[442px] max-h-[350px] overflow-y-auto scrollbar-hide">
           <div className="space-y-4 mt-5">
