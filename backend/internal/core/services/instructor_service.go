@@ -16,6 +16,15 @@ type InstructorService interface {
 	UpdateCourse(Course *models.Course) error
 	DeleteCourse(Course *models.Course) error
 
+	// using jwt
+	GetCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
+	GetNameByUserID(UserID uuid.UUID) (string, error)
+	GetUserGroupByUserID(UserID uuid.UUID) (string, error)
+	GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
+
+	// CRUD operations for Courses
+	CreateAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error
+
 	// CRD operations for Instructor lists
 	CreateInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error
 	GetInstructorsList() ([]*models.InstructorList, error)
@@ -65,7 +74,7 @@ func (s *InstructorServiceImpl) UpdateCourse(Course *models.Course) error {
 	}
 
 	existingCourses.CourseName = Course.CourseName
-	existingCourses.CourseDescription = Course.CourseDescription
+	//existingCourses.CourseDescription = Course.CourseDescription
 
 	if err := s.repo.ModifyCourse(existingCourses); err != nil {
 		return err
@@ -80,6 +89,52 @@ func (s *InstructorServiceImpl) DeleteCourse(Course *models.Course) error {
 	}
 
 	if err := s.repo.RemoveCourse(deleteCourse); err != nil {
+		return err
+	}
+	return nil
+}
+
+// using JWT
+func (s *InstructorServiceImpl) GetCourseByUserID(UserID uuid.UUID) ([]*models.Course, error) {
+	Courses, err := s.repo.FindCourseByUserID(UserID)
+	if err != nil {
+		return nil, err
+	}
+	return Courses, nil
+}
+
+func (s *InstructorServiceImpl) GetNameByUserID(UserID uuid.UUID) (string, error) {
+	Name, err := s.repo.FindNameByUserID(UserID)
+	if err != nil {
+		return "", err
+	}
+	return Name, nil
+}
+
+func (s *InstructorServiceImpl) GetUserGroupByUserID(UserID uuid.UUID) (string, error) {
+	UserGroup, err := s.repo.FindUserGroupByUserID(UserID)
+	if err != nil {
+		return "", err
+	}
+	return UserGroup, nil
+}
+
+func (s *InstructorServiceImpl) GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error) {
+	Assignments, err := s.repo.FindAssignmentByUserID(UserID)
+	if err != nil {
+		return nil, err
+	}
+	return Assignments, nil
+}
+
+// Under line here be InstructorServiceImpl of Instructor assignment
+func (s *InstructorServiceImpl) CreateAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error {
+	existingCourse, err := s.repo.FindCourseByID(CourseID)
+	if err != nil {
+		return err
+	}
+
+	if err := s.repo.AddAssignment(existingCourse.CourseID, Assignment); err != nil {
 		return err
 	}
 	return nil
