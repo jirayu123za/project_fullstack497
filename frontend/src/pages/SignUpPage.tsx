@@ -16,6 +16,11 @@ export default function SignUpPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (password !== confirmPassword) {
+      alert("Password and Confirm Password do not match!");
+      return;
+    }
+
     let roleValue = 0;
     console.log("Role received: ", role);
 
@@ -31,7 +36,6 @@ export default function SignUpPage() {
       firstName,
       lastName,
       password,
-      confirmPassword,
       role: roleValue,
     };
     console.log(formData);
