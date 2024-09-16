@@ -84,7 +84,11 @@ func (h *HttpAuthHandler) Logout(c *fiber.Ctx) error {
 		})
 	}
 
-	c.ClearCookie("jwt-token")
+	c.Cookie(&fiber.Cookie{
+		Name:    "jwt-token",
+		Value:   "",
+		Expires: time.Now().Add(-time.Hour),
+	})
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Logout successful",
