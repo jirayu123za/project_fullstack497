@@ -73,6 +73,10 @@ func main() {
 	apiGroup := app.Group("/api", authHandler.VerifyToken)
 	apiGroup.Get("/QueryUsers", userHandler.GetUsers)
 	apiGroup.Post("/CreateCourse", instructorHandler.CreateCourse)
+	apiGroup.Get("/QueryCourseByUserID", instructorHandler.GetCourseByUserID)
+	apiGroup.Get("/QueryNameByUserID", instructorHandler.GetNameByUserID)
+	apiGroup.Get("/QueryUserGroupByUserID", instructorHandler.GetUserGroupByUserID)
+	apiGroup.Get("/QueryAssignmentByUserID", instructorHandler.GetAssignmentByUserID)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
@@ -92,6 +96,8 @@ func main() {
 	app.Get("/QueryCourses", instructorHandler.GetCourses)
 	app.Put("/UpdateCourse", instructorHandler.UpdateCourse)
 	app.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
+
+	app.Post("/CreateAssignment", instructorHandler.CreateAssignment)
 
 	app.Post("/CreateInstructorList", instructorHandler.CreateInstructorList)
 	app.Get("/QueryInstructorList", instructorHandler.GetInstructorsList)
