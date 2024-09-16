@@ -151,7 +151,7 @@ func (h *HttpInstructorHandler) UpdateCourse(c *fiber.Ctx) error {
 	}
 
 	course.CourseName = newCourse.CourseName
-	course.CourseDescription = newCourse.CourseDescription
+	//course.CourseDescription = newCourse.CourseDescription
 	course.Term = newCourse.Term
 
 	if err := h.services.UpdateCourse(course); err != nil {
@@ -211,6 +211,171 @@ func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Course is deleted",
+	})
+}
+
+// using JWT
+func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	courses, err := h.services.GetCourseByUserID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get courses by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Courses found",
+		"courses": courses,
+	})
+}
+
+func (h *HttpInstructorHandler) GetNameByUserID(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	name, err := h.services.GetNameByUserID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get courses by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "name of instructor found",
+		"name":    name,
+	})
+}
+
+func (h *HttpInstructorHandler) GetUserGroupByUserID(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	groupName, err := h.services.GetUserGroupByUserID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get user group by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Group name of user found",
+		"group_name": groupName,
+	})
+}
+
+func (h *HttpInstructorHandler) GetAssignmentByUserID(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	assignments, err := h.services.GetAssignmentByUserID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get assignments by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Assignments found",
+		"assignments": assignments,
+	})
+}
+
+// Under line here be HttpInstructorHandler of Instructor assignment
+func (h *HttpInstructorHandler) CreateAssignment(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	var assignment models.Assignment
+	if err := c.BodyParser(&assignment); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to parse request body",
+			"error":   err.Error(),
+		})
+	}
+
+	if err := h.services.CreateAssignment(courseID, &assignment); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to create assignment",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message":    "Assignment is created",
+		"assignment": assignment,
 	})
 }
 
