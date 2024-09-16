@@ -37,6 +37,18 @@ func ConnectPostgres(migrate bool) *gorm.DB {
 
 	// Migration
 	if migrate {
+		/*
+			db.Migrator().DropTable(
+				&models.UserGroup{},
+				&models.User{},
+				&models.Course{},
+				&models.Assignment{},
+				&models.AssignmentFile{},
+				&models.Enrollment{},
+				&models.InstructorList{},
+				&models.Submission{},
+				&models.Upload{})
+		*/
 		err := db.AutoMigrate(
 			&models.UserGroup{},
 			&models.User{},
@@ -47,6 +59,7 @@ func ConnectPostgres(migrate bool) *gorm.DB {
 			&models.InstructorList{},
 			&models.Submission{},
 			&models.Upload{})
+
 		if err != nil {
 			log.Fatal("Failed to migrate database: ", err)
 		}
