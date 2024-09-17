@@ -4,7 +4,7 @@ import TitleElement from "./TitleElement";
 import box from "../icons/Vector.png";
 
 interface Course {
-  id: number;
+  id: string;
   name: string;
   code: string;
   assignmentsCount: number;
@@ -17,14 +17,20 @@ const CourseList: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("/course.json")
-      .then((response) => {
-        const fetchedCourses = response.data.map(
-          (course: any, index: number) => ({
-            ...course,
-            colorClass: getColorClass(index),
-          })
-        );
+      .get("api/api/QueryCourseByUserID")
+      .then((response) => response.data)
+      .then((data) => {
+        console.log("Fetched courses:", data);
+
+        const fetchedCourses = data.courses.map((course: any, index: number) => ({
+          id: course.course_id,
+          name: course.course_name,
+          code: course.course_code,
+          assignmentsCount: course.Assignments ? course.Assignments.length : 0,
+          imageUrl: "https://placehold.co/10x10",
+          colorClass: getColorClass(index),
+        }));
+
         setCourses(fetchedCourses);
       })
       .catch((error) => {

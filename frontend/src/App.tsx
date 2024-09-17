@@ -14,7 +14,7 @@ import UpcomingElement from "./components/UpcomingElement.tsx";
 
 function App() {
   const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/dashboard", "/notifications", "/join", "/exit"];
+  const links = ["/dashboard", "/notifications", "/join", "/s"];
 
   const ConfigAssignment = [
     { StdCode: "640610629", Status: "#E61616" },

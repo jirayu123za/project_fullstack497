@@ -1,6 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function LoginSection() {
+  const [user_name, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_name, password }),
+      });
+      console.log(user_name, password);
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Login successful:", result);
+
+        window.location.href = "/dashboard";
+      } else {
+        setErrorMessage("Login failed: Invalid username or password.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrorMessage("An error occurred during login. Please try again.");
+    }
+  };
+
   return (
     <section className="bg-white min-h-[800px] py-6 font-poppins mt-8 lg:mt-0">
       <div className="container mx-auto min-h-[800px] flex justify-center items-center">
@@ -14,7 +44,10 @@ export default function LoginSection() {
                 </div>
               </div>
               {/* Username and Input form */}
-              <form className="px-8 pt-6 mb-4 text-M1 text-xl font-medium">
+              <form
+                className="px-8 pt-6 mb-4 text-M1 text-xl font-medium"
+                onSubmit={handleSubmit}
+              >
                 <div className="mb-11 mt-10">
                   <label className="flex justify-start mb-2" htmlFor="username">
                     Username
@@ -23,6 +56,8 @@ export default function LoginSection() {
                     className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                     id="username"
                     type="text"
+                    value={user_name}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div>
@@ -32,7 +67,9 @@ export default function LoginSection() {
                   <input
                     className="shadow border border-G1 rounded-lg w-full py-2 px-3 text-gray-600"
                     id="password"
-                    type="text"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="flex items-center justify-end mt-5">
@@ -44,10 +81,16 @@ export default function LoginSection() {
                   </a>
                 </div>
                 <div className="flex items-center justify-center mt-16">
-                  <button className="w-[233px] h-[43px] bg-M1 text-white rounded-full hover:bg-blue-500">
+                  <button
+                    type="submit"
+                    className="w-[233px] h-[43px] bg-M1 text-white rounded-full hover:bg-blue-500"
+                  >
                     Login
                   </button>
                 </div>
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
+                )}
               </form>
             </div>
           </div>

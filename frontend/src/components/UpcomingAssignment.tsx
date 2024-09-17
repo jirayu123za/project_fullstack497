@@ -1,12 +1,13 @@
 import React from "react";
 
 interface UpcomingAssignmentProps {
+  assignmentName: string;
   percentage: string;
   color: string;
   timeleft: number;
 }
-
 export default function UpcomingAssignment({
+  assignmentName,
   percentage,
   color,
   timeleft,
@@ -22,7 +23,7 @@ export default function UpcomingAssignment({
   return (
     <div>
       <div className="flex flex-col w-[442px] gap-3 font-poppins text-sm">
-        <div>Assignment 1</div>
+        <div>{assignmentName}</div>
         {/* Loading */}
         <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-color-[#D9D9D9]">
           <div

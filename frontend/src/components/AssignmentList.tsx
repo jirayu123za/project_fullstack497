@@ -5,7 +5,7 @@ import TitleElement from "./TitleElement";
 import Assicon from "../icons/ion_list.png";
 
 interface Assignment {
-  id: number;
+  id: string;
   title: string;
   colorClass: string;
   iconColorClass: string;
@@ -16,18 +16,17 @@ const AssignmentList: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("assignment.json")
-      .then((response) => {
-        const fetchedAssignments = response.data.map(
-          (assignment: any, index: number) => {
-            const { colorClass, iconColorClass } = getColorClasses(index);
-            return {
-              ...assignment,
-              colorClass,
-              iconColorClass,
-            };
-          }
-        );
+    .get("api/api/QueryAssignmentByUserID")
+    .then((response) => response.data)
+    .then((data) => {
+      console.log("Fetched courses:", data);
+    
+        const fetchedAssignments = data.assignments.map((assignment: any, index: number) => ({
+          id: assignment.AssignmentID,
+          title: assignment.assignment_name,
+          colorClass: getColorClasses(index),
+          iconColorClass: getColorClasses(index),
+        }));
         setAssignments(fetchedAssignments);
       })
       .catch((error) => {

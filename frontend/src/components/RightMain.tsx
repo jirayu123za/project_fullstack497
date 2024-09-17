@@ -1,5 +1,6 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 interface RightMainProps {
   icons: string[];
@@ -7,8 +8,43 @@ interface RightMainProps {
 }
 
 export default function RightMain({ icons, links }: RightMainProps) {
-  const location = useLocation();
-  const role = location.state?.role || "Role";
+  //const location = useLocation();
+  //const role = location.state?.role || localStorage.getItem("role") || "Role";
+  const [role, setRole] = useState("");
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Logout successful");
+        console.log(response);
+        window.location.href = "/landing";
+      } else {
+        console.error("Logout failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get("api/api/QueryUserGroupByUserID")
+      .then((response) => response.data)
+      .then((data) => {
+        console.log("Fetched user group:", data);
+        setRole(data.group_name);
+      })
+      .catch((error) => {
+        console.error("Error fetching user group:", error);
+      });
+  }, []);
 
   return (
     <div>
@@ -25,7 +61,12 @@ export default function RightMain({ icons, links }: RightMainProps) {
           {/* Icons */}
           <div className="flex flex-col gap-10 w-fit">
             {icons.map((icon, index) => (
-              <a href={links[index]} key={index} className="inline-block">
+              <a
+                href={links[index]}
+                key={index}
+                className="inline-block"
+                onClick={index === icons.length - 1 ? handleLogout : undefined}
+              >
                 <img
                   src={icon}
                   alt={`icon-${index}`}
