@@ -98,6 +98,11 @@ func main() {
 	app.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
 
 	app.Post("/CreateAssignment", instructorHandler.CreateAssignment)
+	app.Get("/QueryAssignmentByAssignmentID", instructorHandler.GetAssignmentByAssignmentID)
+	app.Get("/QueryAssignments", instructorHandler.GetAssignments)
+	app.Get("/QueryAssignmentsByCourseID", instructorHandler.GetAssignmentsByCourseID)
+	app.Put("/UpdateAssignment", instructorHandler.UpdateAssignment)
+	app.Delete("/DeleteAssignment", instructorHandler.DeleteAssignment)
 
 	app.Post("/CreateInstructorList", instructorHandler.CreateInstructorList)
 	app.Get("/QueryInstructorList", instructorHandler.GetInstructorsList)
