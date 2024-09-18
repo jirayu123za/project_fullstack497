@@ -58,15 +58,15 @@ const AssignmentList: React.FC = () => {
   };
 
   return (
-    <div className="p-4 max-h-[402px] overflow-hidden font-poppins text-E1">
+    <div className="p-4 overflow-hidden font-poppins text-E1">
       <div className="flex items-center mb-4">
         <TitleElement name="Assignment" icon={Assicon} />
       </div>
-      <div className="max-h-[350px] overflow-y-scroll scrollbar-hide">
+      <div className="max-h-[400px] overflow-y-scroll scrollbar-hide">
         {assignments.slice(0, 10).map((assignment) => (
           <div
             key={assignment.id}
-            className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm w-[460px] h-[87px] ${assignment.colorClass}`}
+            className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm  h-[87px] ${assignment.colorClass}`}
           >
             <p className="text-2xl">{assignment.title}</p>
             <div className="flex space-x-2">
