@@ -77,7 +77,7 @@ export default function RightMain({ icons, links }: RightMainProps) {
         </div>
         {/* Role button */}
         <button
-          className="text-white font-medium text-xl bg-E1 px-4 py-2 rounded-full w-[130px]"
+          className="text-white font-medium text-balance bg-E1 px-4 py-2 rounded-full w-[130px]"
           disabled
         >
           {role}
