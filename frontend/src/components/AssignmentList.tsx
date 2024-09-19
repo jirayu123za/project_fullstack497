@@ -21,12 +21,15 @@ const AssignmentList: React.FC = () => {
     .then((data) => {
       console.log("Fetched courses:", data);
     
-        const fetchedAssignments = data.assignments.map((assignment: any, index: number) => ({
-          id: assignment.AssignmentID,
-          title: assignment.assignment_name,
-          colorClass: getColorClasses(index),
-          iconColorClass: getColorClasses(index),
-        }));
+        const fetchedAssignments = data.assignments.map((assignment: any, index: number) => {
+          const colorClasses = getColorClasses(index);
+          return {
+            id: assignment.AssignmentID,
+            title: assignment.assignment_name,
+            colorClass: colorClasses.colorClass,
+            iconColorClass: colorClasses.iconColorClass,
+          };
+        });
         setAssignments(fetchedAssignments);
       })
       .catch((error) => {
