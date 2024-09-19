@@ -1,6 +1,6 @@
 # Assignment release for education
 
-![logo](https://placehold.co/850x200)
+![logo](logo_fullstack.png)
 
 This project for class fullstack947
 
@@ -14,6 +14,10 @@ This project for class fullstack947
 ## Requirements
 
 [Requirement Docs](https://docs.google.com/document/d/1OS99SEVisxmlA3z1rzvV4kqMGchsqnKBGjmwGgd6f2A/edit?usp=sharing)
+
+## Design and Draft
+
+[Figma Docs](https://www.figma.com/design/lA6hTqpMYfaNYeNF0vtwRm/fullstack_project?node-id=107-475&t=NngiTOySaDixATCl-1)
 
 ## Configuration
 
