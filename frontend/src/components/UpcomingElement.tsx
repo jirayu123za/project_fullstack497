@@ -34,16 +34,14 @@ export default function UpcomingElement() {
       .get("api/api/QueryAssignmentByUserID")
       .then((response) => {
         const assignmentsData = response.data.assignments.map((assignment: any) => {
-          // Calculate the number of days left
           const dueDate = new Date(assignment.due_date);
           const today = new Date();
           const timeDiff = dueDate.getTime() - today.getTime();
           const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-          // Determine the progress percentage (example logic)
-          const percentage = Math.min((30 - daysLeft) / 30 * 100, 100);
-          const color = daysLeft <= 3 ? "red" : daysLeft <= 7 ? "yellow" : "green";
-          console.log("Hello" ,response.data);
+          // Determine the progress percentage
+          const percentage = Math.max(Math.min((7 - daysLeft) / 7 * 100, 100), 0);
+          const color = daysLeft <= 3 ? "purple" : daysLeft <= 7 ? "yellow" : "green";
 
           return {
             assignmentName: assignment.assignment_name,
@@ -58,7 +56,6 @@ export default function UpcomingElement() {
         const sortedAssignments = assignmentsData.sort(
           (a: Assignment, b: Assignment) => a.timeleft - b.timeleft
         );
-
         setAssignments(sortedAssignments);
       })
       .catch((error) => {
@@ -76,7 +73,7 @@ export default function UpcomingElement() {
               <UpcomingAssignment
                 key={index}
                 assignmentName={assignment.assignmentName} 
-                percentage={assignment.percentage.toString()}
+                percentage={assignment.percentage.toFixed(0)}
                 color={assignment.color}
                 timeleft={assignment.timeleft}
             />

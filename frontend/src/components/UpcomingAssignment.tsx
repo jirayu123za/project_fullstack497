@@ -20,6 +20,8 @@ export default function UpcomingAssignment({
       green: "bg-R4",
     }[color] || "bg-gray-500";
 
+    console.log("Color:", color);
+    console.log("RandomColor:", RandomColor);
   return (
     <div className="p-2 font-poppins">
       <div className="flex flex-col w-full max-w-full gap-3 font-poppins text-sm">
@@ -28,7 +30,7 @@ export default function UpcomingAssignment({
         <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-[#D9D9D9]">
           <div
             className={`${RandomColor} bg-opacity-60 text-white text-end py-1 px-2 rounded-full font-semibold pr-3 h-full flex items-center justify-end`}
-            style={{ width: `${percentage}` }}
+            style={{ width: `${percentage}%` }}
           >
             <div className="text-xs sm:text-sm">{timeleft} days left</div>
           </div>
