@@ -15,6 +15,25 @@ export default function INS_Create() {
       term,
     };
     console.log(formData);
+
+    try {
+      const response = await fetch("api/api/CreateCourse", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ course_name, course_code, term }),
+      });
+      console.log(course_name, course_code, term);
+      if (response.ok) {
+        const result = await response.json();
+        console.log("POST API success: ", result);
+      } else {
+        console.log("POST API failed: ", response);
+      }
+    } catch (error) {
+      console.error("Error during POST API: ", error);
+    }
   };
 
   return (
