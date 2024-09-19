@@ -6,8 +6,10 @@ import App from "./App.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import "./index.css";
 import SignUpPage from "./pages/SignUpPage.tsx";
-import InstructorDashboard from "./pages/InstructorDashboard.tsx";
+import InstructorDashboard from "./pages/INS_Dashboard.tsx";
 import InstructorAssignment from "./pages/INS_Assignment.tsx";
+import INS_Course from "./pages/INS_Course.tsx";
+import INS_Create from "./pages/INS_Create.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,15 @@ const router = createBrowserRouter([
   {
     path: "/assignment",
     element: <InstructorAssignment />,
+  },
+  {
+
+    path: "/inscourse",
+    element: <INS_Course />,
+  },
+  {
+    path: "/create",
+    element: <INS_Create />,
   },
 ]);
 

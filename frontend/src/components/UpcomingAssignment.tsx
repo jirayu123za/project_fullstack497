@@ -21,16 +21,16 @@ export default function UpcomingAssignment({
     }[color] || "bg-gray-500";
 
   return (
-    <div>
-      <div className="flex flex-col w-[442px] gap-3 font-poppins text-sm">
-        <div>{assignmentName}</div>
+    <div className="p-2 font-poppins">
+      <div className="flex flex-col w-full max-w-full gap-3 font-poppins text-sm">
+        <div className="text-base sm:text-lg font-base">{assignmentName}</div>
         {/* Loading */}
-        <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-color-[#D9D9D9]">
+        <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-[#D9D9D9]">
           <div
             className={`${RandomColor} bg-opacity-60 text-white text-end py-1 px-2 rounded-full font-semibold pr-3 h-full flex items-center justify-end`}
             style={{ width: `${percentage}` }}
           >
-            <div>{timeleft} days left</div>
+            <div className="text-xs sm:text-sm">{timeleft} days left</div>
           </div>
         </div>
       </div>

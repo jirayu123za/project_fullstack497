@@ -67,12 +67,11 @@ export default function UpcomingElement() {
   }, []);
 
   return (
-    <div>
-      <div className="w-[470px] p-4 max-h-[402px] overflow-hidden">
-        <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
-        {/* Loop assignment */}
-        <div className="w-[442px] max-h-[350px] overflow-y-auto scrollbar-hide">
-          <div className="space-y-4 mt-5">
+    <div className="p-4 overflow-hidden font-poppins text-E1">
+      <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
+      {/* Loop assignment */}
+      <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
+        <div>
             {assignments.map((assignment, index) => (
               <UpcomingAssignment
                 key={index}
@@ -80,9 +79,8 @@ export default function UpcomingElement() {
                 percentage={assignment.percentage.toString()}
                 color={assignment.color}
                 timeleft={assignment.timeleft}
-              />
-            ))}
-          </div>
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -61,25 +61,6 @@ export default function SignUpPage() {
     }
   };
 
-  /*
-  useEffect(() => {
-
-    const fetchEmail = async () => {
-      try {
-        const response = await fetch("/data.json");
-        const data = await response.json();
-        setEmail(data.email);
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-      } catch (error) {
-        console.error("Error loading email:", error);
-      }
-    };
-
-    fetchEmail();
-  }, [role]);
-  */
-
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const token = urlParams.get("token");

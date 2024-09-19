@@ -56,11 +56,11 @@ const CourseList: React.FC = () => {
 
   return (
     <div className="p-4 max-w-full">
-      <TitleElement name="course" icon={box} />
-      <div className="overflow-x-auto scrollbar-hide w-[1109px] mt-4">
+      <TitleElement name="Course" icon={box} />
+      <div className="overflow-x-auto scrollbar-hide mt-4">
         <div
-          className="flex space-x-4 flex-nowrap whitespace-nowrap"
-          style={{ width: "calc(4 * 20rem)" }}
+          className="flex space-x-4 flex-nowrap whitespace-nowrap w-32"
+          // style={{ width: "calc(4 * 20rem)" }}
         >
           {courses.length === 0
             ? previewbox
