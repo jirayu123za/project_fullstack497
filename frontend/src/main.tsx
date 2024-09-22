@@ -9,6 +9,7 @@ import SignUpPage from "./pages/SignUpPage.tsx";
 import InstructorDashboard from "./pages/InstructorDashboard.tsx";
 import INS_Course from "./pages/INS_Course.tsx";
 import INS_Create from "./pages/INS_Create.tsx";
+import INS_Assignment from "./pages/INS_Assignment.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,12 +29,20 @@ const router = createBrowserRouter([
     element: <InstructorDashboard />,
   },
   {
-    path: "/inscourse",
+    path: "/course",
     element: <INS_Course />,
   },
   {
     path: "/create",
     element: <INS_Create />,
+  },
+  {
+    path: "/course/:courseId",
+    element: <INS_Course />,
+  },
+  {
+    path: "/assignment",
+    element: <INS_Assignment />,
   },
 ]);
 

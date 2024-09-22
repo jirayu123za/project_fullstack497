@@ -4,9 +4,14 @@ import { useLocation } from "react-router-dom";
 interface RightMainProps {
   icons: string[];
   links: string[];
+  profileimage: string;
 }
 
-export default function RightMain({ icons, links }: RightMainProps) {
+export default function RightMain({
+  icons,
+  links,
+  profileimage,
+}: RightMainProps) {
   const location = useLocation();
   const role = location.state?.role || "Role";
 
@@ -16,8 +21,8 @@ export default function RightMain({ icons, links }: RightMainProps) {
         <div className="flex flex-col justify-center items-center gap-10 ">
           <div>
             <img
-              className="w-28 h-28 p-2 rounded-full ring-4 ring-B1"
-              src="https://img.freepik.com/free-photo/portrait-man-laughing_23-2148859448.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1725667200&semt=ais_hybrid"
+              className="w-28 h-28 p-2 rounded-full ring-4 ring-B1 object-cover"
+              src={profileimage}
               alt="Profile image"
             />
           </div>

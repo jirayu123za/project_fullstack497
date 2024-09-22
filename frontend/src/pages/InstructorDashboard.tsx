@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RightMain from "../components/RightMain";
 import LeftMain from "../components/LeftMain";
 import noticon from "../icons/bxs_bell.png";
@@ -16,20 +16,49 @@ export default function InstructorDashboard() {
   const links = ["/dashboard", "/notifications", "/create", "/exit"];
 
   const [isOpen, setIsOpen] = useState(false);
+  const [profileimage, setProfileimage] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [firstname, setFirstname] = useState("");
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {
+    const fetchPersonaldata = async () => {
+      try {
+        const response = await fetch("/data.json");
+        const data = await response.json();
+        setProfileimage(data.profileimage);
+        setFirstname(data.firstName);
+      } catch (error) {
+        console.error("Error loading email:", error);
+      }
+    };
+
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch("/coursedetail.json");
+        const data = await response.json();
+        setCourses(data); // เก็บข้อมูล courses
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      }
+    };
+
+    fetchPersonaldata();
+    fetchCourses();
+  }, []);
+
   return (
     <div className="bg-B1 flex items-center min-h-dvh min-w-full">
       <div className="container mx-auto flex lg:flex-row gap-5 p-5">
         {/* Left */}
-        <div className="bg-white rounded-2xl flex-1 relative ">
+        <div className="bg-white rounded-2xl flex-1 relative min-h-[900px]">
           <div>
-            <LeftMain title="Natacha" icon={dashboardicon} />
+            <LeftMain title={firstname} icon={dashboardicon} />
             <button
-              className="absolute right-10 top-10 block lg:hidden"
+              className="absolute right-10 top-10 block xl:hidden"
               onClick={toggleMenu}
             >
               <FaBars size={40} color="#344B59" />
@@ -37,29 +66,29 @@ export default function InstructorDashboard() {
           </div>
           <div className="px-4 md:px-6 lg:px-10">
             <div className="mb-4">
-              <CourseList />
+              <CourseList courses={courses} />
             </div>
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:flex-1">
-                <AssignmentList />
+                <AssignmentList courses={courses} />
               </div>
               <div className="lg:flex-1">
-                <UpcomingElement />
+                <UpcomingElement courses={courses} />
               </div>
             </div>
           </div>
         </div>
         {/* Right */}
         <div
-          className={`lg:block fixed inset-y-0 right-0 bg-white z-40 transition-transform duration-300 ${
+          className={`xl:block fixed inset-y-0 right-0 bg-white z-40 transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
           onMouseLeave={() => setIsOpen(false)}
         >
-          <RightMain icons={icons} links={links} />
+          <RightMain icons={icons} links={links} profileimage={profileimage} />
         </div>
-        <div className="hidden lg:block">
-          <RightMain icons={icons} links={links} />
+        <div className="hidden xl:block">
+          <RightMain icons={icons} links={links} profileimage={profileimage} />
         </div>
       </div>
     </div>

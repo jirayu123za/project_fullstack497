@@ -1,55 +1,70 @@
 import React, { useEffect, useState } from "react";
 import TitleElement from "./TitleElement";
 import UpcomingAssignment from "./UpcomingAssignment";
-import axios from "axios";
 import upcomingIcon from "../icons/carbon_event-schedule.png";
 
 interface Assignment {
-  percentage: string;
-  color: string;
+  assignment_id: string;
+  title: string;
+  due_date: string;
 }
 
-export default function UpcomingElement() {
-  // const assignments = [
-  //   { percentage: "70%", color: "green", timeleft: 3 },
-  //   { percentage: "50%", color: "purple", timeleft: 6 },
-  //   { percentage: "30%", color: "yellow", timeleft: 7 },
-  //   { percentage: "70%", color: "green", timeleft: 2 },
-  //   { percentage: "50%", color: "purple", timeleft: 1 },
-  //   { percentage: "30%", color: "yellow", timeleft: 11 },
-  // ];
+interface Course {
+  course_id: string;
+  color: string;
+  assignments: Assignment[];
+}
 
+interface UpcomingElementProps {
+  courses: Course[];
+}
+
+export default function UpcomingElement({ courses }: UpcomingElementProps) {
   const [assignments, setAssignments] = useState<
-    { percentage: string; color: string; timeleft: number }[]
+    { title: string; color: string; timeleft: number }[]
   >([]);
 
   useEffect(() => {
-    axios
-      .get("/upcoming.json")
-      .then((response) => {
-        const sortedAssignments = response.data.sort(
-          (a: { timeleft: number }, b: { timeleft: number }) =>
-            a.timeleft - b.timeleft
-        );
-        setAssignments(sortedAssignments);
+    const upcomingAssignments = courses.flatMap((course) =>
+      course.assignments.map((assignment) => {
+        // Calculate time left
+        const timeleft = calculateTimeLeft(assignment.due_date);
+        return {
+          title: assignment.title,
+          color: course.color,
+          timeleft: timeleft,
+        };
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+    );
+
+    const sortedAssignments = upcomingAssignments.sort(
+      (a, b) => a.timeleft - b.timeleft
+    );
+    setAssignments(sortedAssignments);
+  }, [courses]);
+
+  const calculateTimeLeft = (dueDate: string) => {
+    const currentDate = new Date();
+    const dueDateObj = new Date(dueDate);
+    const timeDiff = dueDateObj.getTime() - currentDate.getTime();
+    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return daysLeft;
+  };
 
   return (
     <div className="p-4 overflow-hidden font-poppins text-E1">
-      <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
-      {/* Loop assignment */}
+      <div className="mb-4">
+        <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
+      </div>
+      {/* Loop through assignments */}
       <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
         <div>
           {assignments.map((assignment, index) => (
             <UpcomingAssignment
               key={index}
-              percentage={assignment.percentage}
               color={assignment.color}
               timeleft={assignment.timeleft}
+              title={assignment.title}
             />
           ))}
         </div>
