@@ -23,6 +23,9 @@ export default function INS_Course() {
   const [courses, setCourses] = useState([]);
   const [profileimage, setProfileimage] = useState("");
   const { course_id } = useParams();
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // ใช้สำหรับแสดง popup
+  const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const navigate = useNavigate();
 
@@ -46,35 +49,91 @@ export default function INS_Course() {
   //   }
   // };
 
-  useEffect(() => {
-    const fetchAssignments = async () => {
-      try {
-        // const response = await fetch(`/api/assignments?course_id=${course_id}`);
-        const response = await fetch("/assignment.json");
-        const data = await response.json();
-        // console.log(data.assignments);
-        // console.log(data);
-        setCourses(data);
-      } catch (error) {
-        console.error("Error fetching assignments:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAssignments = async () => {
+  //     try {
+  //       // const response = await fetch(`/api/assignments?course_id=${course_id}`);
+  //       const response = await fetch("/assignment.json");
+  //       const data = await response.json();
+  //       // console.log(data.assignments);
+  //       // console.log(data);
+  //       setCourses(data);
+  //     } catch (error) {
+  //       console.error("Error fetching assignments:", error);
+  //     }
+  //   };
 
+  //   if (course_id) {
+  //     fetchAssignments();
+  //   }
+  //   const fetchPersonaldata = async () => {
+  //     try {
+  //       const response = await fetch("/data.json");
+  //       const data = await response.json();
+  //       setProfileimage(data.profileimage);
+  //     } catch (error) {
+  //       console.error("Error loading email:", error);
+  //     }
+  //   };
+
+  //   fetchPersonaldata();
+  //   fetchAssignments();
+  // }, [course_id]);
+
+  const handleAddAssignment = async () => {
+    try {
+      // const response = await axios.post("/api/addAssignment", {
+      //   title: title,
+      //   due_date: dueDate,
+      // });
+
+      // mock การตอบกลับของ axios.post โดยใช้ Promise.resolve()
+      const mockResponse = Promise.resolve({
+        data: {
+          title: title,
+          due_date: dueDate,
+        },
+      });
+      const response = await mockResponse;
+
+      console.log("Assignment added:", response.data);
+      // ปิด popup และล้างค่าหลังจากบันทึกสำเร็จ
+      setIsPopupOpen(false);
+      setTitle("");
+      setDueDate("");
+      // โหลดข้อมูลใหม่หลังจากเพิ่ม assignment สำเร็จ
+      fetchAssignments();
+    } catch (error) {
+      console.error("Error adding assignment:", error);
+    }
+  };
+
+  const fetchAssignments = async () => {
+    try {
+      const response = await fetch("/assignment.json");
+      const data = await response.json();
+      setCourses(data);
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
+
+  useEffect(() => {
     if (course_id) {
       fetchAssignments();
     }
+
     const fetchPersonaldata = async () => {
       try {
         const response = await fetch("/data.json");
         const data = await response.json();
         setProfileimage(data.profileimage);
       } catch (error) {
-        console.error("Error loading email:", error);
+        console.error("Error loading profile image:", error);
       }
     };
 
     fetchPersonaldata();
-    fetchAssignments();
   }, [course_id]);
 
   const getColorClass = (color: string) => {
@@ -120,7 +179,9 @@ export default function INS_Course() {
                     <img src={Assicon} alt="Assicon" />
                     <h2 className="text-xl">Assignment</h2>
                   </div>
-                  <FaPlusSquare size={40} color="#93B955" />
+                  <div onClick={() => setIsPopupOpen(true)}>
+                    <FaPlusSquare size={40} color="#93B955" />
+                  </div>
                 </div>
                 {/* แสดง Assignment ที่ดึงมาจาก API */}
                 {Array.isArray(courses.assignments) &&
@@ -185,6 +246,46 @@ export default function INS_Course() {
           <RightMain icons={icons} links={links} profileimage={profileimage} />
         </div>
       </div>
+
+      {isPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl mb-4">Add New Assignment</h2>
+            <label className="block mb-2">
+              Title:
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </label>
+            <label className="block mb-2">
+              Due Date:
+              <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </label>
+            <div className="flex justify-end gap-4 mt-5">
+              <button
+                className="bg-gray-300 p-2 rounded"
+                onClick={() => setIsPopupOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-R4 text-white p-2 rounded"
+                onClick={handleAddAssignment}
+              >
+                Add Assignment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
