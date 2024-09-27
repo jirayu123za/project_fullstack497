@@ -25,17 +25,34 @@ export default function UpcomingElement({ courses }: UpcomingElementProps) {
   >([]);
 
   useEffect(() => {
-    const upcomingAssignments = courses.flatMap((course) =>
-      course.assignments.map((assignment) => {
-        // Calculate time left
+    let upcomingAssignments = [];
+
+    if (Array.isArray(courses)) {
+      // หาก courses เป็น array
+      upcomingAssignments = courses.flatMap((course) =>
+        course.assignments.map((assignment) => {
+          // Calculate time left
+          const timeleft = calculateTimeLeft(assignment.due_date);
+          return {
+            title: assignment.title,
+            color: course.color,
+            timeleft: timeleft,
+          };
+        })
+      );
+    } else if (typeof courses === "object" && courses !== null) {
+      // หาก courses เป็น object
+      const courseAssignments = courses.assignments.map((assignment) => {
         const timeleft = calculateTimeLeft(assignment.due_date);
         return {
           title: assignment.title,
-          color: course.color,
+          color: courses.color,
           timeleft: timeleft,
         };
-      })
-    );
+      });
+
+      upcomingAssignments = courseAssignments;
+    }
 
     const sortedAssignments = upcomingAssignments.sort(
       (a, b) => a.timeleft - b.timeleft

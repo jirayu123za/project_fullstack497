@@ -6,10 +6,13 @@ import App from "./App.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import "./index.css";
 import SignUpPage from "./pages/SignUpPage.tsx";
-import InstructorDashboard from "./pages/InstructorDashboard.tsx";
+import INS_Dashboard from "./pages/INS_Dashboard.tsx";
 import INS_Course from "./pages/INS_Course.tsx";
 import INS_Create from "./pages/INS_Create.tsx";
 import INS_Assignment from "./pages/INS_Assignment.tsx";
+import STD_Dashboard from "./pages/STD_Dashboard.tsx";
+import STD_Course from "./pages/STD_Course.tsx";
+import STD_Join from "./pages/STD_Join.tsx";
 
 const router = createBrowserRouter([
   {
@@ -25,12 +28,8 @@ const router = createBrowserRouter([
     element: <SignUpPage />,
   },
   {
-    path: "/dashboard",
-    element: <InstructorDashboard />,
-  },
-  {
-    path: "/course",
-    element: <INS_Course />,
+    path: "/insdash",
+    element: <INS_Dashboard />,
   },
   {
     path: "/create",
@@ -43,6 +42,18 @@ const router = createBrowserRouter([
   {
     path: "/assignment",
     element: <INS_Assignment />,
+  },
+  {
+    path: "/stddash",
+    element: <STD_Dashboard />,
+  },
+  {
+    path: "/stdcourse/:courseId",
+    element: <STD_Course />,
+  },
+  {
+    path: "/stdcreate",
+    element: <STD_Join />,
   },
 ]);
 

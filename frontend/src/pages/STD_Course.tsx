@@ -15,19 +15,16 @@ import dateicon from "../icons/material-symbols-light_update.png";
 import FriendList from "../components/FriendList";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import UpcomingElement from "../components/UpcomingElement";
+import ProgressBarCourse from "../components/ProgressBarCourse";
 
-export default function INS_Course() {
+export default function STD_Course() {
   const icons = [dashicon, noticon, joinicon, exiticon];
   const links = ["/stddash", "/notifications", "/stdcreate", "/exit"];
   const [isOpen, setIsOpen] = useState(false);
-  // const [courses, setCourses] = useState([]);
   const [profileimage, setProfileimage] = useState("");
   const { course_id } = useParams();
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // ใช้สำหรับแสดง popup
-  const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
 
-  const navigate = useNavigate();
   const location = useLocation();
   const course = location.state?.course;
 
@@ -35,54 +32,7 @@ export default function INS_Course() {
     setIsOpen(!isOpen);
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      console.log("Deleting course");
-      navigate("/insdash");
-    }
-  };
-
-  const handleAddAssignment = async () => {
-    try {
-      // const response = await axios.post("/api/addAssignment", {
-      //   title: title,
-      //   due_date: dueDate,
-      // });
-
-      // mock การตอบกลับของ axios.post โดยใช้ Promise.resolve()
-      const mockResponse = Promise.resolve({
-        data: {
-          title: title,
-          due_date: dueDate,
-        },
-      });
-      const response = await mockResponse;
-
-      console.log("Assignment added:", response.data);
-      setIsPopupOpen(false);
-      setTitle("");
-      setDueDate("");
-      // fetchAssignments();
-    } catch (error) {
-      console.error("Error adding assignment:", error);
-    }
-  };
-
-  // const fetchAssignments = async () => {
-  //   try {
-  //     const response = await fetch("/assignment.json");
-  //     const data = await response.json();
-  //     // setCourses(data);
-  //   } catch (error) {
-  //     console.error("Error fetching assignments:", error);
-  //   }
-  // };
-
   useEffect(() => {
-    // if (course_id) {
-    //   fetchAssignments();
-    // }
-
     const fetchPersonaldata = async () => {
       try {
         const response = await fetch("/data.json");
@@ -123,25 +73,21 @@ export default function INS_Course() {
     <div className="bg-B1 flex items-center min-h-screen w-full font-poppins">
       <div className="container mx-auto flex flex-col lg:flex-row gap-5 p-5">
         {/* Left */}
-        <div className="bg-white rounded-2xl flex-1 relative w-full lg:w-1/2 min-h-[900px]">
+        <div className="bg-white rounded-2xl flex flex-1 relative w-full lg:w-1/2 min-h-[900px] justify-between flex-col">
           <div>
             <LeftMain title={course.course_name} icon={icon} />
             <button
               className="absolute right-10 top-10 block xl:hidden"
               onClick={toggleMenu}
             >
-              {""}
               <FaBars size={40} color="#344B59" />
             </button>
             <div className="flex flex-col md:flex-row">
-              <div className="basis-full md:basis-1/2 px-10">
+              <div className="basis-full md:basis-1/2 px-10 p-4">
                 <div className="flex gap-5 items-center mb-4">
                   <div className="flex items-center text-E1 gap-3">
                     <img src={Assicon} alt="Assicon" />
                     <h2 className="text-xl">Assignment</h2>
-                  </div>
-                  <div onClick={() => setIsPopupOpen(true)}>
-                    <FaPlusSquare size={40} color="#93B955" />
                   </div>
                 </div>
                 {/* แสดงผล assignments */}
@@ -164,34 +110,13 @@ export default function INS_Course() {
                     );
                   })}
               </div>
-              <div className="basis-full md:basis-1/2 px-10 mt-3 md:mt-0">
-                <div className="flex justify-end gap-3">
-                  <div onClick={handleDelete}>
-                    <AssignmentButton text={"Delete"} color={"red"} />
-                  </div>
-                </div>
-                <div className="flex mt-4">
-                  <label
-                    htmlFor="code"
-                    className="flex items-center w-full gap-3"
-                  >
-                    <div className="flex-shrink-0">
-                      <TitleElement name={"Code"} icon={codeicon} />
-                    </div>{" "}
-                    <input
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="code"
-                      type="text"
-                      defaultValue={course.course_id}
-                      readOnly
-                    />
-                  </label>
-                </div>
-                <div className="mt-5">
-                  <FriendList />
-                </div>
+              <div className="basis-full md:basis-1/2 mt-3 md:mt-0 px-5">
+                <UpcomingElement courses={course} />
               </div>
             </div>
+          </div>
+          <div className="mx-10 mb-4">
+            <ProgressBarCourse course={course} />
           </div>
         </div>
         {/* Right */}
@@ -207,46 +132,6 @@ export default function INS_Course() {
           <RightMain icons={icons} links={links} profileimage={profileimage} />
         </div>
       </div>
-
-      {isPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl mb-4">Add New Assignment</h2>
-            <label className="block mb-2">
-              Title:
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="border p-2 w-full"
-              />
-            </label>
-            <label className="block mb-2">
-              Due Date:
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="border p-2 w-full"
-              />
-            </label>
-            <div className="flex justify-end gap-4 mt-5">
-              <button
-                className="bg-gray-300 p-2 rounded"
-                onClick={() => setIsPopupOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-R4 text-white p-2 rounded"
-                onClick={handleAddAssignment}
-              >
-                Add Assignment
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

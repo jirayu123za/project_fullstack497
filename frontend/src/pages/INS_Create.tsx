@@ -28,7 +28,7 @@ export default function INS_Create() {
       console.log(formData);
 
       // ถ้าสำเร็จ ทำการ redirect ไปที่ /dashboard
-      navigate("/dashboard");
+      navigate("/insdash");
     } catch (error) {
       console.error("Error creating course:", error);
     }
@@ -137,7 +137,7 @@ export default function INS_Create() {
       </div>
 
       <div className="absolute top-5 left-5">
-        <a href="/dashboard">
+        <a href="/insdash">
           <IoArrowBackCircle size={60} color="#344B59" />
         </a>
       </div>

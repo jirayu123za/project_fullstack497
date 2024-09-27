@@ -11,7 +11,11 @@ interface Friend {
   image: string;
 }
 
-const FriendList: React.FC = () => {
+interface FriendListProps {
+  role: string;
+}
+
+const FriendList: React.FC<FriendListProps> = ({ role }) => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // สำหรับควบคุม popup
   const [email, setEmail] = useState(""); // สำหรับ input email
@@ -67,9 +71,11 @@ const FriendList: React.FC = () => {
     <div className="max-w-full">
       <div className="flex items-center mb-4 gap-3">
         <TitleElement name={"Student List"} icon={stdicon} />
-        <div onClick={() => setIsPopupOpen(true)}>
-          <FaPlusSquare size={40} color="#93B955" />
-        </div>
+        {role !== "student" && (
+          <div onClick={() => setIsPopupOpen(true)}>
+            <FaPlusSquare size={40} color="#93B955" />
+          </div>
+        )}
       </div>
       <div className="overflow-y-auto max-h-[550px] scrollbar-hide w-full">
         <ul className="divide-y divide-gray-200">

@@ -120,6 +120,9 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ courses }) => {
                     <MdDateRange
                       className={`cursor-pointer ${colorClasses.iconColor}`}
                       size={25}
+                      onClick={() =>
+                        alert(`Assignment Due Date : ${assignment.due_date}`)
+                      }
                     />
                     <MdOutlineFileDownload
                       className={`cursor-pointer ${colorClasses.iconColor}`}

@@ -14,6 +14,7 @@ interface Assignment {
   assignment_id: string;
   title: string;
   due_date: string;
+  complete: boolean;
 }
 
 interface Course {
@@ -28,13 +29,24 @@ interface Course {
 
 interface CourseListProps {
   courses: Course[];
+  role: string;
 }
 
-const CourseList: React.FC<CourseListProps> = ({ courses }) => {
+const CourseList: React.FC<CourseListProps> = ({ courses, role }) => {
   const navigate = useNavigate();
 
-  const handleClick = (course_id: string) => {
-    navigate(`/course/${course_id}`); // ส่ง course_id ผ่าน URL
+  // const handleClick = (course_id: string) => {
+  //   navigate(`/course/${course_id}`); // ส่ง course_id ผ่าน URL
+  // };
+
+  const handleClick = (course: Course) => {
+    if (role == "student") {
+      navigate(`/stdcourse/${course.course_id}`, { state: { course } });
+    } else if (role == "instructor") {
+      navigate(`/course/${course.course_id}`, { state: { course } });
+    } else {
+      console.log("Error role");
+    }
   };
 
   const getColorClass = (color: string) => {
@@ -102,7 +114,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses }) => {
                   className={`inline-block border-4 ${getColorBorderClass(
                     course.color
                   )} p-5 rounded-lg shadow-md flex flex-col items-center justify-center bg-white w-72 h-3/5 cursor-pointer`}
-                  onClick={() => handleClick(course.course_id)}
+                  onClick={() => handleClick(course)}
                 >
                   <img
                     src={course.imageUrl}
