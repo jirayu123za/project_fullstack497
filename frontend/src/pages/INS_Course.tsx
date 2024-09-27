@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LeftMain from "../components/LeftMain";
 import noticon from "../icons/bxs_bell.png";
-import joinicon from "../icons/material-symbols_join.png";
+import createicon from "../icons/ion_create.png";
 import dashicon from "../icons/mdi_human-welcome.png";
 import exiticon from "../icons/vaadin_exit-o.png";
 import RightMain from "../components/RightMain";
@@ -17,8 +17,8 @@ import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function INS_Course() {
-  const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/stddash", "/notifications", "/stdcreate", "/exit"];
+  const icons = [dashicon, noticon, createicon, exiticon];
+  const links = ["/stddash", "/notifications", "/create", "/exit"];
   const [isOpen, setIsOpen] = useState(false);
   // const [courses, setCourses] = useState([]);
   const [profileimage, setProfileimage] = useState("");
