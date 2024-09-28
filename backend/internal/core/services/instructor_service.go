@@ -19,6 +19,7 @@ type InstructorService interface {
 	// using jwt
 	GetCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
 	GetNameByUserID(UserID uuid.UUID) (string, error)
+	GetPersonDataByUserID(UserID uuid.UUID) (*models.User, error)
 	GetUserGroupByUserID(UserID uuid.UUID) (string, error)
 	GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
 
@@ -114,6 +115,14 @@ func (s *InstructorServiceImpl) GetNameByUserID(UserID uuid.UUID) (string, error
 		return "", err
 	}
 	return Name, nil
+}
+
+func (s *InstructorServiceImpl) GetPersonDataByUserID(UserID uuid.UUID) (*models.User, error) {
+	PersonData, err := s.repo.FindPersonDataByUserID(UserID)
+	if err != nil {
+		return nil, err
+	}
+	return PersonData, nil
 }
 
 func (s *InstructorServiceImpl) GetUserGroupByUserID(UserID uuid.UUID) (string, error) {
