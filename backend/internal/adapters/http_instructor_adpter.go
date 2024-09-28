@@ -242,9 +242,20 @@ func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) error {
 		})
 	}
 
+	var response []map[string]interface{}
+	for _, course := range courses {
+		response = append(response, map[string]interface{}{
+			"course_id":    course.CourseID,
+			"course_name":  course.CourseName,
+			"course_code":  course.CourseCode,
+			"course_color": course.Color,
+			"course_image": course.ImageURL,
+		})
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Courses found",
-		"courses": courses,
+		"courses": response,
 	})
 }
 
@@ -278,6 +289,47 @@ func (h *HttpInstructorHandler) GetNameByUserID(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "name of instructor found",
 		"name":    name,
+	})
+}
+
+func (h *HttpInstructorHandler) GetPersonDataByUserID(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	user, err := h.services.GetPersonDataByUserID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get user by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	response = append(response, map[string]interface{}{
+		"user_email":      user.Email,
+		"user_first_name": user.FirstName,
+		"user_last_name":  user.LastName,
+		"user_image_url":  user.ProfileImageURL,
+	})
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "User found",
+		"user":    response,
 	})
 }
 
