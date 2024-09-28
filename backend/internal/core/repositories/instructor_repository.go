@@ -36,4 +36,10 @@ type InstructorRepository interface {
 	FindInstructorsListByCourseID(CourseID uuid.UUID) ([]*models.InstructorList, error) // Find an instructor list by course ID
 	FindInstructorsListByListID(ListID uuid.UUID) (*models.InstructorList, error)       // Find an instructor list by list ID
 	RemoveInstructorList(InstructorList *models.InstructorList) error                   // Remove an instructor list
+
+	// CRUD operations for Enrollments
+	AddEnrollment(CourseID uuid.UUID, Enrollment *models.Enrollment) error
+	FindEnrollments() ([]*models.Enrollment, error)
+	FindEnrollmentsByCourseID(CourseID uuid.UUID) ([]*models.Enrollment, error)
+	RemoveEnrollment(Enrollment *models.Enrollment) error
 }
