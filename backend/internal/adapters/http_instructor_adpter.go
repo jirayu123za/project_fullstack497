@@ -489,9 +489,23 @@ func (h *HttpInstructorHandler) GetAssignmentsByCourseID(c *fiber.Ctx) error {
 		})
 	}
 
+	var response []map[string]interface{}
+	for _, assignment := range assignments {
+		dueDate := assignment.DueDate.Format("02-01-2006")
+
+		response = append(response, map[string]interface{}{
+			"course_id":              assignment.CourseID,
+			"assignment_id":          assignment.AssignmentID,
+			"assignment_name":        assignment.AssignmentName,
+			"assignment_description": assignment.AssignmentDescription,
+			"assignment_due_date":    dueDate,
+		})
+	}
+
+	// Modify the response to only return ...
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message":     "Assignments found",
-		"assignments": assignments,
+		"message":     "Assignments are retrieved",
+		"assignments": response,
 	})
 }
 
