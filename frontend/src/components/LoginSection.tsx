@@ -32,7 +32,7 @@ export default function LoginSection() {
   };
 
   return (
-    <section className="bg-white min-h-[800px] py-6 font-poppins mt-8 lg:mt-0">
+    <section className="bg-transparent min-h-[800px] py-6 font-poppins mt-8 lg:mt-0">
       <div className="container mx-auto min-h-[800px] flex justify-center items-center">
         <div className="flex flex-col gap-y-8 justify-center items-center lg:flex-row lg:gap-x-8 lg:gap-y-0">
           {/* Login */}

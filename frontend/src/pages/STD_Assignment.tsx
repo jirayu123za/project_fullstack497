@@ -15,7 +15,7 @@ import TitleElement from "../components/TitleElement";
 import dateicon from "../icons/material-symbols-light_update.png";
 import { MdOutlineAttachFile } from "react-icons/md";
 
-export default function InstructorDashboard() {
+export default function STD_Assignment() {
   const icons = [dashicon, noticon, joinicon, exiticon];
   const links = ["/insdash", "/notifications", "/join", "/exit"];
 

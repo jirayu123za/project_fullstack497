@@ -1,36 +1,51 @@
 import React from "react";
 
 interface UpcomingAssignmentProps {
-  assignmentName: string;
-  percentage: string;
   color: string;
   timeleft: number;
+  title: string;
 }
+
 export default function UpcomingAssignment({
-  assignmentName,
-  percentage,
   color,
   timeleft,
+  title,
 }: UpcomingAssignmentProps) {
-  const RandomColor =
-    {
-      purple: "bg-R1",
-      yellow: "bg-R2",
-      pink: "bg-R3",
-      green: "bg-R4",
-    }[color] || "bg-gray-500";
+  // Function to get background and text color based on the color prop
+  const getColorClass = (color: string) => {
+    switch (color.toLowerCase()) {
+      case "purple":
+        return "bg-purple-300 text-purple-800";
+      case "yellow":
+        return "bg-yellow-300 text-yellow-800";
+      case "green":
+        return "bg-green-300 text-green-800";
+      case "red":
+        return "bg-red-300 text-red-800";
+      case "pink":
+        return "bg-pink-300 text-pink-800";
+      case "blue":
+        return "bg-blue-300 text-blue-800";
+      case "orange":
+        return "bg-orange-300 text-orange-800";
+      case "brown":
+        return "bg-brown-300 text-brown-800";
+      default:
+        return "bg-gray-300 text-gray-800"; // Default to gray if color doesn't match
+    }
+  };
 
-    console.log("Color:", color);
-    console.log("RandomColor:", RandomColor);
   return (
     <div className="p-2 font-poppins">
       <div className="flex flex-col w-full max-w-full gap-3 font-poppins text-sm">
-        <div className="text-base sm:text-lg font-base">{assignmentName}</div>
-        {/* Loading */}
+        <div className="text-base sm:text-lg font-base">{title}</div>
+        {/* Progress Bar */}
         <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-[#D9D9D9]">
           <div
-            className={`${RandomColor} bg-opacity-60 text-white text-end py-1 px-2 rounded-full font-semibold pr-3 h-full flex items-center justify-end`}
-            style={{ width: `${percentage}%` }}
+            className={`${getColorClass(
+              color
+            )} bg-opacity-60 text-end py-1 px-2 rounded-full font-semibold pr-3 h-full flex items-center justify-end`}
+            style={{ width: "50%" }} // Adjust this based on actual progress
           >
             <div className="text-xs sm:text-sm">{timeleft} days left</div>
           </div>

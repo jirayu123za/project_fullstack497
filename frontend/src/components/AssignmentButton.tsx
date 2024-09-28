@@ -17,7 +17,7 @@ export default function AssignmentButton({
     }[color] || "bg-gray-500";
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div>
       <button
         className={`font-semibold text-white w-32 h-8 rounded-xl ${colorClass} hover:opacity-75`}
       >

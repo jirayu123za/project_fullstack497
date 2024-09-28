@@ -6,6 +6,7 @@ import SelectRoleSignup from "../components/SelectRoleSignup";
 import AboutUsSec from "../components/AboutUsSec";
 import { useState, useEffect } from "react";
 import Logo from "../img/Logo.png";
+import background from "../img/LandingBack.png";
 
 export default function LandingPage() {
   Aos.init({
@@ -35,7 +36,14 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="overflow-hidden">
+    <div
+      className="overflow-hidden"
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div
         className={`${
           isActive ? "shadow-lg" : ""

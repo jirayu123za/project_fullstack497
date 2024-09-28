@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import RightMain from "../components/RightMain";
 import LeftMain from "../components/LeftMain";
 import noticon from "../icons/bxs_bell.png";
-import createicon from "../icons/ion_create.png";
+import joinicon from "../icons/material-symbols_join.png";
 import dashicon from "../icons/mdi_human-welcome.png";
 import exiticon from "../icons/vaadin_exit-o.png";
 import dashboardicon from "../icons/E1_human-welcome.png";
@@ -11,9 +11,10 @@ import UpcomingElement from "../components/UpcomingElement";
 import AssignmentList from "../components/AssignmentList";
 import { FaBars } from "react-icons/fa";
 
-export default function InstructorDashboard() {
-  const icons = [dashicon, noticon, createicon, exiticon];
-  const links = ["/insdash", "/notifications", "/create", "/exit"];
+export default function STD_Dashboard() {
+  const icons = [dashicon, noticon, joinicon, exiticon];
+  const links = ["/stddash", "/notifications", "/stdcreate", "/exit"];
+
   const [isOpen, setIsOpen] = useState(false);
   const [profileimage, setProfileimage] = useState("");
   const [courses, setCourses] = useState([]);
@@ -39,7 +40,7 @@ export default function InstructorDashboard() {
       try {
         const response = await fetch("/coursedetail.json");
         const data = await response.json();
-        setCourses(data);
+        setCourses(data); // เก็บข้อมูล courses
       } catch (error) {
         console.error("Error loading courses:", error);
       }
@@ -65,7 +66,7 @@ export default function InstructorDashboard() {
           </div>
           <div className="px-4 md:px-6 lg:px-10">
             <div className="mb-4">
-              <CourseList courses={courses} role="instructor" />
+              <CourseList courses={courses} role="student" />
             </div>
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:flex-1">
