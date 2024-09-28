@@ -8,10 +8,10 @@ import (
 )
 
 type Course struct {
-	CourseID        uuid.UUID        `gorm:"primaryKey" json:"course_id"`
-	CourseName      string           `gorm:"type:varchar(255);not null" json:"course_name"`
-	CourseCode      string           `gorm:"type:varchar(255)" json:"course_code"`
-	Term            string           `gorm:"type:varchar(50);not null" json:"term"`
+	CourseID   uuid.UUID `gorm:"primaryKey" json:"course_id"`
+	CourseName string    `gorm:"type:varchar(255);not null" json:"course_name"`
+	CourseCode string    `gorm:"type:varchar(255)" json:"course_code"`
+	//Term            string           `gorm:"type:varchar(50);not null" json:"term"`
 	ImageURL        string           `gorm:"type:varchar(255)" json:"image_url"`
 	Color           string           `gorm:"type:varchar(255)" json:"color"`
 	Assignments     []Assignment     `gorm:"foreignKey:CourseID"`
