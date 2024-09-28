@@ -9,8 +9,8 @@ import (
 
 type Enrollment struct {
 	EnrollmentID uuid.UUID `gorm:"primaryKey"`
-	UserID       uuid.UUID `gorm:"not null"`
-	CourseID     uuid.UUID `gorm:"not null"`
+	UserID       uuid.UUID `gorm:"not null" json:"user_id"`
+	CourseID     uuid.UUID `gorm:"not null" json:"course_id"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
