@@ -37,6 +37,12 @@ type InstructorService interface {
 	GetInstructorsListByCourseID(CourseID uuid.UUID) ([]*models.InstructorList, error)
 	GetInstructorsListByListID(ListID uuid.UUID) (*models.InstructorList, error)
 	DeleteInstructorList(InstructorList *models.InstructorList) error
+
+	// CRUD operations for Enrollments
+	CreateEnrollment(CourseID uuid.UUID, Enrollment *models.Enrollment) error
+	GetEnrollments() ([]*models.Enrollment, error)
+	GetEnrollmentsByCourseID(CourseID uuid.UUID) ([]*models.Enrollment, error)
+	DeleteEnrollment(Enrollment *models.Enrollment) error
 }
 
 type InstructorServiceImpl struct {
@@ -247,6 +253,43 @@ func (s *InstructorServiceImpl) DeleteInstructorList(InstructorList *models.Inst
 
 	if err := s.repo.RemoveInstructorList(deleteInstructorList); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) CreateEnrollment(CourseID uuid.UUID, Enrollment *models.Enrollment) error {
+	if err := s.repo.AddEnrollment(CourseID, Enrollment); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) GetEnrollments() ([]*models.Enrollment, error) {
+	Enrollments, err := s.repo.FindEnrollments()
+	if err != nil {
+		return nil, err
+	}
+	return Enrollments, nil
+}
+
+func (s *InstructorServiceImpl) GetEnrollmentsByCourseID(CourseID uuid.UUID) ([]*models.Enrollment, error) {
+	Enrollments, err := s.repo.FindEnrollmentsByCourseID(CourseID)
+	if err != nil {
+		return nil, err
+	}
+	return Enrollments, nil
+}
+
+func (s *InstructorServiceImpl) DeleteEnrollment(Enrollment *models.Enrollment) error {
+	deleteEnrollment, err := s.repo.FindEnrollmentsByCourseID(Enrollment.CourseID)
+	if err != nil {
+		return err
+	}
+
+	for _, enrollment := range deleteEnrollment {
+		if err := s.repo.RemoveEnrollment(enrollment); err != nil {
+			return err
+		}
 	}
 	return nil
 }
