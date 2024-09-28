@@ -14,12 +14,14 @@ import (
 
 // Primary adapters
 type HttpInstructorHandler struct {
-	services services.InstructorService
+	services     services.InstructorService
+	userServices services.UserService
 }
 
-func NewHttpInstructorHandler(services services.InstructorService) *HttpInstructorHandler {
+func NewHttpInstructorHandler(services services.InstructorService, userServices services.UserService) *HttpInstructorHandler {
 	return &HttpInstructorHandler{
-		services: services,
+		services:     services,
+		userServices: userServices,
 	}
 }
 
@@ -703,5 +705,123 @@ func (h *HttpInstructorHandler) DeleteInstructorList(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Instructor list is deleted",
+	})
+}
+
+// under line for instructions enrollments
+func (h *HttpInstructorHandler) CreateEnrollment(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	var payload struct {
+		Email string `json:"email"`
+	}
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to parse request body",
+			"error":   err.Error(),
+		})
+	}
+
+	userID, err := h.userServices.GetUserIDByEmail(payload.Email)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to retrieve user_id by email",
+			"error":   err.Error(),
+		})
+	}
+
+	enrollment := models.Enrollment{
+		UserID:   userID,
+		CourseID: courseID,
+	}
+
+	if err := h.services.CreateEnrollment(courseID, &enrollment); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to create enrollment",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message":    "Enrollment is created",
+		"enrollment": enrollment,
+	})
+}
+
+func (h *HttpInstructorHandler) GetEnrollments(c *fiber.Ctx) error {
+	enrollments, err := h.services.GetEnrollments()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get enrollments",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Enrollments found",
+		"enrollments": enrollments,
+	})
+}
+
+func (h *HttpInstructorHandler) GetEnrollmentsByCourseID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	enrollments, err := h.services.GetEnrollmentsByCourseID(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get enrollments by course ID",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Enrollments found",
+		"enrollments": enrollments,
+	})
+}
+
+func (h *HttpInstructorHandler) DeleteEnrollment(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	enrollments, err := h.services.GetEnrollmentsByCourseID(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get enrollments by course ID",
+			"error":   err.Error(),
+		})
+	}
+
+	for _, enrollment := range enrollments {
+		if err := h.services.DeleteEnrollment(enrollment); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to delete enrollment",
+				"error":   err.Error(),
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Enrollments are deleted",
 	})
 }
