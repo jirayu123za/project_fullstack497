@@ -15,6 +15,7 @@ type User struct {
 	FirstName       string    `gorm:"type:varchar(50)" json:"first_name"`
 	LastName        string    `gorm:"type:varchar(50)" json:"last_name"`
 	Email           string    `gorm:"type:varchar(50);not null" json:"email"`
+	ProfileImageURL string    `gorm:"type:varchar(255)" json:"profile_image_url"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt   `gorm:"index"`
