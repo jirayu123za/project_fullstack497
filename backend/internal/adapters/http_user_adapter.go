@@ -81,6 +81,33 @@ func (h *HttpUserHandler) GetUserByUserName(c *fiber.Ctx) error {
 	})
 }
 
+func (h *HttpUserHandler) GetUserIDByEmail(c *fiber.Ctx) error {
+	var payload struct {
+		Email string `json:"email"`
+	}
+
+	// Parse the request body into the struct
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body",
+			"error":   err.Error(),
+		})
+	}
+
+	userID, err := h.services.GetUserIDByEmail(payload.Email)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "User not found",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "User found from query",
+		"user_id": userID,
+	})
+}
+
 func (h *HttpUserHandler) GetUsers(c *fiber.Ctx) error {
 	users, err := h.services.GetUsers()
 	if err != nil {
