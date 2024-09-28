@@ -240,3 +240,45 @@ func (r *GormInstructorRepository) RemoveInstructorList(InstructorList *models.I
 	}
 	return nil
 }
+
+// under lines for instructions enrollments
+func (r *GormInstructorRepository) AddEnrollment(CourseID uuid.UUID, Enrollment *models.Enrollment) error {
+	// Implement the logic to AddEnrollment to the database using GORM.
+	var findCourse *models.Course
+	if result := r.db.First(&findCourse, "course_id = ?", CourseID); result.Error != nil {
+		return result.Error
+	}
+	Enrollment.CourseID = CourseID
+	if enrollment := r.db.Create(Enrollment); enrollment.Error != nil {
+		return enrollment.Error
+	}
+	return nil
+}
+
+func (r *GormInstructorRepository) FindEnrollments() ([]*models.Enrollment, error) {
+	var enrollments []*models.Enrollment
+	if result := r.db.Find(&enrollments); result.Error != nil {
+		return nil, result.Error
+	}
+	return enrollments, nil
+}
+
+func (r *GormInstructorRepository) FindEnrollmentsByCourseID(courseID uuid.UUID) ([]*models.Enrollment, error) {
+	var enrollments []*models.Enrollment
+	if result := r.db.Find(&enrollments, "course_id = ?", courseID); result.Error != nil {
+		return nil, result.Error
+	}
+	return enrollments, nil
+}
+
+func (r *GormInstructorRepository) RemoveEnrollment(Enrollment *models.Enrollment) error {
+	var findEnrollment *models.Enrollment
+	if result := r.db.First(&findEnrollment, "enrollment_id = ?", Enrollment.EnrollmentID); result.Error != nil {
+		return result.Error
+	}
+
+	if result := r.db.Delete(&findEnrollment); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
