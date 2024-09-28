@@ -13,6 +13,7 @@ type UserService interface {
 	CreateUser(user *models.User) error
 	GetUserByID(userID uuid.UUID) (*models.User, error)
 	GetUserByUserName(userName string) (*models.User, error)
+	GetUserIDByEmail(email string) (uuid.UUID, error)
 	GetUsers() ([]*models.User, error)
 	UpdateUser(user *models.User) error
 	DeleteUser(user *models.User) error
@@ -57,6 +58,14 @@ func (s *UserServiceImpl) GetUserByUserName(userName string) (*models.User, erro
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *UserServiceImpl) GetUserIDByEmail(email string) (uuid.UUID, error) {
+	userID, err := s.repo.FindUserIDByEmail(email)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return userID, nil
 }
 
 func (s *UserServiceImpl) GetUsers() ([]*models.User, error) {
