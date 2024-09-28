@@ -152,7 +152,7 @@ func (h *HttpInstructorHandler) UpdateCourse(c *fiber.Ctx) error {
 
 	course.CourseName = newCourse.CourseName
 	//course.CourseDescription = newCourse.CourseDescription
-	course.Term = newCourse.Term
+	//course.Term = newCourse.Term
 
 	if err := h.services.UpdateCourse(course); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -250,6 +250,7 @@ func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) error {
 			"course_code":  course.CourseCode,
 			"course_color": course.Color,
 			"course_image": course.ImageURL,
+			"Assignment":   course.Assignments,
 		})
 	}
 
