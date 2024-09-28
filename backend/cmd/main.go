@@ -110,6 +110,9 @@ func main() {
 	app.Get("/QueryInstructorListByListId", instructorHandler.GetInstructorsListByListID)
 	app.Delete("/DeleteInstructorList", instructorHandler.DeleteInstructorList)
 
+	app.Get("/QueryPersonDataByUserID", instructorHandler.GetPersonDataByUserID)
+	app.Get("/QueryCourseByUserID", instructorHandler.GetCourseByUserID)
+
 	port := os.Getenv("PORT")
 	if err := app.Listen(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
