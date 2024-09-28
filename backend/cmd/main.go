@@ -59,7 +59,7 @@ func main() {
 
 	instructorRepo := adapters.NewGormInstructorRepository(db)
 	instructorService := services.NewInstructorService(instructorRepo)
-	instructorHandler := adapters.NewHttpInstructorHandler(instructorService)
+	instructorHandler := adapters.NewHttpInstructorHandler(instructorService, userService)
 
 	authGroup := app.Group("/auth")
 	googleGroup := authGroup.Group("/google")
@@ -83,6 +83,7 @@ func main() {
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
 	app.Get("/QueryUserByUserName", userHandler.GetUserByUserName)
+	app.Get("/QueryUserIDByEmail", userHandler.GetUserIDByEmail)
 	//app.Get("/QueryUsers", userHandler.GetUsers)
 	app.Put("/UpdateUser", userHandler.UpdateUser)
 	app.Delete("/DeleteUser", userHandler.DeleteUser)
@@ -114,6 +115,11 @@ func main() {
 
 	app.Get("/QueryPersonDataByUserID", instructorHandler.GetPersonDataByUserID)
 	app.Get("/QueryCourseByUserID", instructorHandler.GetCourseByUserID)
+
+	app.Post("/CreateEnrollment", instructorHandler.CreateEnrollment)
+	app.Get("/QueryEnrollments", instructorHandler.GetEnrollments)
+	app.Get("/QueryEnrollmentsByCourseID", instructorHandler.GetEnrollmentsByCourseID)
+	app.Delete("/DeleteEnrollment", instructorHandler.DeleteEnrollment)
 
 	port := os.Getenv("PORT")
 	if err := app.Listen(":" + port); err != nil {
