@@ -103,13 +103,13 @@ func (r *GormInstructorRepository) FindPersonDataByUserID(userID uuid.UUID) (*mo
 
 func (r *GormInstructorRepository) FindUserGroupByUserID(userID uuid.UUID) (string, error) {
 	var groupName string
-	if result := r.db.
+	if err := r.db.
 		Table("users").
-		Select("user_groups.group_name").
 		Joins("JOIN user_groups ON user_groups.group_id = users.group_id").
 		Where("users.user_id = ?", userID).
-		Scan(&groupName); result.Error != nil {
-		return "", result.Error
+		Select("user_groups.group_name").
+		Find(&groupName).Error; err != nil {
+		return "", err
 	}
 	return groupName, nil
 }
