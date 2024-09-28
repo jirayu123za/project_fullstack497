@@ -362,8 +362,8 @@ func (h *HttpInstructorHandler) GetUserGroupByUserID(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message":    "Group name of user found",
-		"group_name": groupName,
+		"message":         "Group name of user found",
+		"user_group_name": groupName,
 	})
 }
 
