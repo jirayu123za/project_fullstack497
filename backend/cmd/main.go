@@ -77,6 +77,7 @@ func main() {
 	apiGroup.Get("/QueryNameByUserID", instructorHandler.GetNameByUserID)
 	apiGroup.Get("/QueryUserGroupByUserID", instructorHandler.GetUserGroupByUserID)
 	apiGroup.Get("/QueryAssignmentByUserID", instructorHandler.GetAssignmentByUserID)
+	apiGroup.Post("/CreateAssignment", instructorHandler.CreateAssignment)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
@@ -97,7 +98,7 @@ func main() {
 	app.Put("/UpdateCourse", instructorHandler.UpdateCourse)
 	app.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
 
-	app.Post("/CreateAssignment", instructorHandler.CreateAssignment)
+	//app.Post("/CreateAssignment", instructorHandler.CreateAssignment)
 	app.Get("/QueryAssignmentByAssignmentID", instructorHandler.GetAssignmentByAssignmentID)
 	app.Get("/QueryAssignments", instructorHandler.GetAssignments)
 	app.Get("/QueryAssignmentsByCourseID", instructorHandler.GetAssignmentsByCourseID)
