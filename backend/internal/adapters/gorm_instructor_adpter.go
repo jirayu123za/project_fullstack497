@@ -78,6 +78,7 @@ func (r *GormInstructorRepository) FindCourseByUserID(UserID uuid.UUID) ([]*mode
 	if err := r.db.
 		Joins("JOIN instructor_lists ON instructor_lists.course_id = courses.course_id").
 		Where("instructor_lists.user_id = ?", UserID).
+		Preload("Assignments").
 		Find(&courses).Error; err != nil {
 		return nil, err
 	}
