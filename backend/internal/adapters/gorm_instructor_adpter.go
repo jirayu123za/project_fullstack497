@@ -78,7 +78,6 @@ func (r *GormInstructorRepository) FindCourseByUserID(UserID uuid.UUID) ([]*mode
 	if err := r.db.
 		Joins("JOIN instructor_lists ON instructor_lists.course_id = courses.course_id").
 		Where("instructor_lists.user_id = ?", UserID).
-		Preload("Assignments").
 		Find(&courses).Error; err != nil {
 		return nil, err
 	}
@@ -91,6 +90,14 @@ func (r *GormInstructorRepository) FindNameByUserID(userID uuid.UUID) (string, e
 		return "", result.Error
 	}
 	return user.FirstName + " " + user.LastName, nil
+}
+
+func (r *GormInstructorRepository) FindPersonDataByUserID(userID uuid.UUID) (*models.User, error) {
+	var user models.User
+	if result := r.db.First(&user, "user_id = ?", userID); result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }
 
 func (r *GormInstructorRepository) FindUserGroupByUserID(userID uuid.UUID) (string, error) {
