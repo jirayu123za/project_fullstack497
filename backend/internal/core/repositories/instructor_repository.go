@@ -18,6 +18,7 @@ type InstructorRepository interface {
 	// CRUD operations for Courses using jwt
 	FindCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
 	FindNameByUserID(UserID uuid.UUID) (string, error)
+	FindPersonDataByUserID(UserID uuid.UUID) (*models.User, error)
 	FindUserGroupByUserID(UserID uuid.UUID) (string, error)
 	FindAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
 
