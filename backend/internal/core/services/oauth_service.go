@@ -54,6 +54,7 @@ func (s *OAuthServiceImpl) GenerateGoogleJWT(googleUser *models.GoogleUserInfo) 
 		"fullName":  googleUser.Name,
 		"firstName": googleUser.GivenName,
 		"lastName":  googleUser.FamilyName,
+		"picture":   googleUser.Picture,
 		"exp":       time.Now().Add(time.Hour * 1).Unix(),
 	}
 
