@@ -12,6 +12,7 @@ export default function SignUpPage() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [profile_image_url, setImg] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -37,6 +38,7 @@ export default function SignUpPage() {
       first_name,
       last_name,
       password,
+      profile_image_url,
       group_id: roleValue,
     };
     console.log(formData);
@@ -71,10 +73,11 @@ export default function SignUpPage() {
     if (token) {
       try {
         const decodedUser = jwtDecode(token);
-        
+
         setEmail((decodedUser as { email?: string }).email || "");
         setFirstName((decodedUser as { firstName?: string}).firstName || "");
         setLastName((decodedUser as {lastName?: string }).lastName || "");
+        setImg((decodedUser as {picture?: string}).picture || "");
         console.log("Decoded User:", decodedUser);
       } catch (error) {
         console.error("Failed to decode token:", error);
