@@ -115,6 +115,7 @@ export default function INS_Course() {
       }
     };
 
+    // Assignments by course_id
     const fetchAssignments = async () => {
       try {
         const res = await axios.get(`/api/api/QueryAssignmentsByCourseID?course_id=${course_id}`);
