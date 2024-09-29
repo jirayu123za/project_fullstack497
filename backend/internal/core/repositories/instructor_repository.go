@@ -43,4 +43,5 @@ type InstructorRepository interface {
 	FindEnrollmentsByCourseID(CourseID uuid.UUID) ([]*models.Enrollment, error)
 	RemoveEnrollment(Enrollment *models.Enrollment) error
 	FindUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error)
+	RemoveUserEnrollment(CourseID uuid.UUID, UserID uuid.UUID) error
 }
