@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"backend_fullstack/internal/models"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -120,6 +121,20 @@ func (r *GormInstructorRepository) FindAssignmentByUserID(userID uuid.UUID) ([]*
 		Joins("JOIN courses ON courses.course_id = assignments.course_id").
 		Joins("JOIN instructor_lists ON instructor_lists.course_id = courses.course_id").
 		Where("instructor_lists.user_id = ?", userID).
+		Find(&assignments).Error; err != nil {
+		return nil, err
+	}
+	return assignments, nil
+}
+
+func (r *GormInstructorRepository) FindAssignmentByUserIDSorted(userID uuid.UUID) ([]*models.Assignment, error) {
+	var assignments []*models.Assignment
+	if err := r.db.
+		Joins("JOIN courses ON courses.course_id = assignments.course_id").
+		Joins("JOIN instructor_lists ON instructor_lists.course_id = courses.course_id").
+		Where("instructor_lists.user_id = ?", userID).
+		Where("due_date > ?", time.Now()).
+		Order("due_date ASC").
 		Find(&assignments).Error; err != nil {
 		return nil, err
 	}
