@@ -66,6 +66,11 @@ func main() {
 	googleGroup.Get("/login", googleOAuthHandler.GetGoogleLoginURL)
 	googleGroup.Get("/callback", googleOAuthHandler.GetGoogleCallback)
 
+	//student-assignment
+	assignmentStudentRepo := adapters.NewGormAssignmentRepository(db)
+	assignmentStudentService := services.NewAssignmentStudentService(assignmentStudentRepo)
+	assignmentStudentHandler := adapters.NewHttpAssignmentHandler(assignmentStudentService)
+
 	app.Post("/login", authHandler.Login)
 	app.Post("/logout", authHandler.Logout)
 
@@ -120,6 +125,10 @@ func main() {
 	app.Get("/QueryEnrollments", instructorHandler.GetEnrollments)
 	app.Get("/QueryEnrollmentsByCourseID", instructorHandler.GetEnrollmentsByCourseID)
 	app.Delete("/DeleteEnrollment", instructorHandler.DeleteEnrollment)
+
+	//routes for student assignment dashboard
+	apiGroup.Get("/StudentAssignments", assignmentStudentHandler.GetUserAssignments)
+	apiGroup.Get("/StudentAssignmentById", assignmentStudentHandler.DownloadAssignment)
 
 	port := os.Getenv("PORT")
 	if err := app.Listen(":" + port); err != nil {
