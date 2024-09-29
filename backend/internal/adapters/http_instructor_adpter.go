@@ -859,3 +859,45 @@ func (h *HttpInstructorHandler) GetUsersEnrollment(c *fiber.Ctx) error {
 		"users":   response,
 	})
 }
+
+func (h *HttpInstructorHandler) DeleteUserEnrollment(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+
+	var payload struct {
+		UserID string `json:"user_id"`
+	}
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to parse request body",
+			"error":   err.Error(),
+		})
+	}
+
+	userIDParam := payload.UserID
+
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid course_id",
+		})
+	}
+
+	userID, err := uuid.Parse(userIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user_id",
+		})
+	}
+
+	err = h.services.DeleteUserEnrollment(courseID, userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Unable to remove enrollment",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Enrollment removed successfully",
+	})
+}
