@@ -825,3 +825,37 @@ func (h *HttpInstructorHandler) DeleteEnrollment(c *fiber.Ctx) error {
 		"message": "Enrollments are deleted",
 	})
 }
+
+func (h *HttpInstructorHandler) GetUsersEnrollment(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	users, err := h.services.GetUsersEnrollment(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get users by course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	for _, user := range users {
+		response = append(response, map[string]interface{}{
+			"user_id":           user.UserID,
+			"first_name":        user.FirstName,
+			"last_name":         user.LastName,
+			"profile_image_url": user.ProfileImageURL,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Users found",
+		"users":   response,
+	})
+}
