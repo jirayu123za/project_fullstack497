@@ -1,4 +1,3 @@
-import React from "react";
 import book from "../img/Books.png";
 import clock from "../img/Clock.png";
 import calender from "../img/Calendar.png";
