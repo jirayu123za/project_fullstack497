@@ -7,7 +7,6 @@ import dashicon from "../icons/mdi_human-welcome.png";
 import exiticon from "../icons/vaadin_exit-o.png";
 import dashboardicon from "../icons/E1_human-welcome.png";
 import CourseList from "../components/CourseList";
-import UpcomingElement from "../components/UpcomingElement";
 import AssignmentList from "../components/AssignmentList";
 import { FaBars } from "react-icons/fa";
 

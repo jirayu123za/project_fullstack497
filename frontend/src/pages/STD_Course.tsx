@@ -15,7 +15,6 @@ import dateicon from "../icons/material-symbols-light_update.png";
 import FriendList from "../components/FriendList";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import UpcomingElement from "../components/UpcomingElement";
 import ProgressBarCourse from "../components/ProgressBarCourse";
 
 export default function STD_Course() {
