@@ -43,6 +43,7 @@ type InstructorService interface {
 	GetEnrollments() ([]*models.Enrollment, error)
 	GetEnrollmentsByCourseID(CourseID uuid.UUID) ([]*models.Enrollment, error)
 	DeleteEnrollment(Enrollment *models.Enrollment) error
+	GetUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error)
 }
 
 type InstructorServiceImpl struct {
@@ -292,4 +293,12 @@ func (s *InstructorServiceImpl) DeleteEnrollment(Enrollment *models.Enrollment) 
 		}
 	}
 	return nil
+}
+
+func (s *InstructorServiceImpl) GetUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error) {
+	Users, err := s.repo.FindUsersEnrollment(CourseID)
+	if err != nil {
+		return nil, err
+	}
+	return Users, nil
 }
