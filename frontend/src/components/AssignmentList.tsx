@@ -7,27 +7,32 @@ import axios from "axios";
 
 interface Assignment {
   assignment_id: string;
-  title: string;
+  assignment_name: string;
   due_date: string;
+  color: string;
 }
 
+/*
 interface Course {
   course_id: string;
   course_name: string;
-  color: string;
+  course_code: string;
+  course_color: string;
+  course_image: string;
   assignments: Assignment[];
 }
+*/
 
 interface AssignmentListProps {
-  courses: Course[];
+  Assignment: Assignment[];
 }
 
-const AssignmentList: React.FC<AssignmentListProps> = ({ courses }) => {
+const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
   const navigate = useNavigate();
 
   const handleClick = async (assignmentId: string) => {
     try {
-      await axios.post("/api/assignments", { assignment_id: assignmentId });
+      //await axios.post("/api/assignments", { assignment_id: assignmentId });
       navigate("/assignment");
     } catch (error) {
       console.error("Error sending assignment ID:", error);
@@ -95,42 +100,29 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ courses }) => {
 
   return (
     <div className="p-4 overflow-hidden font-poppins text-E1">
-      <div className="flex items-center mb-4">
-        <TitleElement name="Assignment" icon={Assicon} />
-      </div>
       <div className="max-h-[400px] overflow-y-scroll scrollbar-hide">
-        {courses.map((course) => {
-          const colorClasses = getColorClass(course.color); // Get color for border and icons
-
+        {Assignment.map((assignment) => {
+          const colorClasses = getColorClass(assignment.color || "gray");
           return (
-            <div key={course.course_id}>
-              <h2
-                className={`${colorClasses.titlecolor} text-xl font-bold mb-2`}
-              >
-                {course.course_name}
-              </h2>
-              {course.assignments.map((assignment) => (
-                <div
-                  key={assignment.assignment_id}
-                  onClick={() => handleClick(assignment.assignment_id)} // Handle assignment click
-                  className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
-                >
-                  <p className="text-xl">{assignment.title}</p>
-                  <div className="flex space-x-3">
-                    <MdDateRange
-                      className={`cursor-pointer ${colorClasses.iconColor}`}
-                      size={25}
-                      onClick={() =>
-                        alert(`Assignment Due Date : ${assignment.due_date}`)
-                      }
-                    />
-                    <MdOutlineFileDownload
-                      className={`cursor-pointer ${colorClasses.iconColor}`}
-                      size={25}
-                    />
-                  </div>
-                </div>
-              ))}
+            <div
+              key={assignment.assignment_id}
+              onClick={() => handleClick(assignment.assignment_id)}
+              className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
+            >
+              <p className="text-xl">{assignment.assignment_name}</p>
+              <div className="flex space-x-3">
+                <MdDateRange
+                  className={`cursor-pointer ${colorClasses.iconColor}`}
+                  size={25}
+                  onClick={() =>
+                    alert(`Assignment Due Date : ${assignment.due_date}`)
+                  }
+                />
+                <MdOutlineFileDownload
+                  className={`cursor-pointer ${colorClasses.iconColor}`}
+                  size={25}
+                />
+              </div>
             </div>
           );
         })}

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-//import axios from "axios";
 import Background from "../img/SignupBack.png";
 import { IoArrowBackCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function INS_Create() {
   const [course_name, setCourseName] = useState("");
   const [course_code, setCourseCode] = useState("");
-  //const [term, setTerm] = useState("");
   const [image_url, setImageUrl] = useState("");
   const [color, setColor] = useState("Purple");
   const navigate = useNavigate();
@@ -58,7 +56,7 @@ export default function INS_Create() {
       <div className="w-full max-w-4xl mx-auto px-4">
         <form
           className="bg-white border-4 border-B1 shadow-lg rounded-lg px-6 pt-10 pb-8 mb-4"
-          onSubmit={handleSubmit} // เรียก handleSubmit เมื่อกด submit
+          onSubmit={handleSubmit}
         >
           {/* Course Name */}
           <div className="mb-4 flex flex-col sm:flex-row gap-5 items-center">
@@ -107,7 +105,7 @@ export default function INS_Create() {
               id="img_url"
               type="text"
               value={image_url}
-              onChange={(e) => setImageUrl(e.target.value)} // เก็บค่า URL ของรูปภาพ
+              onChange={(e) => setImageUrl(e.target.value)}
             />
           </div>
 
@@ -149,7 +147,7 @@ export default function INS_Create() {
       </div>
 
       <div className="absolute top-5 left-5">
-        <a href="/insdash">
+        <a href="/insdash" title="Go back to dashboard">
           <IoArrowBackCircle size={60} color="#344B59" />
         </a>
       </div>

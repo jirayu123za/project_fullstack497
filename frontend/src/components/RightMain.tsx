@@ -1,19 +1,16 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-
 interface RightMainProps {
   icons: string[];
   links: string[];
-  profileimage: string;
+  profile_image: string;
+  user_group_name: string;
 }
 
 export default function RightMain({
   icons,
   links,
-  profileimage,
+  profile_image,
+  user_group_name,
 }: RightMainProps) {
-  const location = useLocation();
-  const role = location.state?.role || "Role";
 
   return (
     <div className="bg-white rounded-xl w-[150px] h-full">
@@ -22,7 +19,7 @@ export default function RightMain({
           <div>
             <img
               className="w-28 h-28 p-2 rounded-full ring-4 ring-B1 object-cover"
-              src={profileimage}
+              src={profile_image}
               alt="Profile image"
             />
           </div>
@@ -41,10 +38,10 @@ export default function RightMain({
         </div>
         {/* Role button */}
         <button
-          className="text-white font-medium text-xl bg-E1 px-4 py-2 rounded-full w-[130px]"
+          className={`text-white font-medium bg-E1 px-4 py-2 rounded-full w-[130px] ${user_group_name.length > 6 ? 'text-md' : 'text-xl'}`}
           disabled
         >
-          {role}
+          {user_group_name}
         </button>
       </div>
     </div>

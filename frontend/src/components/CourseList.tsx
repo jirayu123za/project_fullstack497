@@ -1,48 +1,36 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import TitleElement from "./TitleElement";
 import box from "../icons/Vector.png";
 import { useNavigate } from "react-router-dom";
 
-// Interface updated to match the new structure
-interface Instructor {
-  instructor_id: string;
-  name: string;
-}
-
 interface Assignment {
   assignment_id: string;
-  title: string;
+  assignment_name: string;
   due_date: string;
-  complete: boolean;
+  //complete: boolean;
 }
 
 interface Course {
-  course_code: string;
   course_id: string;
   course_name: string;
-  assignments: Assignment[];
-  instructors: Instructor[];
-  imageUrl: string;
-  color: string;
+  course_code: string;
+  course_color: string;
+  course_image: string;
+  Assignment: Assignment[];
 }
 
 interface CourseListProps {
   courses: Course[];
-  role: string;
+  user_group_name: string;
 }
 
-const CourseList: React.FC<CourseListProps> = ({ courses, role }) => {
+const CourseList: React.FC<CourseListProps> = ({ courses, user_group_name }) => {
   const navigate = useNavigate();
 
-  // const handleClick = (course_id: string) => {
-  //   navigate(`/course/${course_id}`); // ส่ง course_id ผ่าน URL
-  // };
-
   const handleClick = (course: Course) => {
-    if (role == "student") {
+    if (user_group_name == "student") {
       navigate(`/stdcourse/${course.course_id}`, { state: { course } });
-    } else if (role == "instructor") {
+    } else if (user_group_name == "instructor") {
       navigate(`/course/${course.course_id}`, { state: { course } });
     } else {
       console.log("Error role");
@@ -112,12 +100,12 @@ const CourseList: React.FC<CourseListProps> = ({ courses, role }) => {
                 <div
                   key={course.course_id}
                   className={`inline-block border-4 ${getColorBorderClass(
-                    course.color
+                    course.course_color
                   )} p-5 rounded-lg shadow-md flex flex-col items-center justify-center bg-white w-72 h-3/5 cursor-pointer`}
                   onClick={() => handleClick(course)}
                 >
                   <img
-                    src={course.imageUrl}
+                    src={course.course_image}
                     alt="Course"
                     className="w-48 h-24 object-cover mb-2 rounded-md"
                   />
@@ -129,11 +117,10 @@ const CourseList: React.FC<CourseListProps> = ({ courses, role }) => {
                   </p>
                   <span
                     className={`block text-xs text-center mt-2 px-2 py-1 rounded-full ${getColorClass(
-                      course.color
+                      course.course_color
                     )}`}
                   >
-                    Assignments count:{" "}
-                    {course.assignments ? course.assignments.length : 0}
+                    Assignments count: {course.Assignment ? course.Assignment.length : 0}
                   </span>
                 </div>
               ))}

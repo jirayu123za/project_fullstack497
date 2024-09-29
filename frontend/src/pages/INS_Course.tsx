@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import LeftMain from "../components/LeftMain";
 import noticon from "../icons/bxs_bell.png";
 import createicon from "../icons/ion_create.png";
@@ -11,25 +11,43 @@ import icon from "../icons/mdi_cog-box.png";
 import { FaBars, FaPlusSquare } from "react-icons/fa";
 import AssignmentButton from "../components/AssignmentButton";
 import codeicon from "../icons/material-symbols_code.png";
-import dateicon from "../icons/material-symbols-light_update.png";
-import FriendList from "../components/FriendList";
+import StudentList from "../components/StudentList";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import AssignmentList from "../components/AssignmentList";
 
 export default function INS_Course() {
-  const icons = [dashicon, noticon, createicon, exiticon];
-  const links = ["/stddash", "/notifications", "/create", "/exit"];
-  const [isOpen, setIsOpen] = useState(false);
-  // const [courses, setCourses] = useState([]);
-  const [profileimage, setProfileimage] = useState("");
-  const { course_id } = useParams();
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // ใช้สำหรับแสดง popup
-  const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
-
   const navigate = useNavigate();
   const location = useLocation();
   const course = location.state?.course;
+  const icons = [dashicon, noticon, createicon, exiticon];
+  const links = ["/stddash", "/notifications", "/create", "/exit"];
+  const { course_id } = useParams();
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [profile_image, setProfileImage] = useState("");
+  const [user_group_name, setUserGroup] = useState("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [assignment_name, setAssignmentName] = useState("");  
+  const [assignment_description, setAssignmentDescription] = useState("");
+  const [due_date, setDueDate] = useState("");
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  interface Course {
+    course_id: string;
+    course_color: string;
+  }
+
+  interface Assignment {
+    assignment_id: string;
+    course_id: string;
+    assignment_name: string;
+    due_date: string;
+  }
+
+  useEffect(() => {
+    console.log("course_id from URL params:", course_id);
+  }, [course_id]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -44,80 +62,105 @@ export default function INS_Course() {
 
   const handleAddAssignment = async () => {
     try {
-      // const response = await axios.post("/api/addAssignment", {
-      //   title: title,
-      //   due_date: dueDate,
-      // });
-
-      // mock การตอบกลับของ axios.post โดยใช้ Promise.resolve()
-      const mockResponse = Promise.resolve({
-        data: {
-          title: title,
-          due_date: dueDate,
-        },
+      const response = await axios.post(`/api/api/CreateAssignment?course_id=${course_id}`, {
+        assignment_name: assignment_name,
+        assignment_description: assignment_description,
+        due_date: due_date,
       });
-      const response = await mockResponse;
 
       console.log("Assignment added:", response.data);
+      
       setIsPopupOpen(false);
-      setTitle("");
+      setAssignmentName("");
+      setAssignmentDescription("");
       setDueDate("");
-      // fetchAssignments();
     } catch (error) {
       console.error("Error adding assignment:", error);
     }
   };
 
-  // const fetchAssignments = async () => {
-  //   try {
-  //     const response = await fetch("/assignment.json");
-  //     const data = await response.json();
-  //     // setCourses(data);
-  //   } catch (error) {
-  //     console.error("Error fetching assignments:", error);
-  //   }
-  // };
-
   useEffect(() => {
-    // if (course_id) {
-    //   fetchAssignments();
-    // }
-
-    const fetchPersonaldata = async () => {
+    const fetchPersonalData = async () => {      
       try {
-        const response = await fetch("/data.json");
-        const data = await response.json();
-        setProfileimage(data.profileimage);
+        const res = await axios.get("/api/QueryPersonDataByUserID");
+    
+        if (res.data && res.data.user && res.data.user.length > 0) {
+          const { user_image_url } = res.data.user[0];
+    
+          if (user_image_url) setProfileImage(user_image_url);
+          //if (user_first_name) setFirstName(user_first_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
       } catch (error) {
-        console.error("Error loading profile image:", error);
+        console.error("Error loading personal data:", error);
       }
     };
 
-    fetchPersonaldata();
+    const fetchPersonalUserGroup = async () => {
+      try {
+        const res = await axios.get("/api/api/QueryUserGroupByUserID");
+        if (res.data) {
+          const { user_group_name } = res.data;
+          if (user_group_name) setUserGroup(user_group_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading user_group_name:", error);
+      }
+    };
+
+    const fetchAssignments = async () => {
+      try {
+        const res = await axios.get(`/api/api/QueryAssignmentsByCourseID?course_id=${course_id}`);
+        if (res.data) {          
+          const { assignments } = res.data;
+          console.log("assignments", assignments);
+          if ( assignments ) setAssignments(assignments);
+        }else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.log("Error loading assignments:", error);
+      }
+    };
+
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get("/api/QueryCourseByUserID");
+        if (res.data) {
+          const { courses } = res.data;
+          console.log("courses", courses);
+          if (courses) setCourses(courses);
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      }
+    };
+
+    fetchCourses() ;
+    fetchPersonalUserGroup();
+    fetchPersonalData();
+    fetchAssignments();
   }, [course_id]);
 
-  const getColorClass = (color: string) => {
-    switch (color.toLowerCase()) {
-      case "purple":
-        return "border-purple-300 text-purple-400";
-      case "yellow":
-        return "border-yellow-300 text-yellow-400";
-      case "green":
-        return "border-green-300 text-green-400";
-      case "red":
-        return "border-red-300 text-red-400";
-      case "pink":
-        return "border-pink-300 text-pink-400";
-      case "blue":
-        return "border-blue-300 text-blue-400";
-      case "orange":
-        return "border-orange-300 text-orange-400";
-      case "brown":
-        return "border-brown-300 text-brown-400";
-      default:
-        return "border-gray-300 text-gray-400";
-    }
-  };
+  const assignmentsWithColor = assignments.map((assignment) => {
+    const course = courses.find((course) => course.course_id === assignment.course_id);
+    const color = course ? course.course_color : "gray";
+    return {
+      assignment_id: assignment.assignment_id,
+      assignment_name: assignment.assignment_name,
+      due_date: assignment.due_date,
+      color
+    };
+  });
 
   return (
     <div className="bg-B1 flex items-center min-h-screen w-full font-poppins">
@@ -144,25 +187,9 @@ export default function INS_Course() {
                     <FaPlusSquare size={40} color="#93B955" />
                   </div>
                 </div>
-                {/* แสดงผล assignments */}
-                {Array.isArray(course?.assignments) &&
-                  course.assignments.map((assignment) => {
-                    return (
-                      <div
-                        key={assignment.assignment_id}
-                        className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${getColorClass(
-                          course.color // ใช้ color จาก course
-                        )}`}
-                      >
-                        <div className="flex flex-col">
-                          <p className="text-xl">{assignment.title}</p>
-                          <p className="text-sm text-gray-600">
-                            Due Date: {assignment.due_date}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+
+                <AssignmentList Assignment={assignmentsWithColor} /> 
+
               </div>
               <div className="basis-full md:basis-1/2 px-10 mt-3 md:mt-0">
                 <div className="flex justify-end gap-3">
@@ -188,7 +215,7 @@ export default function INS_Course() {
                   </label>
                 </div>
                 <div className="mt-5">
-                  <FriendList />
+                  <StudentList user_group_name={user_group_name}/>
                 </div>
               </div>
             </div>
@@ -201,10 +228,10 @@ export default function INS_Course() {
           }`}
           onMouseLeave={() => setIsOpen(false)}
         >
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
-        </div>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
+          </div>
         <div className="hidden xl:block">
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
         </div>
       </div>
 
@@ -213,11 +240,20 @@ export default function INS_Course() {
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl mb-4">Add New Assignment</h2>
             <label className="block mb-2">
-              Title:
+              Assignment Name:
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={assignment_name}
+                onChange={(e) => setAssignmentName(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </label>
+            <label className="block mb-2">
+              Assignment Description:
+              <input
+                type="text"
+                value={assignment_description}
+                onChange={(e) => setAssignmentDescription(e.target.value)}
                 className="border p-2 w-full"
               />
             </label>
@@ -225,7 +261,7 @@ export default function INS_Course() {
               Due Date:
               <input
                 type="date"
-                value={dueDate}
+                value={due_date}
                 onChange={(e) => setDueDate(e.target.value)}
                 className="border p-2 w-full"
               />
