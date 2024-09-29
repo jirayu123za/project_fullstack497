@@ -127,8 +127,11 @@ func main() {
 	app.Delete("/DeleteEnrollment", instructorHandler.DeleteEnrollment)
 
 	//routes for student assignment dashboard
-	apiGroup.Get("/StudentAssignments", assignmentStudentHandler.GetUserAssignments)
-	apiGroup.Get("/StudentAssignmentById", assignmentStudentHandler.DownloadAssignment)
+	apiGroup.Get("/assignments", assignmentStudentHandler.GetUserAssignments)
+	apiGroup.Get("/assignment/:id/download", assignmentStudentHandler.DownloadAssignment)
+	//routes for student assignment submission
+	apiGroup.Post("/assignments/:id/submit", assignmentStudentHandler.SubmitAssignment)
+	apiGroup.Delete("/assignments/:id/submit", assignmentStudentHandler.DeleteSubmission)
 
 	port := os.Getenv("PORT")
 	if err := app.Listen(":" + port); err != nil {
