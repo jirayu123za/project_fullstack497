@@ -862,19 +862,7 @@ func (h *HttpInstructorHandler) GetUsersEnrollment(c *fiber.Ctx) error {
 
 func (h *HttpInstructorHandler) DeleteUserEnrollment(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
-
-	var payload struct {
-		UserID string `json:"user_id"`
-	}
-
-	if err := c.BodyParser(&payload); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Failed to parse request body",
-			"error":   err.Error(),
-		})
-	}
-
-	userIDParam := payload.UserID
+	userIDParam := c.Query("user_id")
 
 	courseID, err := uuid.Parse(courseIDParam)
 	if err != nil {
