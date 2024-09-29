@@ -1,20 +1,17 @@
-import React from "react";
 import AssignmentSubmit from "./AssignmentSubmit";
 
 interface AssignmentSubmittedProps {
-  ConfigAssignment: { StdCode: string; Status: string }[];
+  students: { StdCode: string; Status: string }[]; // รับข้อมูลนักศึกษาจาก backend
 }
 
-export default function AssignmentSubmitted({
-  ConfigAssignment,
-}: AssignmentSubmittedProps) {
+export default function AssignmentSubmitted({ students }: AssignmentSubmittedProps) {
   return (
-    <div className="bg-white border-2 border-B1 w-[200px] max-h-[300px] rounded-xl p-6 flex flex-col space-y-5 overflow-y-auto">
-      {ConfigAssignment.map((config, index) => (
+    <div className="bg-white border-2 border-B1 w-[200px] h-[500px] rounded-xl p-6 flex flex-col space-y-5 overflow-y-auto">
+      {students.map((student, index) => (
         <AssignmentSubmit
           key={index}
-          StdCode={config.StdCode}
-          Status={config.Status}
+          StdCode={student.StdCode}
+          Status={student.Status} // "submitted" หรือ "not_submitted"
         />
       ))}
     </div>

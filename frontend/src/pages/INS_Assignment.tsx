@@ -11,9 +11,8 @@ import Assign from "../icons/ion_list.png";
 import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import AssignmentButton from "../components/AssignmentButton";
-import TitleElement from "../components/TitleElement";
-import dateicon from "../icons/material-symbols-light_update.png";
 import { MdOutlineAttachFile } from "react-icons/md";
+import axios from "axios";
 
 export default function InstructorDashboard() {
   const icons = [dashicon, noticon, joinicon, exiticon];
@@ -21,25 +20,12 @@ export default function InstructorDashboard() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [profileimage, setProfileimage] = useState("");
-  // const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
   const [dueDate, setDueDate] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleUpdate = () => {
-    console.log("Updating course with due date:", dueDate);
-  };
-
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-
-  //   const handleUpdate = () => {
-  //     console.log("Update Assignment Details");
-  //   };
-
-  const handleDelete = () => {
-    console.log("Delete Assignment");
   };
 
   const handleFileUpload = (file: File) => {
@@ -47,6 +33,33 @@ export default function InstructorDashboard() {
     console.log(`Uploaded: ${file.name}`);
   };
 
+  // ฟังก์ชันเพื่อส่งข้อมูลอัปเดตไปยัง backend
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.put("/api/update-assignment", {
+        dueDate,
+        uploadedFiles,
+        students,
+      });
+      console.log("Updated successfully:", response.data);
+    } catch (error) {
+      console.error("Error updating assignment:", error);
+    }
+  };
+
+  // ฟังก์ชันเพื่อส่งคำขอลบข้อมูล assignment ไปยัง backend
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete("/api/delete-assignment", {
+        data: { students },
+      });
+      console.log("Deleted successfully:", response.data);
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
+  // Fetch profile image
   useEffect(() => {
     const fetchPersonaldata = async () => {
       try {
@@ -54,30 +67,43 @@ export default function InstructorDashboard() {
         const data = await response.json();
         setProfileimage(data.profileimage);
       } catch (error) {
-        console.error("Error loading email:", error);
+        console.error("Error loading profile image:", error);
       }
     };
 
     fetchPersonaldata();
   }, []);
 
-  const ConfigAssignment = [
-    { StdCode: "640610629", Status: "#E61616" },
-    { StdCode: "640629042", Status: "#E61616" },
-    { StdCode: "633934788", Status: "#E61616" },
-    { StdCode: "634124894", Status: "#E61616" },
-    { StdCode: "123408895", Status: "#E61616" },
-    { StdCode: "640610629", Status: "#E61616" },
-    { StdCode: "640629042", Status: "#E61616" },
-    { StdCode: "633934788", Status: "#E61616" },
-    { StdCode: "634124894", Status: "#E61616" },
-    { StdCode: "123408895", Status: "#E61616" },
-    { StdCode: "640610629", Status: "#E61616" },
-    { StdCode: "640629042", Status: "#E61616" },
-    { StdCode: "633934788", Status: "#E61616" },
-    { StdCode: "634124894", Status: "#E61616" },
-    { StdCode: "123408895", Status: "#E61616" },
-  ];
+
+
+  // Fetch students' assignment status from backend
+  // useEffect(() => {
+  //   const fetchStudents = async () => {
+  //     try {
+  //       const response = await axios.get("/api/course/students"); // แก้ URL ให้ตรงกับ backend ของคุณ
+  //       setStudents(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching student data:", error);
+  //     }
+  //   };
+
+  //   fetchStudents();
+  // }, []);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch("/students.json");
+        const data = await response.json();
+        const submittedStudents = data.students.filter((student: { Status: string; }) => student.Status === "submitted");
+        setStudents(submittedStudents);
+      } catch (error) {
+        console.error("Error fetching student data:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   return (
     <div className="bg-B1 flex items-center min-h-dvh min-w-full font-poppins">
@@ -93,7 +119,8 @@ export default function InstructorDashboard() {
               <FaBars size={40} color="#344B59" />
             </button>
           </div>
-          {/* code here */}
+
+          {/* Due Date and Buttons */}
           <div className="px-4 md:px-6 lg:px-10">
             <div className="flex justify-between items-center">
               <div>
@@ -121,6 +148,8 @@ export default function InstructorDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Assignment Detail, DropBox, and Student List */}
             <div className="mt-5 flex gap-3 ">
               <div className="basis-5/6 h-full">
                 <div className="flex items-start gap-5 ">
@@ -130,11 +159,13 @@ export default function InstructorDashboard() {
                   <DropBox onFileUpload={handleFileUpload} />
                 </div>
               </div>
+
+              {/* Student Status */}
               <div className="basis-1/6">
-                <div className="">
-                  <AssignmentSubmitted ConfigAssignment={ConfigAssignment} />
+                <div className="้">
+                  <AssignmentSubmitted students={students} />
                 </div>
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-2 ">
                   {uploadedFiles.map((fileName, index) => (
                     <div
                       key={index}
@@ -149,6 +180,7 @@ export default function InstructorDashboard() {
             </div>
           </div>
         </div>
+
         {/* Right */}
         <div
           className={`xl:block fixed inset-y-0 right-0 bg-white z-40 transition-transform duration-300 ${
