@@ -402,6 +402,49 @@ func (h *HttpInstructorHandler) GetAssignmentByUserID(c *fiber.Ctx) error {
 	})
 }
 
+func (h *HttpInstructorHandler) GetAssignmentByUserIDSorted(c *fiber.Ctx) error {
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	assignments, err := h.services.GetAssignmentByUserIDSorted(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get assignments by user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	for _, assignment := range assignments {
+		response = append(response, map[string]interface{}{
+			"course_id":       assignment.CourseID,
+			"assignment_id":   assignment.AssignmentID,
+			"assignment_name": assignment.AssignmentName,
+			"due_date":        assignment.DueDate.Format("02-01-2006"),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Assignments found",
+		"assignments": response,
+	})
+}
+
 // Under line here be HttpInstructorHandler of Instructor assignment
 func (h *HttpInstructorHandler) CreateAssignment(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
