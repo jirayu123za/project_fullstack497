@@ -117,7 +117,7 @@ export default function InstructorDashboard() {
 
     const fetchUpComingAssignments = async () => {
       try {
-        const res = await axios.get("/api/api/QueryAssignmentByUserID");
+        const res = await axios.get("/api/api/QueryAssignmentsByUserIDSorted");
         if (res.data) {
           const { assignments } = res.data;
           console.log("assignments", assignments);
