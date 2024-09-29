@@ -21,6 +21,7 @@ type InstructorRepository interface {
 	FindPersonDataByUserID(UserID uuid.UUID) (*models.User, error)
 	FindUserGroupByUserID(UserID uuid.UUID) (string, error)
 	FindAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
+	FindAssignmentByUserIDSorted(UserID uuid.UUID) ([]*models.Assignment, error)
 
 	// CRUD operations for Assignments
 	AddAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error
