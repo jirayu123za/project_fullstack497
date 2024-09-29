@@ -22,6 +22,7 @@ type InstructorService interface {
 	GetPersonDataByUserID(UserID uuid.UUID) (*models.User, error)
 	GetUserGroupByUserID(UserID uuid.UUID) (string, error)
 	GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
+	GetAssignmentByUserIDSorted(UserID uuid.UUID) ([]*models.Assignment, error)
 
 	// CRUD operations for Courses
 	CreateAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error
@@ -143,6 +144,14 @@ func (s *InstructorServiceImpl) GetUserGroupByUserID(UserID uuid.UUID) (string, 
 
 func (s *InstructorServiceImpl) GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error) {
 	Assignments, err := s.repo.FindAssignmentByUserID(UserID)
+	if err != nil {
+		return nil, err
+	}
+	return Assignments, nil
+}
+
+func (s *InstructorServiceImpl) GetAssignmentByUserIDSorted(UserID uuid.UUID) ([]*models.Assignment, error) {
+	Assignments, err := s.repo.FindAssignmentByUserIDSorted(UserID)
 	if err != nil {
 		return nil, err
 	}
