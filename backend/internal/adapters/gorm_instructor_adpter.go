@@ -282,3 +282,15 @@ func (r *GormInstructorRepository) RemoveEnrollment(Enrollment *models.Enrollmen
 	}
 	return nil
 }
+
+func (r *GormInstructorRepository) FindUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error) {
+	var users []*models.User
+	if err := r.db.
+		Table("users").
+		Joins("JOIN enrollments ON enrollments.user_id = users.user_id").
+		Where("enrollments.course_id = ?", CourseID).
+		Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
