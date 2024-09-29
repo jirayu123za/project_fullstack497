@@ -101,11 +101,12 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
   return (
     <div className="p-4 overflow-hidden font-poppins text-E1">
       <div className="max-h-[400px] overflow-y-scroll scrollbar-hide">
-        {Assignment.map((assignment) => {
+        {Assignment.map((assignment, index) => {
           const colorClasses = getColorClass(assignment.color || "gray");
           return (
             <div
-              key={assignment.assignment_id}
+              // key={`${assignment.assignment_id}-${index}`}
+              key={index}
               onClick={() => handleClick(assignment.assignment_id)}
               className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
             >
