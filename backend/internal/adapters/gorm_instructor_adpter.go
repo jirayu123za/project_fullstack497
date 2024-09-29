@@ -287,10 +287,25 @@ func (r *GormInstructorRepository) FindUsersEnrollment(CourseID uuid.UUID) ([]*m
 	var users []*models.User
 	if err := r.db.
 		Table("users").
-		Joins("JOIN enrollments ON enrollments.user_id = users.user_id").
+		Joins("JOIN enrollments ON enrollments.user_id = users.user_id AND enrollments.deleted_at IS NULL").
 		Where("enrollments.course_id = ?", CourseID).
 		Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *GormInstructorRepository) RemoveUserEnrollment(CourseID uuid.UUID, UserID uuid.UUID) error {
+	var findEnrollment models.Enrollment
+	if result := r.db.
+		Where("course_id = ? AND user_id = ?", CourseID, UserID).
+		First(&findEnrollment); result.Error != nil {
+		return result.Error
+	}
+
+	if result := r.db.Delete(&findEnrollment); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
