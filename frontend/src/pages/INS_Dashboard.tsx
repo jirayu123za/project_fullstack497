@@ -186,7 +186,7 @@ export default function InstructorDashboard() {
               <div className="flex-1 p-4 overflow-hidden font-poppins text-E1">
                   <TitleElement name="Assignment" icon={Assicon} />
                 {/*Component Assignments list */}
-                <AssignmentList Assignment={assignmentsWithColor} /> 
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={true}/> 
               </div>
               <div className="lg:flex-1">
                 {/*Component Upcoming Assignments */}
