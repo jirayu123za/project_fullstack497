@@ -13,7 +13,7 @@ type InstructorRepository interface {
 	FindCourseByID(CourseID uuid.UUID) (*models.Course, error)
 	FindCourses() ([]*models.Course, error)
 	ModifyCourse(Course *models.Course) error
-	RemoveCourse(Course *models.Course) error
+	RemoveCourse(CourseID uuid.UUID) error
 
 	// CRUD operations for Courses using jwt
 	FindCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
@@ -45,4 +45,9 @@ type InstructorRepository interface {
 	RemoveEnrollment(Enrollment *models.Enrollment) error
 	FindUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error)
 	RemoveUserEnrollment(CourseID uuid.UUID, UserID uuid.UUID) error
+
+	// Delete Enrollments, Assignments, InstructorLists, and Course
+	RemoveEnrollmentsByCourseID(CourseID uuid.UUID) error
+	RemoveAssignmentsByCourseID(CourseID uuid.UUID) error
+	RemoveInstructorListsByCourseID(CourseID uuid.UUID) error
 }
