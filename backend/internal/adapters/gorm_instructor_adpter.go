@@ -61,9 +61,9 @@ func (r *GormInstructorRepository) ModifyCourse(Course *models.Course) error {
 	return nil
 }
 
-func (r *GormInstructorRepository) RemoveCourse(Course *models.Course) error {
+func (r *GormInstructorRepository) RemoveCourse(CourseID uuid.UUID) error {
 	var findCourse *models.Course
-	if result := r.db.First(&findCourse, "course_id = ?", Course.CourseID); result.Error != nil {
+	if result := r.db.First(&findCourse, "course_id = ?", CourseID); result.Error != nil {
 		return result.Error
 	}
 
@@ -322,5 +322,27 @@ func (r *GormInstructorRepository) RemoveUserEnrollment(CourseID uuid.UUID, User
 		return result.Error
 	}
 
+	return nil
+}
+
+// Delete Enrollments, Assignments, InstructorLists by their course ID
+func (r *GormInstructorRepository) RemoveEnrollmentsByCourseID(courseID uuid.UUID) error {
+	if result := r.db.Where("course_id = ?", courseID).Delete(&models.Enrollment{}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *GormInstructorRepository) RemoveAssignmentsByCourseID(courseID uuid.UUID) error {
+	if result := r.db.Where("course_id = ?", courseID).Delete(&models.Assignment{}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *GormInstructorRepository) RemoveInstructorListsByCourseID(courseID uuid.UUID) error {
+	if result := r.db.Where("course_id = ?", courseID).Delete(&models.InstructorList{}); result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
