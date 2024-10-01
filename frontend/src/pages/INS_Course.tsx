@@ -36,6 +36,7 @@ export default function INS_Course() {
   interface Course {
     course_id: string;
     course_color: string;
+    course_name: string;
   }
 
   interface Assignment {
@@ -155,11 +156,13 @@ export default function INS_Course() {
   const assignmentsWithColor = assignments.map((assignment) => {
     const course = courses.find((course) => course.course_id === assignment.course_id);
     const color = course ? course.course_color : "gray";
+    const course_name = course ? course.course_name : "Unknown Course";
     return {
       assignment_id: assignment.assignment_id,
       assignment_name: assignment.assignment_name,
       due_date: assignment.due_date,
-      color
+      color,
+      course_name: course_name,
     };
   });
 
@@ -189,7 +192,7 @@ export default function INS_Course() {
                   </div>
                 </div>
 
-                <AssignmentList Assignment={assignmentsWithColor} /> 
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
 
               </div>
               <div className="basis-full md:basis-1/2 px-10 mt-3 md:mt-0">
