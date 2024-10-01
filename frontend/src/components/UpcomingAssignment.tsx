@@ -36,27 +36,41 @@ const getColorClass = (color: string) => {
   }
 };
 
+const calculateDaysLeft = (dueDate: string) => {
+  const [day, month, year] = dueDate.split("-").map(Number);
+  const due = new Date(year, month - 1, day);
+  const today = new Date();
+  const timeDiff = due.getTime() - today.getTime();
+  const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  return daysLeft;
+};
 const UpcomingAssignment: React.FC<UpcomingAssignmentProps> = ({ UpcomingAssignment }) => {
   return (
     <div className="p-4 overflow-hidden font-poppins text-E1">
       <div className="mb-4">
         <TitleElement name="Upcoming Assignment" icon={upcomingIcon} />
       </div>
-      <div className="max-h-80 overflow-y-auto"> {/* เพิ่ม class max-h และ overflow-y-auto */}
+      <div className="max-h-80 overflow-y-auto">
         {UpcomingAssignment.map((upcomingAssignment) => {
           const color = upcomingAssignment.color || "gray";
+          const daysLeft = calculateDaysLeft(upcomingAssignment.assignment_due_date);
 
           return (
             <div key={upcomingAssignment.assignment_id} className="p-2 font-poppins">
               <div className="flex flex-col w-full max-w-full gap-3 font-poppins text-sm">
-                <div className="text-base sm:text-lg font-base">{upcomingAssignment.assignment_name}</div>
+                <div className="text-base sm:text-lg font-base">
+                  {upcomingAssignment.assignment_name}
+                  </div>
                 {/* Progress Bar */}
                 <div className="w-full bg-white rounded-full overflow-hidden h-[23px] border border-[#D9D9D9]">
                   <div
                     className={`${getColorClass(color)} bg-opacity-60 text-end py-1 px-2 rounded-full font-semibold pr-3 h-full flex items-center justify-end`}
-                    style={{ width: "50%" }} // Adjust this based on actual progress
+                    style={{ width: "50%" }}
                   >
-                    <div className="text-xs sm:text-sm">{upcomingAssignment.assignment_due_date} days left</div>
+                    <div className="text-xs sm:text-sm">
+                      {daysLeft > 0 ? `${daysLeft} days left` : "Due today or passed"}
+                    </div>
                   </div>
                 </div>
               </div>
