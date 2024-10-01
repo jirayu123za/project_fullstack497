@@ -1,27 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { MdOutlineFileDownload, MdDateRange } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import TitleElement from "./TitleElement";
-import Assicon from "../icons/ion_list.png";
-import axios from "axios";
 
 interface Assignment {
   assignment_id: string;
   assignment_name: string;
   due_date: string;
   color: string;
-}
-
-/*
-interface Course {
-  course_id: string;
   course_name: string;
-  course_code: string;
-  course_color: string;
-  course_image: string;
-  assignments: Assignment[];
 }
-*/
 
 interface AssignmentListProps {
   Assignment: Assignment[];
@@ -30,9 +17,16 @@ interface AssignmentListProps {
 const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
   const navigate = useNavigate();
 
+  const groupedAssignments = Assignment.reduce((acc, assignment) => {
+    if (!acc[assignment.course_name]) {
+      acc[assignment.course_name] = [];
+    }
+    acc[assignment.course_name].push(assignment);
+    return acc;
+  }, {} as Record<string, Assignment[]>);
+
   const handleClick = async (assignmentId: string) => {
     try {
-      //await axios.post("/api/assignments", { assignment_id: assignmentId });
       navigate("/assignment");
     } catch (error) {
       console.error("Error sending assignment ID:", error);
@@ -101,32 +95,36 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
   return (
     <div className="p-4 overflow-hidden font-poppins text-E1">
       <div className="max-h-[400px] overflow-y-scroll scrollbar-hide">
-        {Assignment.map((assignment, index) => {
-          const colorClasses = getColorClass(assignment.color || "gray");
-          return (
-            <div
-              // key={`${assignment.assignment_id}-${index}`}
-              key={index}
-              onClick={() => handleClick(assignment.assignment_id)}
-              className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
-            >
-              <p className="text-xl">{assignment.assignment_name}</p>
-              <div className="flex space-x-3">
-                <MdDateRange
-                  className={`cursor-pointer ${colorClasses.iconColor}`}
-                  size={25}
-                  onClick={() =>
-                    alert(`Assignment Due Date : ${assignment.due_date}`)
-                  }
-                />
-                <MdOutlineFileDownload
-                  className={`cursor-pointer ${colorClasses.iconColor}`}
-                  size={25}
-                />
-              </div>
-            </div>
-          );
-        })}
+        {Object.entries(groupedAssignments).map(([courseName, assignments]) => (
+          <div key={courseName} className="mb-4">
+            <h2 className="text-xl font-bold mb-2">{courseName}</h2>
+            {assignments.map((assignment, index) => {
+              const colorClasses = getColorClass(assignment.color || "gray");
+              return (
+                <div
+                  key={`${assignment.assignment_id}-${index}`}
+                  onClick={() => handleClick(assignment.assignment_id)}
+                  className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
+                >
+                  <p className="text-xl">{assignment.assignment_name}</p>
+                  <div className="flex space-x-3">
+                    <MdDateRange
+                      className={`cursor-pointer ${colorClasses.iconColor}`}
+                      size={25}
+                      onClick={() =>
+                        alert(`Assignment Due Date : ${assignment.due_date}`)
+                      }
+                    />
+                    <MdOutlineFileDownload
+                      className={`cursor-pointer ${colorClasses.iconColor}`}
+                      size={25}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
