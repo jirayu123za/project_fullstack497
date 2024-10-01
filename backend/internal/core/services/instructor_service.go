@@ -14,7 +14,7 @@ type InstructorService interface {
 	GetCourseByID(CourseID uuid.UUID) (*models.Course, error)
 	GetCourses() ([]*models.Course, error)
 	UpdateCourse(Course *models.Course) error
-	DeleteCourse(Course *models.Course) error
+	DeleteCourse(CourseID uuid.UUID) error
 
 	// using jwt
 	GetCourseByUserID(UserID uuid.UUID) ([]*models.Course, error)
@@ -46,6 +46,11 @@ type InstructorService interface {
 	DeleteEnrollment(Enrollment *models.Enrollment) error
 	GetUsersEnrollment(CourseID uuid.UUID) ([]*models.User, error)
 	DeleteUserEnrollment(CourseID uuid.UUID, UserID uuid.UUID) error
+
+	// Delete Enrollments, Assignments, InstructorLists, and Course
+	DeleteEnrollmentsByCourseID(CourseID uuid.UUID) error
+	DeleteAssignmentsByCourseID(CourseID uuid.UUID) error
+	DeleteInstructorListsByCourseID(CourseID uuid.UUID) error
 }
 
 type InstructorServiceImpl struct {
@@ -97,13 +102,24 @@ func (s *InstructorServiceImpl) UpdateCourse(Course *models.Course) error {
 	return nil
 }
 
-func (s *InstructorServiceImpl) DeleteCourse(Course *models.Course) error {
-	deleteCourse, err := s.repo.FindCourseByID(Course.CourseID)
-	if err != nil {
+func (s *InstructorServiceImpl) DeleteCourse(CourseID uuid.UUID) error {
+	// 1. Remove Enrollments associated with the course
+	if err := s.repo.RemoveEnrollmentsByCourseID(CourseID); err != nil {
 		return err
 	}
 
-	if err := s.repo.RemoveCourse(deleteCourse); err != nil {
+	// 2. Remove Assignments associated with the course
+	if err := s.repo.RemoveAssignmentsByCourseID(CourseID); err != nil {
+		return err
+	}
+
+	// 3. Remove Instructor Lists associated with the course
+	if err := s.repo.RemoveInstructorListsByCourseID(CourseID); err != nil {
+		return err
+	}
+
+	// 4. Finally, remove the course itself
+	if err := s.repo.RemoveCourse(CourseID); err != nil {
 		return err
 	}
 	return nil
@@ -315,6 +331,27 @@ func (s *InstructorServiceImpl) GetUsersEnrollment(CourseID uuid.UUID) ([]*model
 
 func (s *InstructorServiceImpl) DeleteUserEnrollment(CourseID uuid.UUID, UserID uuid.UUID) error {
 	if err := s.repo.RemoveUserEnrollment(CourseID, UserID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) DeleteEnrollmentsByCourseID(courseID uuid.UUID) error {
+	if err := s.repo.RemoveEnrollmentsByCourseID(courseID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) DeleteAssignmentsByCourseID(courseID uuid.UUID) error {
+	if err := s.repo.RemoveAssignmentsByCourseID(courseID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) DeleteInstructorListsByCourseID(courseID uuid.UUID) error {
+	if err := s.repo.RemoveInstructorListsByCourseID(courseID); err != nil {
 		return err
 	}
 	return nil
