@@ -151,11 +151,13 @@ export default function InstructorDashboard() {
   const assignmentsWithColor = assignments.map((assignment) => {
     const course = courses.find((course) => course.course_id === assignment.course_id);
     const color = course ? course.course_color : "gray";
+    const course_name = course ? course.course_name : "Unknown Course";
     return {
       assignment_id: assignment.assignment_id,
       assignment_name: assignment.assignment_name,
       due_date: assignment.due_date,
-      color
+      color,
+      course_name: course_name,
     };
   });
 
@@ -182,9 +184,7 @@ export default function InstructorDashboard() {
             </div>
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 p-4 overflow-hidden font-poppins text-E1">
-                <div className="mb-4">
                   <TitleElement name="Assignment" icon={Assicon} />
-                </div>
                 {/*Component Assignments list */}
                 <AssignmentList Assignment={assignmentsWithColor} /> 
               </div>
