@@ -170,8 +170,10 @@ func (h *HttpInstructorHandler) UpdateCourse(c *fiber.Ctx) error {
 }
 
 func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
+	// Parse course_id from query parameters
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
+
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid course_id",
@@ -179,32 +181,8 @@ func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
 		})
 	}
 
-	course, err := h.services.GetCourseByID(courseID)
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	instructorLists, err := h.services.GetInstructorsListByCourseID(courseID)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to get instructor lists by course ID",
-			"error":   err.Error(),
-		})
-	}
-
-	for _, instructorList := range instructorLists {
-		if err := h.services.DeleteInstructorList(instructorList); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": "Failed to delete instructor list",
-				"error":   err.Error(),
-			})
-		}
-	}
-
-	err = h.services.DeleteCourse(course)
-	if err != nil {
+	// Use service layer to delete the course and its related data
+	if err := h.services.DeleteCourse(courseID); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Failed to delete course",
 			"error":   err.Error(),
@@ -212,7 +190,7 @@ func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Course is deleted",
+		"message": "Course and related data deleted successfully",
 	})
 }
 
@@ -930,5 +908,93 @@ func (h *HttpInstructorHandler) DeleteUserEnrollment(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Enrollment removed successfully",
+	})
+}
+
+// Delete Enrollments, Assignments, InstructorLists, and Course
+func (h *HttpInstructorHandler) DeleteAssignmentsByCourseID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid course_id",
+		})
+	}
+
+	assignments, err := h.services.GetAssignmentsByCourseID(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get assignments by course ID",
+		})
+	}
+
+	for _, assignment := range assignments {
+		if err := h.services.DeleteAssignment(assignment.AssignmentID); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to delete assignment",
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Assignments are deleted",
+	})
+}
+
+func (h *HttpInstructorHandler) DeleteInstructorListsByCourseID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid course_id",
+		})
+	}
+
+	instructorLists, err := h.services.GetInstructorsListByCourseID(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get instructor lists by course ID",
+		})
+	}
+
+	for _, instructorList := range instructorLists {
+		if err := h.services.DeleteInstructorList(instructorList); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to delete instructor list",
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Instructor lists are deleted",
+	})
+}
+
+func (h *HttpInstructorHandler) DeleteEnrollmentsByCourseID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid course_id",
+		})
+	}
+
+	enrollments, err := h.services.GetEnrollmentsByCourseID(courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get enrollments by course ID",
+		})
+	}
+
+	for _, enrollment := range enrollments {
+		if err := h.services.DeleteEnrollment(enrollment); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to delete enrollment",
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Enrollments are deleted",
 	})
 }
