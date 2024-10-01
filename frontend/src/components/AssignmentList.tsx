@@ -12,9 +12,10 @@ interface Assignment {
 
 interface AssignmentListProps {
   Assignment: Assignment[];
+  showCourseName?: boolean;
 }
 
-const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
+const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseName = true }) => {
   const navigate = useNavigate();
 
   const groupedAssignments = Assignment.reduce((acc, assignment) => {
@@ -97,7 +98,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment }) => {
       <div className="max-h-[400px] overflow-y-scroll scrollbar-hide">
         {Object.entries(groupedAssignments).map(([courseName, assignments]) => (
           <div key={courseName} className="mb-4">
-            <h2 className="text-xl font-bold mb-2">{courseName}</h2>
+            {showCourseName && <h2 className="text-xl font-bold mb-2">{courseName}</h2>}
             {assignments.map((assignment, index) => {
               const colorClasses = getColorClass(assignment.color || "gray");
               return (
