@@ -121,6 +121,8 @@ func (r *GormInstructorRepository) FindAssignmentByUserID(userID uuid.UUID) ([]*
 		Joins("JOIN courses ON courses.course_id = assignments.course_id").
 		Joins("JOIN instructor_lists ON instructor_lists.course_id = courses.course_id").
 		Where("instructor_lists.user_id = ?", userID).
+		Preload("AssignmentFiles").
+		Preload("Submissions").
 		Find(&assignments).Error; err != nil {
 		return nil, err
 	}
