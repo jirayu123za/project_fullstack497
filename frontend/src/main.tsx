@@ -40,8 +40,7 @@ const router = createBrowserRouter([
     element: <INS_Course />,
   },
   {
-    //path: "/assignment/:assignment_id",
-    path: "/course/:courseId/assignment",
+    path: "/course/:course_id/assignment/:assignment_id",
     element: <INS_Assignment />,
   },
   {
