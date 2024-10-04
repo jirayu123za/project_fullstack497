@@ -18,11 +18,11 @@ export default function LoginSection() {
       });
       console.log(user_name, password);
       if (response.ok) {
+        window.location.href = response.url;
+        console.log("Login successful:", response.url);
+      } else {
         const result = await response.json();
         console.log("Login successful:", result);
-
-        window.location.href = "/dashboard";
-      } else {
         setErrorMessage("Login failed: Invalid username or password.");
       }
     } catch (error) {
