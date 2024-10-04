@@ -54,10 +54,20 @@ export default function INS_Course() {
     setIsOpen(!isOpen);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    console.log("Call handleDelete course"); 
+
     if (window.confirm("Are you sure you want to delete this course?")) {
-      console.log("Deleting course");
-      navigate("/insdash");
+      try {
+        const resp = await axios.delete(`/api/api/DeleteCourse?course_id=${course_id}`);
+
+        if (resp.status === 200) {
+          console.log(resp.data);
+          navigate("/insdash");
+        }
+      } catch (error) {
+        console.log("Error deleting course:", error);
+      }
     }
   };
 
