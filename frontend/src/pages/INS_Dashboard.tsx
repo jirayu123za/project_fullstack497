@@ -120,7 +120,7 @@ export default function InstructorDashboard() {
         const res = await axios.get("/api/api/QueryAssignmentsByUserIDSorted");
         if (res.data) {
           const { assignments } = res.data;
-          console.log("assignments", assignments);
+          console.log("upcoming assignments", assignments);
           if ( assignments ) setUpcomingAssignments(assignments);
         }else {
           console.warn("No data found in response");
@@ -155,9 +155,10 @@ export default function InstructorDashboard() {
     return {
       assignment_id: assignment.assignment_id,
       assignment_name: assignment.assignment_name,
-      due_date: assignment.due_date,
+      assignment_due_date: assignment.due_date,
       color,
       course_name: course_name,
+      course_id: assignment.course_id
     };
   });
 
