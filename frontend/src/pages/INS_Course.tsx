@@ -170,9 +170,10 @@ export default function INS_Course() {
     return {
       assignment_id: assignment.assignment_id,
       assignment_name: assignment.assignment_name,
-      due_date: assignment.due_date,
+      assignment_due_date: assignment.due_date,
       color,
       course_name: course_name,
+      course_id: assignment.course_id
     };
   });
 
