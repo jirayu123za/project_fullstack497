@@ -5,14 +5,9 @@ import joinicon from "../icons/material-symbols_join.png";
 import dashicon from "../icons/mdi_human-welcome.png";
 import exiticon from "../icons/vaadin_exit-o.png";
 import RightMain from "../components/RightMain";
-import TitleElement from "../components/TitleElement";
 import Assicon from "../icons/ion_list.png";
 import icon from "../icons/mdi_cog-box.png";
-import { FaBars, FaPlusSquare } from "react-icons/fa";
-import AssignmentButton from "../components/AssignmentButton";
-import codeicon from "../icons/material-symbols_code.png";
-import dateicon from "../icons/material-symbols-light_update.png";
-import FriendList from "../components/FriendList";
+import { FaBars } from "react-icons/fa";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProgressBarCourse from "../components/ProgressBarCourse";
@@ -22,13 +17,21 @@ export default function STD_Course() {
   const links = ["/stddash", "/notifications", "/stdcreate", "/exit"];
   const [isOpen, setIsOpen] = useState(false);
   const [profileimage, setProfileimage] = useState("");
-  const { course_id } = useParams();
-
+  const { course_id } = useParams();  // ใช้ course_id จาก URL
   const location = useLocation();
   const course = location.state?.course;
 
+  const navigate = useNavigate();  // ใช้ useNavigate สำหรับเปลี่ยนหน้า
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  // ฟังก์ชันสำหรับการเปลี่ยนไปยังหน้า STD_Assignment
+  const handleNavigateToAssignment = (assignment_id: string) => {
+    navigate(`/stdassignment/${assignment_id}`, {
+      state: { assignment_id, course_id } // ส่ง assignment_id และ course_id ไปพร้อมกัน
+    });
   };
 
   useEffect(() => {
@@ -98,6 +101,7 @@ export default function STD_Course() {
                         className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${getColorClass(
                           course.color // ใช้ color จาก course
                         )}`}
+                        onClick={() => handleNavigateToAssignment(assignment.assignment_id)}  // เมื่อกด จะเรียกฟังก์ชันนำทาง
                       >
                         <div className="flex flex-col">
                           <p className="text-xl">{assignment.title}</p>
