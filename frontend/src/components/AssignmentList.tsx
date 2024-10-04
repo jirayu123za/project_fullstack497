@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 interface Assignment {
   assignment_id: string;
+  course_id: string;
   assignment_name: string;
-  due_date: string;
+  assignment_due_date: string;
   color: string;
   course_name: string;
 }
@@ -26,9 +27,11 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseN
     return acc;
   }, {} as Record<string, Assignment[]>);
 
-  const handleClick = async (assignmentId: string) => {
+  const handleClick = async (assignment_id: string, course_id: string) => {
     try {
-      navigate("/assignment");
+      console.log("Assignment ID:", assignment_id, "course ID:", course_id, "Assignment", Assignment);
+      
+      navigate(`/course/${course_id}/assignment/${assignment_id}`);
     } catch (error) {
       console.error("Error sending assignment ID:", error);
     }
@@ -104,7 +107,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseN
               return (
                 <div
                   key={`${assignment.assignment_id}-${index}`}
-                  onClick={() => handleClick(assignment.assignment_id)}
+                  onClick={() => handleClick(assignment.assignment_id, assignment.course_id)}
                   className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${colorClasses.borderColor}`}
                 >
                   <p className="text-xl">{assignment.assignment_name}</p>
@@ -113,7 +116,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseN
                       className={`cursor-pointer ${colorClasses.iconColor}`}
                       size={25}
                       onClick={() =>
-                        alert(`Assignment Due Date : ${assignment.due_date}`)
+                        alert(`Assignment Due Date : ${assignment.assignment_due_date}`)
                       }
                     />
                     <MdOutlineFileDownload
