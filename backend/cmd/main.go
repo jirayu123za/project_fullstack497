@@ -80,6 +80,7 @@ func main() {
 	apiGroup.Post("/CreateAssignment", instructorHandler.CreateAssignment)
 	apiGroup.Get("/QueryAssignmentsByCourseID", instructorHandler.GetAssignmentsByCourseID)
 	apiGroup.Get("/QueryAssignmentsByUserIDSorted", instructorHandler.GetAssignmentByUserIDSorted)
+	apiGroup.Get("/QueryAssignmentsByCourseIDAndAssignmentID", instructorHandler.GetAssignmentByCourseIDAndAssignmentID)
 	apiGroup.Get("/QueryUsersEnrollment", instructorHandler.GetUsersEnrollment)
 	apiGroup.Post("/CreateEnrollment", instructorHandler.CreateEnrollment)
 	apiGroup.Delete("/DeleteUserEnrollment", instructorHandler.DeleteUserEnrollment)
@@ -132,3 +133,10 @@ func main() {
 	}
 	fmt.Println("Server is running on port: ", port)
 }
+
+//// First: Add api Query assignment by course_id and assignment_id
+//// Then use details to INS_Assignment
+// Second: Add api update assignment
+// Third: Add api delete assignment
+// Fourth: Add api Query Submissions by course_id and assignment_id
+// Fifth: Add api Upload Files to Upload on assignment
