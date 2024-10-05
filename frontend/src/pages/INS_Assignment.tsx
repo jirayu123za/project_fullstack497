@@ -13,15 +13,18 @@ import { FaBars } from "react-icons/fa";
 import AssignmentButton from "../components/AssignmentButton";
 import { MdOutlineAttachFile } from "react-icons/md";
 import axios from "axios";
+import { useParams } from 'react-router-dom';
 
 export default function InstructorDashboard() {
   const icons = [dashicon, noticon, joinicon, exiticon];
   const links = ["/insdash", "/notifications", "/join", "/exit"];
-
+  const { course_id, assignment_id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-  const [profileimage, setProfileimage] = useState("");
+  const [user_group_name, setUserGroup] = useState("");
+  const [profile_image, setProfileImage] = useState("");
   const [students, setStudents] = useState([]);
-  const [dueDate, setDueDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [due_date, setDueDate] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
   const toggleMenu = () => {
@@ -59,22 +62,73 @@ export default function InstructorDashboard() {
     }
   };
 
-  // Fetch profile image
   useEffect(() => {
-    const fetchPersonaldata = async () => {
+    console.log("log API assignment due_date:", due_date);
+    console.log("log API assignment description:", description);
+  }, [due_date, description]);
+
+  useEffect(() => {
+    const fetchPersonalData = async () => {      
       try {
-        const response = await fetch("/data.json");
-        const data = await response.json();
-        setProfileimage(data.profileimage);
+        const res = await axios.get("/api/QueryPersonDataByUserID");
+    
+        if (res.data && res.data.user && res.data.user.length > 0) {
+          const { user_image_url, /*user_first_name*/ } = res.data.user[0];
+    
+          if (user_image_url) setProfileImage(user_image_url);
+          //if (user_first_name) setFirstName(user_first_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
       } catch (error) {
-        console.error("Error loading profile image:", error);
+        console.error("Error loading personal data:", error);
       }
     };
 
-    fetchPersonaldata();
+    const fetchPersonalUserGroup = async () => {
+      try {
+        const res = await axios.get("/api/api/QueryUserGroupByUserID");
+        if (res.data) {
+          const { user_group_name } = res.data;
+          if (user_group_name) setUserGroup(user_group_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading user_group_name:", error);
+      }
+    };
+
+    const fetchAssignmentDetails = async () => {
+      try {
+        const res = await axios.get(`/api/api/QueryAssignmentsByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`);
+        if (res.data) {
+          const { due_date, assignment_description } = res.data.assignment;
+
+          if (due_date) {
+            const dateObj = new Date(due_date);
+            const formattedDate = dateObj.toISOString().split('T')[0];
+            setDueDate(formattedDate);
+          }
+          if (assignment_description) setDescription(assignment_description);
+    
+          console.log("fetchAssignmentDetails", res.data);
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading assignment details:", error);
+      }
+    };
+
+    fetchPersonalData();
+    fetchPersonalUserGroup();
+    fetchAssignmentDetails();
   }, []);
-
-
 
   // Fetch students' assignment status from backend
   // useEffect(() => {
@@ -134,6 +188,7 @@ export default function InstructorDashboard() {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="date"
                       type="date"
+                      value={due_date}
                       onChange={(e) => setDueDate(e.target.value)}
                     />
                   </label>
@@ -153,7 +208,7 @@ export default function InstructorDashboard() {
             <div className="mt-5 flex gap-3 ">
               <div className="basis-5/6 h-full">
                 <div className="flex items-start gap-5 ">
-                  <AssignmentDetail role="Instructor" />
+                  <AssignmentDetail user_group_name={user_group_name} assignment_description={description} />
                 </div>
                 <div className="mt-2">
                   <DropBox onFileUpload={handleFileUpload} />
@@ -188,10 +243,10 @@ export default function InstructorDashboard() {
           }`}
           onMouseLeave={() => setIsOpen(false)}
         >
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
         </div>
         <div className="hidden xl:block">
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
         </div>
       </div>
     </div>
