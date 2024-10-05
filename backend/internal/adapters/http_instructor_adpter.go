@@ -545,6 +545,49 @@ func (h *HttpInstructorHandler) GetAssignmentsByCourseID(c *fiber.Ctx) error {
 	})
 }
 
+func (h *HttpInstructorHandler) GetAssignmentByCourseIDAndAssignmentID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	assignmentIDParam := c.Query("assignment_id")
+	assignmentID, err := uuid.Parse(assignmentIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid assignment_id",
+			"error":   err.Error(),
+		})
+	}
+
+	assignment, err := h.services.GetAssignmentByCourseIDAndAssignmentID(courseID, assignmentID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get assignment by course ID and assignment ID",
+			"error":   err.Error(),
+		})
+	}
+
+	response := map[string]interface{}{
+		"course_id":              assignment.CourseID,
+		"assignment_id":          assignment.AssignmentID,
+		"assignment_name":        assignment.AssignmentName,
+		"assignment_description": assignment.AssignmentDescription,
+		"due_date":               assignment.DueDate,
+		"AssignmentFiles":        assignment.AssignmentFiles,
+		"Submissions":            assignment.Submissions,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Assignment found",
+		"assignment": response,
+	})
+}
+
 func (h *HttpInstructorHandler) UpdateAssignment(c *fiber.Ctx) error {
 	assignmentIDParam := c.Query("assignment_id")
 	assignmentID, err := uuid.Parse(assignmentIDParam)
