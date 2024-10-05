@@ -181,6 +181,19 @@ func (r *GormInstructorRepository) FindAssignmentsByCourseID(CourseID uuid.UUID)
 	return assignments, nil
 }
 
+func (r *GormInstructorRepository) FindAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error) {
+	var assignment *models.Assignment
+	if err := r.db.
+		Where("course_id = ? AND assignment_id = ?", CourseID, AssignmentID).
+		First(&assignment).
+		Preload("AssignmentFiles").
+		Preload("Submissions").
+		Error; err != nil {
+		return nil, err
+	}
+	return assignment, nil
+}
+
 func (r *GormInstructorRepository) ModifyAssignment(assignment *models.Assignment) error {
 	var existingAssignment *models.Assignment
 	if result := r.db.Find(&existingAssignment, "assignment_id = ?", assignment.AssignmentID); result.Error != nil {
