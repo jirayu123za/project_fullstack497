@@ -28,6 +28,7 @@ type InstructorRepository interface {
 	FindAssignmentByAssignmentID(AssignmentID uuid.UUID) (*models.Assignment, error)
 	FindAssignments() ([]*models.Assignment, error)
 	FindAssignmentsByCourseID(CourseID uuid.UUID) ([]*models.Assignment, error)
+	FindAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error)
 	ModifyAssignment(Assignment *models.Assignment) error
 	RemoveAssignment(AssignmentID uuid.UUID) error
 
