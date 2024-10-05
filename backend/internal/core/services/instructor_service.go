@@ -24,11 +24,12 @@ type InstructorService interface {
 	GetAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
 	GetAssignmentByUserIDSorted(UserID uuid.UUID) ([]*models.Assignment, error)
 
-	// CRUD operations for Courses
+	// CRUD operations for Assignments
 	CreateAssignment(CourseID uuid.UUID, Assignment *models.Assignment) error
 	GetAssignmentByAssignmentID(AssignmentID uuid.UUID) (*models.Assignment, error)
 	GetAssignments() ([]*models.Assignment, error)
 	GetAssignmentsByCourseID(CourseID uuid.UUID) ([]*models.Assignment, error)
+	GetAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error)
 	UpdateAssignment(Assignment *models.Assignment) error
 	DeleteAssignment(AssignmentID uuid.UUID) error
 
@@ -209,6 +210,14 @@ func (s *InstructorServiceImpl) GetAssignmentsByCourseID(CourseID uuid.UUID) ([]
 		return nil, err
 	}
 	return Assignments, nil
+}
+
+func (s *InstructorServiceImpl) GetAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error) {
+	assignment, err := s.repo.FindAssignmentByCourseIDAndAssignmentID(CourseID, AssignmentID)
+	if err != nil {
+		return nil, err
+	}
+	return assignment, nil
 }
 
 func (s *InstructorServiceImpl) UpdateAssignment(Assignment *models.Assignment) error {
