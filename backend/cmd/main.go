@@ -81,6 +81,7 @@ func main() {
 	apiGroup.Get("/QueryAssignmentsByCourseID", instructorHandler.GetAssignmentsByCourseID)
 	apiGroup.Get("/QueryAssignmentsByUserIDSorted", instructorHandler.GetAssignmentByUserIDSorted)
 	apiGroup.Get("/QueryAssignmentsByCourseIDAndAssignmentID", instructorHandler.GetAssignmentByCourseIDAndAssignmentID)
+	apiGroup.Put("/UpdateAssignmentByCourseIDAndAssignmentID", instructorHandler.UpdateAssignmentByCourseIDAndAssignmentID)
 	apiGroup.Get("/QueryUsersEnrollment", instructorHandler.GetUsersEnrollment)
 	apiGroup.Post("/CreateEnrollment", instructorHandler.CreateEnrollment)
 	apiGroup.Delete("/DeleteUserEnrollment", instructorHandler.DeleteUserEnrollment)
