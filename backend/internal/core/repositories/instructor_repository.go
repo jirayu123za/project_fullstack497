@@ -30,6 +30,7 @@ type InstructorRepository interface {
 	FindAssignmentsByCourseID(CourseID uuid.UUID) ([]*models.Assignment, error)
 	FindAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error)
 	ModifyAssignment(Assignment *models.Assignment) error
+	ModifyAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, assignment *models.Assignment) error
 	RemoveAssignment(AssignmentID uuid.UUID) error
 
 	// CRD operations for Instructor lists
