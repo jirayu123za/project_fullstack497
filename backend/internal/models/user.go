@@ -23,6 +23,7 @@ type User struct {
 	InstructorLists []InstructorList `gorm:"foreignKey:UserID"`
 	Submissions     []Submission     `gorm:"foreignKey:UserID"`
 	Uploads         []Upload         `gorm:"foreignKey:UserID"`
+	Submitted       bool             `gorm:"-" json:"submitted"`
 }
 
 func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
