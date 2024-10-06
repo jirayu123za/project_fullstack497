@@ -238,6 +238,18 @@ func (r *GormInstructorRepository) RemoveAssignment(AssignmentID uuid.UUID) erro
 	return nil
 }
 
+func (r *GormInstructorRepository) RemoveAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) error {
+	var existingAssignment *models.Assignment
+	if result := r.db.First(&existingAssignment, "course_id = ? AND assignment_id = ?", CourseID, AssignmentID); result.Error != nil {
+		return result.Error
+	}
+
+	if result := r.db.Delete(&existingAssignment); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 // Under line here be GormInstructorRepository of Instructor list
 func (r *GormInstructorRepository) AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error {
 	// Implement the logic to AddInstructorList to the database using GORM.

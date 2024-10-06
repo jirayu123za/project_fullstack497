@@ -32,6 +32,7 @@ type InstructorRepository interface {
 	ModifyAssignment(Assignment *models.Assignment) error
 	ModifyAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, assignment *models.Assignment) error
 	RemoveAssignment(AssignmentID uuid.UUID) error
+	RemoveAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) error
 
 	// CRD operations for Instructor lists
 	AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error  // Create a new instructor list
