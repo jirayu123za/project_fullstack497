@@ -1,11 +1,10 @@
 interface AssignmentSubmitProps {
-  StdCode: string;
-  Status: string; // "submitted" or "not_submitted"
+  user_name: string;
+  user_submitted: boolean;
 }
 
-export default function AssignmentSubmit({ StdCode, Status }: AssignmentSubmitProps) {
-  // กำหนดสีวงกลมตามสถานะการส่งงาน
-  const circleColor = Status === "submitted" ? "#93B955" : "#E61616"; // เขียวสำหรับส่งงานแล้ว, แดงสำหรับยังไม่ส่ง
+export default function AssignmentSubmit({ user_name, user_submitted }: AssignmentSubmitProps) {
+  const circleColor = user_submitted === true ? "#93B955" : "#E61616";
 
   return (
     <div className="flex justify-start items-center gap-3 p-2">
@@ -15,7 +14,7 @@ export default function AssignmentSubmit({ StdCode, Status }: AssignmentSubmitPr
           <circle cx="14.5" cy="14.5" r="14.5" fill={circleColor} />
         </svg>
       </div>
-      <div>{StdCode}</div> {/* รหัสนักศึกษา */}
+      <div>{user_name}</div> {/* รหัสนักศึกษา */}
     </div>
   );
 }
