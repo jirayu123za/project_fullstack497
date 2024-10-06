@@ -87,6 +87,7 @@ func main() {
 	apiGroup.Delete("/DeleteUserEnrollment", instructorHandler.DeleteUserEnrollment)
 	apiGroup.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
 	apiGroup.Delete("/DeleteAssignmentByCourseIDAndAssignmentID", instructorHandler.DeleteAssignmentByCourseIDAndAssignmentID)
+	apiGroup.Get("/QuerySubmissionsByCourseIDAndAssignmentID", instructorHandler.GetSubmissionsByCourseIDAndAssignmentID)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
