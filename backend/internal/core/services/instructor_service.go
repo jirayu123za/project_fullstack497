@@ -36,6 +36,9 @@ type InstructorService interface {
 	DeleteAssignment(AssignmentID uuid.UUID) error
 	DeleteAssignmentsByCourseIDAndAssignmentID(CourseID uuid.UUID, assignmentsID uuid.UUID) error
 
+	// R operations for Submissions
+	GetSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error)
+
 	// CRD operations for Instructor lists
 	CreateInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error
 	GetInstructorsList() ([]*models.InstructorList, error)
@@ -275,6 +278,14 @@ func (s *InstructorServiceImpl) DeleteAssignmentsByCourseIDAndAssignmentID(Cours
 		return err
 	}
 	return nil
+}
+
+func (s *InstructorServiceImpl) GetSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error) {
+	Users, err := s.repo.FindSubmissionsByCourseIDAndAssignmentID(CourseID, AssignmentID)
+	if err != nil {
+		return nil, err
+	}
+	return Users, nil
 }
 
 // Under line here be InstructorServiceImpl of Instructor list
