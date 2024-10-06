@@ -194,6 +194,7 @@ func (r *GormInstructorRepository) FindAssignmentByCourseIDAndAssignmentID(Cours
 	return assignment, nil
 }
 
+// v1 using assignment_id
 func (r *GormInstructorRepository) ModifyAssignment(assignment *models.Assignment) error {
 	var existingAssignment *models.Assignment
 	if result := r.db.Find(&existingAssignment, "assignment_id = ?", assignment.AssignmentID); result.Error != nil {
@@ -206,6 +207,22 @@ func (r *GormInstructorRepository) ModifyAssignment(assignment *models.Assignmen
 	if result := r.db.Save(&existingAssignment); result.Error != nil {
 		return result.Error
 	}
+	return nil
+}
+
+func (r *GormInstructorRepository) ModifyAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, assignment *models.Assignment) error {
+	var existingAssignment *models.Assignment
+	if result := r.db.First(&existingAssignment, "course_id = ? AND assignment_id = ?", CourseID, AssignmentID); result.Error != nil {
+		return result.Error
+	}
+
+	if result := r.db.Model(&existingAssignment).Updates(models.Assignment{
+		AssignmentDescription: assignment.AssignmentDescription,
+		DueDate:               assignment.DueDate,
+	}); result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 
