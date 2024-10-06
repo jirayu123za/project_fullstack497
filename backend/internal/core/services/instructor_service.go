@@ -34,6 +34,7 @@ type InstructorService interface {
 	UpdateAssignment(Assignment *models.Assignment) error
 	UpdateAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, Assignment *models.Assignment) error
 	DeleteAssignment(AssignmentID uuid.UUID) error
+	DeleteAssignmentsByCourseIDAndAssignmentID(CourseID uuid.UUID, assignmentsID uuid.UUID) error
 
 	// CRD operations for Instructor lists
 	CreateInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error
@@ -264,6 +265,13 @@ func (s *InstructorServiceImpl) DeleteAssignment(AssignmentID uuid.UUID) error {
 	}
 
 	if err := s.repo.RemoveAssignment(existingAssignment.AssignmentID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InstructorServiceImpl) DeleteAssignmentsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) error {
+	if err := s.repo.RemoveAssignmentByCourseIDAndAssignmentID(CourseID, AssignmentID); err != nil {
 		return err
 	}
 	return nil
