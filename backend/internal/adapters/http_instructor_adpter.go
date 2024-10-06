@@ -742,6 +742,48 @@ func (h *HttpInstructorHandler) DeleteAssignmentByCourseIDAndAssignmentID(c *fib
 	})
 }
 
+func (h *HttpInstructorHandler) GetSubmissionsByCourseIDAndAssignmentID(c *fiber.Ctx) error {
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	assignmentIDParam := c.Query("assignment_id")
+	assignmentID, err := uuid.Parse(assignmentIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid assignment_id",
+			"error":   err.Error(),
+		})
+	}
+
+	submissions, err := h.services.GetSubmissionsByCourseIDAndAssignmentID(courseID, assignmentID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get submissions by course ID and assignment ID",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	for _, submission := range submissions {
+		response = append(response, map[string]interface{}{
+			"user_id":        submission.UserID,
+			"user_name":      submission.FirstName + " " + submission.LastName,
+			"user_submitted": submission.Submitted,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Submissions found",
+		"submissions": response,
+	})
+}
+
 // Under line here be HttpInstructorHandler of Instructor list
 func (h *HttpInstructorHandler) CreateInstructorList(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
