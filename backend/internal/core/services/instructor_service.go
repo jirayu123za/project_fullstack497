@@ -30,7 +30,9 @@ type InstructorService interface {
 	GetAssignments() ([]*models.Assignment, error)
 	GetAssignmentsByCourseID(CourseID uuid.UUID) ([]*models.Assignment, error)
 	GetAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) (*models.Assignment, error)
+	// v1 using assignment_id
 	UpdateAssignment(Assignment *models.Assignment) error
+	UpdateAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, Assignment *models.Assignment) error
 	DeleteAssignment(AssignmentID uuid.UUID) error
 
 	// CRD operations for Instructor lists
@@ -220,6 +222,7 @@ func (s *InstructorServiceImpl) GetAssignmentByCourseIDAndAssignmentID(CourseID 
 	return assignment, nil
 }
 
+// v1 using assignment_id
 func (s *InstructorServiceImpl) UpdateAssignment(Assignment *models.Assignment) error {
 	existingAssignment, err := s.repo.FindAssignmentByAssignmentID(Assignment.AssignmentID)
 	if err != nil {
@@ -231,6 +234,23 @@ func (s *InstructorServiceImpl) UpdateAssignment(Assignment *models.Assignment) 
 	existingAssignment.DueDate = Assignment.DueDate
 
 	if err := s.repo.ModifyAssignment(existingAssignment); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *InstructorServiceImpl) UpdateAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID, Assignment *models.Assignment) error {
+	existingAssignment, err := s.repo.FindAssignmentByCourseIDAndAssignmentID(CourseID, AssignmentID)
+	if err != nil {
+		return err
+	}
+
+	existingAssignment.AssignmentName = Assignment.AssignmentName
+	existingAssignment.AssignmentDescription = Assignment.AssignmentDescription
+	existingAssignment.DueDate = Assignment.DueDate
+
+	if err := s.repo.ModifyAssignmentByCourseIDAndAssignmentID(CourseID, AssignmentID, existingAssignment); err != nil {
 		return err
 	}
 
