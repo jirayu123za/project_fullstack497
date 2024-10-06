@@ -13,11 +13,12 @@ import { FaBars } from "react-icons/fa";
 import AssignmentButton from "../components/AssignmentButton";
 import { MdOutlineAttachFile } from "react-icons/md";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function InstructorDashboard() {
   const icons = [dashicon, noticon, joinicon, exiticon];
   const links = ["/insdash", "/notifications", "/join", "/exit"];
+  const navigate = useNavigate();
   const { course_id, assignment_id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [user_group_name, setUserGroup] = useState("");
@@ -50,15 +51,20 @@ export default function InstructorDashboard() {
     }
   };
 
-  // ฟังก์ชันเพื่อส่งคำขอลบข้อมูล assignment ไปยัง backend
   const handleDelete = async () => {
-    try {
-      const response = await axios.delete("/api/delete-assignment", {
-        data: { students },
-      });
-      console.log("Deleted successfully:", response.data);
-    } catch (error) {
-      console.error("Error deleting assignment:", error);
+    console.log("call delete assignment");
+    
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      try {
+        const response = await axios.delete(`/api/api/DeleteAssignmentByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`);
+        
+        if (response.status === 200) {
+          navigate("/insdash");
+        }
+        console.log("Deleted successfully:", response.data);
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
     }
   };
 
