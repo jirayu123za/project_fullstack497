@@ -250,6 +250,22 @@ func (r *GormInstructorRepository) RemoveAssignmentByCourseIDAndAssignmentID(Cou
 	return nil
 }
 
+func (r *GormInstructorRepository) FindSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error) {
+	var users []*models.User
+
+	if err := r.db.
+		Table("enrollments").
+		Select("users.user_id, users.first_name, users.last_name, CASE WHEN submissions.created_at IS NOT NULL THEN true ELSE false END AS submitted").
+		Joins("JOIN users ON enrollments.user_id = users.user_id").
+		Joins("LEFT JOIN submissions ON enrollments.user_id = submissions.user_id AND submissions.assignment_id = ? AND submissions.deleted_at IS NULL", AssignmentID).
+		Where("enrollments.course_id = ? AND enrollments.deleted_at IS NULL", CourseID).
+		Scan(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 // Under line here be GormInstructorRepository of Instructor list
 func (r *GormInstructorRepository) AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error {
 	// Implement the logic to AddInstructorList to the database using GORM.
