@@ -86,6 +86,7 @@ func main() {
 	apiGroup.Post("/CreateEnrollment", instructorHandler.CreateEnrollment)
 	apiGroup.Delete("/DeleteUserEnrollment", instructorHandler.DeleteUserEnrollment)
 	apiGroup.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
+	apiGroup.Delete("/DeleteAssignmentByCourseIDAndAssignmentID", instructorHandler.DeleteAssignmentByCourseIDAndAssignmentID)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
@@ -137,7 +138,7 @@ func main() {
 
 //// First: Add api Query assignment by course_id and assignment_id
 //// Then use details to INS_Assignment
-// Second: Add api update assignment
-// Third: Add api delete assignment
+//// Second: Add api update assignment
+//// Third: Add api delete assignment
 // Fourth: Add api Query Submissions by course_id and assignment_id
 // Fifth: Add api Upload Files to Upload on assignment
