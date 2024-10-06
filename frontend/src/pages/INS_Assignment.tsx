@@ -36,13 +36,13 @@ export default function InstructorDashboard() {
     console.log(`Uploaded: ${file.name}`);
   };
 
-  // ฟังก์ชันเพื่อส่งข้อมูลอัปเดตไปยัง backend
   const handleUpdate = async () => {
     try {
-      const response = await axios.put("/api/update-assignment", {
-        dueDate,
-        uploadedFiles,
-        students,
+      const response = await axios.put(`/api/api/UpdateAssignmentByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`, {
+        due_date,
+        assignment_description: description,
+        //uploadedFiles,
+        //students,
       });
       console.log("Updated successfully:", response.data);
     } catch (error) {
@@ -208,7 +208,7 @@ export default function InstructorDashboard() {
             <div className="mt-5 flex gap-3 ">
               <div className="basis-5/6 h-full">
                 <div className="flex items-start gap-5 ">
-                  <AssignmentDetail user_group_name={user_group_name} assignment_description={description} />
+                  <AssignmentDetail user_group_name={user_group_name} assignment_description={description} onChange={(e) => setDescription(e.target.value)}/>
                 </div>
                 <div className="mt-2">
                   <DropBox onFileUpload={handleFileUpload} />
