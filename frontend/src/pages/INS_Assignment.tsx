@@ -71,7 +71,9 @@ export default function InstructorDashboard() {
   useEffect(() => {
     console.log("log API assignment due_date:", due_date);
     console.log("log API assignment description:", description);
-  }, [due_date, description]);
+    console.log("log API submission from students:", students);
+    
+  }, [due_date, description, students]);
 
   useEffect(() => {
     const fetchPersonalData = async () => {      
@@ -131,38 +133,25 @@ export default function InstructorDashboard() {
       }
     };
 
-    fetchPersonalData();
-    fetchPersonalUserGroup();
-    fetchAssignmentDetails();
-  }, []);
-
-  // Fetch students' assignment status from backend
-  // useEffect(() => {
-  //   const fetchStudents = async () => {
-  //     try {
-  //       const response = await axios.get("/api/course/students"); // แก้ URL ให้ตรงกับ backend ของคุณ
-  //       setStudents(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching student data:", error);
-  //     }
-  //   };
-
-  //   fetchStudents();
-  // }, []);
-
-  useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchSubmissions = async () => {
       try {
-        const response = await fetch("/students.json");
-        const data = await response.json();
-        const submittedStudents = data.students.filter((student: { Status: string; }) => student.Status === "submitted");
-        setStudents(submittedStudents);
+        const res = await axios.get(`/api/api/QuerySubmissionsByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`);
+        if (res.data) {
+          const { submissions } = res.data;
+          if (submissions) setStudents(submissions);
+          console.log("fetchSubmissions", res.data);
+        } else {
+          console.warn("No data found in response");
+        }
       } catch (error) {
-        console.error("Error fetching student data:", error);
+        console.error("Error loading submissions:", error);
       }
     };
 
-    fetchStudents();
+    fetchPersonalData();
+    fetchPersonalUserGroup();
+    fetchAssignmentDetails();
+    fetchSubmissions();
   }, []);
 
   return (
@@ -224,7 +213,7 @@ export default function InstructorDashboard() {
               {/* Student Status */}
               <div className="basis-1/6">
                 <div className="้">
-                  <AssignmentSubmitted students={students} />
+                  <AssignmentSubmitted submissions={students} />
                 </div>
                 <div className="flex flex-col space-y-2 ">
                   {uploadedFiles.map((fileName, index) => (
