@@ -34,6 +34,9 @@ type InstructorRepository interface {
 	RemoveAssignment(AssignmentID uuid.UUID) error
 	RemoveAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) error
 
+	// R operations for Submissions
+	FindSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error)
+
 	// CRD operations for Instructor lists
 	AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error  // Create a new instructor list
 	FindInstructorsList() ([]*models.InstructorList, error)                             // Find all instructor lists
