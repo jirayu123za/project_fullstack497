@@ -3,9 +3,10 @@ import { useState } from "react";
 interface AssignmentDetailProps {
   user_group_name: string;
   assignment_description: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-export default function AssignmentDetail({ user_group_name, assignment_description }: AssignmentDetailProps) {
+export default function AssignmentDetail({ user_group_name, assignment_description, onChange }: AssignmentDetailProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -27,6 +28,7 @@ export default function AssignmentDetail({ user_group_name, assignment_descripti
       readOnly={user_group_name === "STUDENT" || user_group_name === ""}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onChange={onChange}
     />
   );
 }
