@@ -20,8 +20,22 @@ services:
 #      - postgres
 #    environment:
 #      - DATABASE_DSN = ${DATABASE_DSN}
+  minio:
+    image: minio/minio
+    container_name: g2_fullstack497_minio
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    ports:
+      - 9000:${MINIO_PORT1}
+      - 9001:${MINIO_PORT2}
+    volumes:
+      - minio-data:/data
+      #- g2_fullstack497r-data:/var/lib/minio/data
 networks:
   g2_fullstack-net: # Check by using `docker network ls` command
     external: true
 volumes:
   g2_fullstack-data:
+  minio-data:
