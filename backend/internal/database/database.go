@@ -49,6 +49,12 @@ func ConnectPostgres(migrate bool) *gorm.DB {
 				&models.Submission{},
 				&models.Upload{})
 		*/
+		/*
+			db.Migrator().DropTable(
+				&models.AssignmentFile{},
+				&models.Upload{},
+			)
+		*/
 		err := db.AutoMigrate(
 			&models.UserGroup{},
 			&models.User{},
