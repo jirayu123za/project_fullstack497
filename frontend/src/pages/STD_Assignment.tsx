@@ -142,13 +142,13 @@ export default function InstructorDashboard() {
               <div className="basis-1/6">
                 <AssignmentSubmitted students={students} />
                 <div className="flex flex-col space-y-2">
-                  {uploadedFiles.map((fileName, index) => (
+                {uploadedFiles.slice(0, 2).map((fileName, index) =>  (
                     <div
                       key={index}
                       className="flex items-center border-2 border-M1 rounded-lg p-2 w-[200px] h-[50px] mt-2 overflow-hidden gap-3"
                     >
-                      <MdOutlineAttachFile size={25} color="#344B59" />
-                      <p className="text-[#5A8FAA]">{fileName}</p>
+                      <MdOutlineAttachFile size={18} color="#344B59" />
+                      <p className="text-[#5A8FAA] truncate w-full overflow-hidden text-ellipsis whitespace-nowrap">{fileName}</p>
                     </div>
                   ))}
                 </div>
