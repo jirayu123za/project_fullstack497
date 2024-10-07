@@ -6,6 +6,7 @@ import (
 	"backend_fullstack/internal/config"
 	"backend_fullstack/internal/core/services"
 	"backend_fullstack/internal/database"
+	"backend_fullstack/internal/storage"
 	"fmt"
 	"log"
 	"os"
@@ -30,6 +31,13 @@ func main() {
 	}))
 
 	db := database.ConnectPostgres(true)
+
+	// Initialize MinIO storage
+	// minioClient, err := storage.MinioConnection()
+	minioClient, err := storage.MinioConnection()
+	if err != nil {
+		log.Fatalf("Failed to connect to MinIO: %v", err)
+	}
 
 	// Init GoogleOAut configured
 	auth.InitializeGoogleOAuth()
@@ -57,8 +65,12 @@ func main() {
 	adminService := services.NewAdminService(adminRepo)
 	adminHandler := adapters.NewHttpAdminHandler(adminService)
 
+	minioRepo := adapters.NewMinIOFileRepository(minioClient)
+	minioService := services.NewMinIOServiceService(minioRepo)
+	minioHandler := adapters.NewHttpMinIOHandler(minioService)
+
 	instructorRepo := adapters.NewGormInstructorRepository(db)
-	instructorService := services.NewInstructorService(instructorRepo)
+	instructorService := services.NewInstructorService(instructorRepo, minioRepo)
 	instructorHandler := adapters.NewHttpInstructorHandler(instructorService, userService)
 
 	authGroup := app.Group("/auth")
@@ -88,6 +100,8 @@ func main() {
 	apiGroup.Delete("/DeleteCourse", instructorHandler.DeleteCourse)
 	apiGroup.Delete("/DeleteAssignmentByCourseIDAndAssignmentID", instructorHandler.DeleteAssignmentByCourseIDAndAssignmentID)
 	apiGroup.Get("/QuerySubmissionsByCourseIDAndAssignmentID", instructorHandler.GetSubmissionsByCourseIDAndAssignmentID)
+	apiGroup.Post("/UploadFiles", minioHandler.CreateFileToMinIO)
+	apiGroup.Post("UploadAssignmentFiles", instructorHandler.UploadAssignmentFile)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
@@ -141,5 +155,5 @@ func main() {
 //// Then use details to INS_Assignment
 //// Second: Add api update assignment
 //// Third: Add api delete assignment
-// Fourth: Add api Query Submissions by course_id and assignment_id
-// Fifth: Add api Upload Files to Upload on assignment
+//// Fourth: Add api Query Submissions by course_id and assignment_id
+//// Fifth: Add api Upload Files to Upload on assignment
