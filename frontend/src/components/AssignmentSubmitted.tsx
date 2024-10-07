@@ -17,7 +17,7 @@ export default function AssignmentSubmitted({ submissions }: AssignmentSubmitted
   }));
 
   return (
-    <div className="bg-white border-2 border-B1 w-[200px] h-[500px] rounded-xl p-6 flex flex-col space-y-5 overflow-y-auto">
+    <div className="bg-white border-2 border-B1 w-[270px] h-[500px] rounded-xl p-6 flex flex-col space-y-5 overflow-y-auto">
       {students.map((student, index) => (
         <AssignmentSubmit
           key={index}
