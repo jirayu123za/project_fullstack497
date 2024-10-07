@@ -23,20 +23,22 @@ export default function InstructorDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [user_group_name, setUserGroup] = useState("");
   const [profile_image, setProfileImage] = useState("");
+  const [user_first_name, setFirstName] = useState("");
+  const [user_id, setUserID] = useState("");
   const [students, setStudents] = useState([]);
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   const handleFileUpload = (file: File) => {
-    setUploadedFiles((prevFiles) => [...prevFiles, file.name]);
+    setUploadedFiles((prevFiles) => [...prevFiles, file]);
     console.log(`Uploaded: ${file.name}`);
   };
-
+  
   const handleUpdate = async () => {
     try {
       const response = await axios.put(`/api/api/UpdateAssignmentByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`, {
@@ -46,6 +48,27 @@ export default function InstructorDashboard() {
         //students,
       });
       console.log("Updated successfully:", response.data);
+
+      // If there are files to be uploaded, call the upload API for each file
+      if (uploadedFiles.length > 0) {
+        for (const file of uploadedFiles) {
+          const formData = new FormData();
+          formData.append("files", file);
+          formData.append("user_id", user_id);
+          if (assignment_id) {
+            formData.append("assignment_id", assignment_id);
+          }
+          formData.append("user_group_name", user_group_name);
+          formData.append("user_name", user_first_name);
+
+          const uploadResponse = await axios.post(`/api/api/UploadAssignmentFiles`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          console.log("File uploaded successfully:", uploadResponse.data);
+        }
+      }
     } catch (error) {
       console.error("Error updating assignment:", error);
     }
@@ -72,8 +95,10 @@ export default function InstructorDashboard() {
     console.log("log API assignment due_date:", due_date);
     console.log("log API assignment description:", description);
     console.log("log API submission from students:", students);
+    console.log("user id", user_id);
     
-  }, [due_date, description, students]);
+    
+  }, [due_date, description, students, user_id]);
 
   useEffect(() => {
     const fetchPersonalData = async () => {      
@@ -81,10 +106,11 @@ export default function InstructorDashboard() {
         const res = await axios.get("/api/QueryPersonDataByUserID");
     
         if (res.data && res.data.user && res.data.user.length > 0) {
-          const { user_image_url, /*user_first_name*/ } = res.data.user[0];
+          const { user_image_url, user_first_name, user_id } = res.data.user[0];
     
           if (user_image_url) setProfileImage(user_image_url);
-          //if (user_first_name) setFirstName(user_first_name);
+          if (user_first_name) setFirstName(user_first_name);
+          if (user_id) setUserID(user_id);
           console.log(res.data);
           
         } else {
@@ -216,13 +242,13 @@ export default function InstructorDashboard() {
                   <AssignmentSubmitted submissions={students} />
                 </div>
                 <div className="flex flex-col space-y-2 ">
-                  {uploadedFiles.map((fileName, index) => (
+                {uploadedFiles.slice(0, 3).map((fileName, index) =>  (
                     <div
                       key={index}
                       className="flex items-center border-2 border-M1 rounded-lg p-2 w-[200px] h-[50px] mt-2 overflow-hidden gap-3"
                     >
-                      <MdOutlineAttachFile size={25} color="#344B59" />
-                      <p className="text-[#5A8FAA]">{fileName}</p>
+                      <MdOutlineAttachFile size={24} color="#344B59" />
+                      <p className="text-[#5A8FAA] truncate w-full overflow-hidden text-ellipsis whitespace-nowrap">{fileName.name}</p>
                     </div>
                   ))}
                 </div>
