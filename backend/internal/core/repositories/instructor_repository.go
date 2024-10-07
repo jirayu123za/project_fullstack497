@@ -34,6 +34,10 @@ type InstructorRepository interface {
 	RemoveAssignment(AssignmentID uuid.UUID) error
 	RemoveAssignmentByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) error
 
+	// Using minio
+	SaveAssignmentFile(file *models.AssignmentFile) error
+	SaveUpload(upload *models.Upload) error
+
 	// R operations for Submissions
 	FindSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error)
 

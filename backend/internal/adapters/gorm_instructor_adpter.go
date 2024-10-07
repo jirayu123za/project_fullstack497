@@ -266,6 +266,21 @@ func (r *GormInstructorRepository) FindSubmissionsByCourseIDAndAssignmentID(Cour
 	return users, nil
 }
 
+// Using minio
+func (r *GormInstructorRepository) SaveAssignmentFile(file *models.AssignmentFile) error {
+	if result := r.db.Create(file); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *GormInstructorRepository) SaveUpload(upload *models.Upload) error {
+	if result := r.db.Create(upload); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 // Under line here be GormInstructorRepository of Instructor list
 func (r *GormInstructorRepository) AddInstructorList(CourseID uuid.UUID, InstructorList *models.InstructorList) error {
 	// Implement the logic to AddInstructorList to the database using GORM.
