@@ -3,6 +3,9 @@ package services
 import (
 	"backend_fullstack/internal/core/repositories"
 	"backend_fullstack/internal/models"
+	"mime/multipart"
+	"path/filepath"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -36,6 +39,11 @@ type InstructorService interface {
 	DeleteAssignment(AssignmentID uuid.UUID) error
 	DeleteAssignmentsByCourseIDAndAssignmentID(CourseID uuid.UUID, assignmentsID uuid.UUID) error
 
+	// using minio
+	//UploadAssignmentFile(userID, assignmentID uuid.UUID, userGroupName, userName string, file multipart.File, fileExtension string) (uuid.UUID, error)
+	UploadAssignmentFiles(userID, assignmentID uuid.UUID, userGroupName, userName string, files []*multipart.FileHeader) ([]uuid.UUID, error)
+	CreateUpload(upload *models.Upload) error
+
 	// R operations for Submissions
 	GetSubmissionsByCourseIDAndAssignmentID(CourseID uuid.UUID, AssignmentID uuid.UUID) ([]*models.User, error)
 
@@ -61,13 +69,15 @@ type InstructorService interface {
 }
 
 type InstructorServiceImpl struct {
-	repo repositories.InstructorRepository
+	repo      repositories.InstructorRepository
+	minioRepo repositories.MinIORepository
 }
 
 // func instance business logic call
-func NewInstructorService(repo repositories.InstructorRepository) InstructorService {
+func NewInstructorService(repo repositories.InstructorRepository, minioRepo repositories.MinIORepository) InstructorService {
 	return &InstructorServiceImpl{
-		repo: repo,
+		repo:      repo,
+		minioRepo: minioRepo,
 	}
 }
 
@@ -286,6 +296,86 @@ func (s *InstructorServiceImpl) GetSubmissionsByCourseIDAndAssignmentID(CourseID
 		return nil, err
 	}
 	return Users, nil
+}
+
+// Using minio
+func (s *InstructorServiceImpl) UploadAssignmentFile(userID, assignmentID uuid.UUID, userGroupName, userName string, file multipart.File, fileExtension string) (uuid.UUID, error) {
+	newFileName := uuid.New().String() + fileExtension
+
+	assignmentFile := models.AssignmentFile{
+		AssignmentID:       assignmentID,
+		AssignmentFileName: newFileName,
+	}
+
+	if err := s.repo.SaveAssignmentFile(&assignmentFile); err != nil {
+		return uuid.Nil, err
+	}
+
+	if err := s.minioRepo.SaveFileToMinIO(file, userGroupName, userName, newFileName); err != nil {
+		return uuid.Nil, err
+	}
+
+	upload := models.Upload{
+		UserID:           userID,
+		AssignmentFileID: assignmentFile.AssignmentFileID,
+		CreatedAt:        time.Now(),
+	}
+
+	if err := s.repo.SaveUpload(&upload); err != nil {
+		return uuid.Nil, err
+	}
+
+	return upload.UploadID, nil
+}
+
+func (s *InstructorServiceImpl) UploadAssignmentFiles(userID, assignmentID uuid.UUID, userGroupName, userName string, files []*multipart.FileHeader) ([]uuid.UUID, error) {
+	var uploadIDs []uuid.UUID
+
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		fileExtension := filepath.Ext(fileHeader.Filename)
+
+		newFileName := uuid.New().String() + fileExtension
+
+		assignmentFile := models.AssignmentFile{
+			AssignmentID:       assignmentID,
+			AssignmentFileName: newFileName,
+		}
+
+		if err := s.repo.SaveAssignmentFile(&assignmentFile); err != nil {
+			return nil, err
+		}
+
+		if err := s.minioRepo.SaveFileToMinIO(file, userGroupName, userName, newFileName); err != nil {
+			return nil, err
+		}
+
+		upload := models.Upload{
+			UserID:           userID,
+			AssignmentFileID: assignmentFile.AssignmentFileID,
+			CreatedAt:        time.Now(),
+		}
+
+		if err := s.repo.SaveUpload(&upload); err != nil {
+			return nil, err
+		}
+
+		uploadIDs = append(uploadIDs, upload.UploadID)
+	}
+
+	return uploadIDs, nil
+}
+
+func (s *InstructorServiceImpl) CreateUpload(upload *models.Upload) error {
+	if err := s.repo.SaveUpload(upload); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Under line here be InstructorServiceImpl of Instructor list
