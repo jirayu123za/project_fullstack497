@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { useDropzone, Accept } from "react-dropzone";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import axios from "axios";
 
 interface DropBoxProps {
   onFileUpload: (file: File) => void;
@@ -10,32 +9,9 @@ interface DropBoxProps {
 const DropBox: React.FC<DropBoxProps> = ({ onFileUpload }) => {
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      acceptedFiles.forEach(async (file) => {
+      acceptedFiles.forEach((file) => {
         if (file.type === "application/pdf") {
-          // Call the file upload handler function
           onFileUpload(file);
-
-          // Prepare form data for API request
-          const formData = new FormData();
-          formData.append("file", file);
-
-          try {
-            // Send the file to the backend API using axios
-            const response = await axios.post("https://your-backend-api/upload", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            });
-
-            // Handle response
-            if (response.status === 200) {
-              console.log("File uploaded successfully:", response.data);
-            } else {
-              console.error("Failed to upload file:", response.data);
-            }
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
         } else {
           alert("Only PDF files are allowed!");
         }
