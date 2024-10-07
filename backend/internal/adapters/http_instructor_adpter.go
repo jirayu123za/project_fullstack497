@@ -302,6 +302,7 @@ func (h *HttpInstructorHandler) GetPersonDataByUserID(c *fiber.Ctx) error {
 
 	var response []map[string]interface{}
 	response = append(response, map[string]interface{}{
+		"user_id":         user.UserID,
 		"user_email":      user.Email,
 		"user_first_name": user.FirstName,
 		"user_last_name":  user.LastName,
@@ -781,6 +782,114 @@ func (h *HttpInstructorHandler) GetSubmissionsByCourseIDAndAssignmentID(c *fiber
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message":     "Submissions found",
 		"submissions": response,
+	})
+}
+
+// Using minio
+func (h *HttpInstructorHandler) UploadAssignmentFile(c *fiber.Ctx) error {
+
+	/*
+		userIDStr := c.FormValue("user_id")
+		assignmentIDStr := c.FormValue("assignment_id")
+		userGroupName := c.FormValue("user_group_name")
+		userName := c.FormValue("user_name")
+
+		userID, err := uuid.Parse(userIDStr)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "Invalid user ID",
+				"error":   err.Error(),
+			})
+		}
+
+		assignmentID, err := uuid.Parse(assignmentIDStr)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "Invalid assignment ID",
+				"error":   err.Error(),
+			})
+		}
+
+		fileHeader, err := c.FormFile("file")
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "Failed to get file from request",
+				"error":   err.Error(),
+			})
+		}
+
+		file, err := fileHeader.Open()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to open file",
+				"error":   err.Error(),
+			})
+		}
+		defer file.Close()
+
+		fileExtension := filepath.Ext(fileHeader.Filename)
+
+		uploadID, err := h.services.UploadAssignmentFile(userID, assignmentID, userGroupName, userName, file, fileExtension)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Failed to upload assignment file",
+				"error":   err.Error(),
+			})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"message":   "File uploaded successfully",
+			"upload_id": uploadID,
+		})
+	*/
+
+	userIDStr := c.FormValue("user_id")
+	assignmentIDStr := c.FormValue("assignment_id")
+	userGroupName := c.FormValue("user_group_name")
+	userName := c.FormValue("user_name")
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	assignmentID, err := uuid.Parse(assignmentIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid assignment ID",
+			"error":   err.Error(),
+		})
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to get files from request",
+			"error":   err.Error(),
+		})
+	}
+
+	files := form.File["files"]
+	if len(files) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "No files uploaded",
+		})
+	}
+
+	uploadIDs, err := h.services.UploadAssignmentFiles(userID, assignmentID, userGroupName, userName, files)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to upload files",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Files uploaded successfully",
+		"upload_ids": uploadIDs,
 	})
 }
 
