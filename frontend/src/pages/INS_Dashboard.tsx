@@ -13,10 +13,11 @@ import { FaBars } from "react-icons/fa";
 import axios from "axios";
 import TitleElement from "../components/TitleElement";
 import Assicon from "../icons/ion_list.png";
+import { useNavigate } from "react-router-dom";
 
 export default function InstructorDashboard() {
   const icons = [dashicon, noticon, createicon, exiticon];
-  const links = ["/insdash", "/notifications", "/create", "/exit"];
+  const links = ["/insdash", "/notifications", "/create"/*, "/exit"*/];
   const [isOpen, setIsOpen] = useState(false);
   const [first_name, setFirstName] = useState("");
   const [profile_image, setProfileImage] = useState("");
@@ -27,6 +28,7 @@ export default function InstructorDashboard() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [upcomingAssignments, setUpcomingAssignments] = useState<Assignment[]>([]);
   const [user_group_name, setUserGroup] = useState("");
+  const navigate = useNavigate();
 
   interface Course {
     course_id: string;
@@ -46,6 +48,17 @@ export default function InstructorDashboard() {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const resp = await axios.post("/api/logout");
+      if (resp.status === 200){
+        navigate("/landing");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   useEffect(() => {
@@ -205,11 +218,11 @@ export default function InstructorDashboard() {
           onMouseLeave={() => setIsOpen(false)}
         >
           {/*Component Right Main */}
-          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
         </div>
         <div className="hidden xl:block">
           {/*Component Right Main */}
-          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
         </div>
       </div>
     </div>
