@@ -3,6 +3,7 @@ interface RightMainProps {
   links: string[];
   profile_image: string;
   user_group_name: string;
+  handleLogout: () => void; 
 }
 
 export default function RightMain({
@@ -10,6 +11,7 @@ export default function RightMain({
   links,
   profile_image,
   user_group_name,
+  handleLogout,
 }: RightMainProps) {
 
   return (
@@ -30,7 +32,8 @@ export default function RightMain({
                 <img
                   src={icon}
                   alt={`icon-${index}`}
-                  className="w-14 h-14 inline-block"
+                  className={`w-14 h-14 inline-block ${index === icons.length - 1 ? 'cursor-pointer' : ''}`}
+                  onClick={index === icons.length - 1 ? handleLogout : undefined}
                 />
               </a>
             ))}
