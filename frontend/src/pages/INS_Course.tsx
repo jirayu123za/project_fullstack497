@@ -54,6 +54,18 @@ export default function INS_Course() {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      const resp = await axios.post("/api/logout");
+      if (resp.status === 200){
+        navigate("/landing");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+
   const handleDelete = async () => {
     console.log("Call handleDelete course"); 
 
@@ -243,10 +255,10 @@ export default function INS_Course() {
           }`}
           onMouseLeave={() => setIsOpen(false)}
         >
-          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
           </div>
         <div className="hidden xl:block">
-          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name}/>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
         </div>
       </div>
 
