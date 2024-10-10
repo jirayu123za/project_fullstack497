@@ -21,7 +21,7 @@ export default function INS_Course() {
   const location = useLocation();
   const course = location.state?.course;
   const icons = [dashicon, noticon, createicon, exiticon];
-  const links = ["/stddash", "/notifications", "/create", "/exit"];
+  const links = ["/stddash", "/notifications", "/create"];
   const { course_id } = useParams();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [profile_image, setProfileImage] = useState("");

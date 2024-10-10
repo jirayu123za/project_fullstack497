@@ -17,7 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function InstructorDashboard() {
   const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/insdash", "/notifications", "/join", "/exit"];
+  const links = ["/insdash", "/notifications", "/join"];
   const navigate = useNavigate();
   const { course_id, assignment_id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -101,7 +101,7 @@ export default function InstructorDashboard() {
       console.error("Error during logout:", error);
     }
   };
-  
+
   useEffect(() => {
     console.log("log API assignment due_date:", due_date);
     console.log("log API assignment description:", description);
