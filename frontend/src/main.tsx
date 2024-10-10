@@ -13,6 +13,7 @@ import STD_Assignment from "./pages/STD_Assignment.tsx";
 import STD_Dashboard from "./pages/STD_Dashboard.tsx";
 import STD_Course from "./pages/STD_Course.tsx";
 import STD_Join from "./pages/STD_Join.tsx";
+import AuthRoute from "./middleware/AuthRoute.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,19 +30,35 @@ const router = createBrowserRouter([
   },
   {
     path: "/insdash",
-    element: <INS_Dashboard />,
+    element: (
+      <AuthRoute>
+        <INS_Dashboard />
+      </AuthRoute>
+    ),
   },
   {
     path: "/create",
-    element: <INS_Create />,
+    element: (
+      <AuthRoute>
+        <INS_Create />
+      </AuthRoute>
+    ),
   },
   {
     path: "/course/:course_id",
-    element: <INS_Course />,
+    element: (
+      <AuthRoute>
+        <INS_Course />
+      </AuthRoute>
+    ),
   },
   {
     path: "/course/:course_id/assignment/:assignment_id",
-    element: <INS_Assignment />,
+    element: (
+      <AuthRoute>
+        <INS_Assignment />
+      </AuthRoute>
+    ),
   },
   {
     path: "/stddash",
