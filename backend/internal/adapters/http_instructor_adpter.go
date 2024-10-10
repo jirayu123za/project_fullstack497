@@ -195,7 +195,15 @@ func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
 }
 
 // using JWT
-func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -240,7 +248,15 @@ func (h *HttpInstructorHandler) GetCourseByUserID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *HttpInstructorHandler) GetNameByUserID(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetNameByUserID(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -273,7 +289,16 @@ func (h *HttpInstructorHandler) GetNameByUserID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *HttpInstructorHandler) GetPersonDataByUserID(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetPersonDataByUserID(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -315,7 +340,16 @@ func (h *HttpInstructorHandler) GetPersonDataByUserID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *HttpInstructorHandler) GetUserGroupByUserID(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetUserGroupByUserID(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -348,7 +382,16 @@ func (h *HttpInstructorHandler) GetUserGroupByUserID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *HttpInstructorHandler) GetAssignmentByUserID(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetAssignmentByUserID(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -394,7 +437,16 @@ func (h *HttpInstructorHandler) GetAssignmentByUserID(c *fiber.Ctx) error {
 	})
 }
 
-func (h *HttpInstructorHandler) GetAssignmentByUserIDSorted(c *fiber.Ctx) error {
+func (h *HttpInstructorHandler) GetAssignmentByUserIDSorted(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
 	userToken := c.Cookies("jwt-token")
 	config.LoadEnv()
 	jwtSecret := os.Getenv("JWT_SECRET")
