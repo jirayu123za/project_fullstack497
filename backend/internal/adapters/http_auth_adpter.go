@@ -63,7 +63,7 @@ func (h *HttpAuthHandler) Login(c *fiber.Ctx) error {
 		Name:     "jwt-token",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 1),
-		HTTPOnly: true,
+		HTTPOnly: false,
 	})
 
 	config.LoadEnv()
