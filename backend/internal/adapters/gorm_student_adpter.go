@@ -59,3 +59,18 @@ func (r *GormStudentRepository) FindAssignmentByUserIDSorted(UserID uuid.UUID) (
 	}
 	return assignments, nil
 }
+
+func (r *GormStudentRepository) FindUpcomingAssignments(UserID uuid.UUID, CourseID uuid.UUID) ([]*models.Assignment, error) {
+	var assignments []*models.Assignment
+	if err := r.db.
+		Joins("JOIN courses ON courses.course_id = assignments.course_id").
+		Joins("JOIN enrollments ON enrollments.course_id = courses.course_id").
+		Where("enrollments.user_id = ?", UserID).
+		Where("courses.course_id = ?", CourseID).
+		Where("due_date > ?", time.Now()).
+		Order("due_date ASC").
+		Find(&assignments).Error; err != nil {
+		return nil, err
+	}
+	return assignments, nil
+}

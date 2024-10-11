@@ -182,3 +182,64 @@ func (h *HttpStudentHandler) GetAssignmentByUserIDSortedStd(c *fiber.Ctx) (err e
 		"assignments": response,
 	})
 }
+
+func (h *HttpStudentHandler) GetUpcomingAssignments(c *fiber.Ctx) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Internal Server Error",
+			})
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims := parsedToken.Claims.(*jwt.MapClaims)
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	courseIDParam := c.Query("course_id")
+	courseID, err := uuid.Parse(courseIDParam)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course_id",
+			"error":   err.Error(),
+		})
+	}
+
+	assignments, err := h.services.GetUpcomingAssignments(userID, courseID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get upcoming assignments",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	for _, assignment := range assignments {
+		response = append(response, map[string]interface{}{
+			"course_id":       assignment.CourseID,
+			"assignment_id":   assignment.AssignmentID,
+			"assignment_name": assignment.AssignmentName,
+			"due_date":        assignment.DueDate.Format("02-01-2006"),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Upcoming assignments found",
+		"assignments": response,
+	})
+}

@@ -11,6 +11,7 @@ type StudentService interface {
 	GetCourseByUserIDStd(UserID uuid.UUID) ([]*models.Course, error)
 	GetAssignmentByUserIDStd(UserID uuid.UUID) ([]*models.Assignment, error)
 	GetAssignmentByUserIDSortedStd(UserID uuid.UUID) ([]*models.Assignment, error)
+	GetUpcomingAssignments(UserID uuid.UUID, CourseID uuid.UUID) ([]*models.Assignment, error)
 }
 
 type StudentServiceImpl struct {
@@ -42,6 +43,14 @@ func (s *StudentServiceImpl) GetAssignmentByUserIDStd(UserID uuid.UUID) ([]*mode
 
 func (s *StudentServiceImpl) GetAssignmentByUserIDSortedStd(UserID uuid.UUID) ([]*models.Assignment, error) {
 	Assignments, err := s.repo.FindAssignmentByUserIDSorted(UserID)
+	if err != nil {
+		return nil, err
+	}
+	return Assignments, nil
+}
+
+func (s *StudentServiceImpl) GetUpcomingAssignments(UserID uuid.UUID, CourseID uuid.UUID) ([]*models.Assignment, error) {
+	Assignments, err := s.repo.FindUpcomingAssignments(UserID, CourseID)
 	if err != nil {
 		return nil, err
 	}
