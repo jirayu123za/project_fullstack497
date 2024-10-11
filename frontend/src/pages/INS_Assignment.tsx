@@ -243,7 +243,7 @@ export default function InstructorDashboard() {
                   <AssignmentDetail user_group_name={user_group_name} assignment_description={description} onChange={(e) => setDescription(e.target.value)}/>
                 </div>
                 <div className="mt-2">
-                  <DropBox onFileUpload={handleFileUpload} />
+                  <DropBox onFileUpload={handleFileUpload} isDuePassed={false} />
                 </div>
               </div>
 
