@@ -19,7 +19,7 @@ export default function InstructorDashboard() {
   const navigate = useNavigate();
   const { course_id, assignment_id } = useParams();
   const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/insdash", "/notifications", "/std_join_course"];
+  const links = ["/stddash", "/notifications", "/std_join_course"];
   
   const [isOpen, setIsOpen] = useState(false);
   const [user_group_name, setUserGroup] = useState("");
