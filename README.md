@@ -5,9 +5,9 @@
 This project for class fullstack947
 
 Testing
-    Student
-        -login
-    Instructor
-        -login
-        -create Course
-        -Create Assignment 
+Student
+-login
+Instructor
+-login
+-create Course
+-Create Assignment 
