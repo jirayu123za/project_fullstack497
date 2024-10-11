@@ -5,25 +5,32 @@ import { IoArrowBackCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 export default function STD_Join() {
-  const [joincode, setJoin] = useState("");
-
+  const [join_code, setJoin] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const code = {
-      joincode,
+    const code = { join_code,
     };
 
     try {
-      // ส่งข้อมูลไปที่ API
-      // const response = await axios.post("/api/createcourse", formData);
-      // console.log("Course created successfully:", response.data);
-      console.log(code);
+      const resp = await axios.post("/api/JoinCourse",{
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+      },
+        body: JSON.stringify({ join_code }),
+      });
+      console.log("You call func join course with code: ",code);
 
-      // ถ้าสำเร็จ ทำการ redirect ไปที่ /dashboard
-      navigate("/stddash");
+      if (resp.status === 200) {
+        const result = resp.data;
+        console.log("POST API success: ", result);
+        navigate("/stddash");
+      } else {
+        console.log("POST API failed: ", resp);
+      }
     } catch (error) {
       console.error("Error creating course:", error);
     }

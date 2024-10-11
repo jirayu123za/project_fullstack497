@@ -16,7 +16,7 @@ import UpcomingAssignment from "../components/UpcomingAssignment";
 export default function STD_Dashboard() {
   const navigate = useNavigate();
   const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/stddash", "/notifications", "/stdcreate"];
+  const links = ["/stddash", "/notifications", "/std_join_course"];
 
   const [isOpen, setIsOpen] = useState(false);
   const [first_name, setFirstName] = useState("");

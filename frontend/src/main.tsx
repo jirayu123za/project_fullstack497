@@ -65,15 +65,15 @@ const router = createBrowserRouter([
     element: <STD_Dashboard />,
   },
   {
-    path: "/stdcourse/:courseId",
+    path: "/STDcourse/:course_id",
     element: <STD_Course />,
   },
   {
-    path: "/stdassignment/:assignmentId",
+    path: "/STDcourse/:course_id/assignment/:assignment_id",
     element: <STD_Assignment />,
   },
   {
-    path: "/stdcreate",
+    path: "/std_join_course",
     element: <STD_Join />,
   },
 ]);

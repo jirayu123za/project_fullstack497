@@ -11,65 +11,172 @@ import { FaBars } from "react-icons/fa";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ProgressBarCourse from "../components/ProgressBarCourse";
+import UpcomingAssignment from "../components/UpcomingAssignment";
+import AssignmentList from "../components/AssignmentList";
 
 export default function STD_Course() {
-  const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/stddash", "/notifications", "/stdcreate", "/exit"];
-  const [isOpen, setIsOpen] = useState(false);
-  const [profileimage, setProfileimage] = useState("");
-  const { course_id } = useParams();  // ใช้ course_id จาก URL
   const location = useLocation();
+  const navigate = useNavigate();
+  const { course_id } = useParams();
   const course = location.state?.course;
 
-  const navigate = useNavigate();  // ใช้ useNavigate สำหรับเปลี่ยนหน้า
+  const icons = [dashicon, noticon, joinicon, exiticon];
+  const links = ["/stddash", "/notifications", "/std_join_course"];
+  const [isOpen, setIsOpen] = useState(false);
+  const [profile_image, setProfileImage] = useState("");
+  const [user_group_name, setUserGroup] = useState("");
+  const [assignment_name, setAssignmentName] = useState("");  
+  const [assignment_description, setAssignmentDescription] = useState("");
+  const [upcomingAssignments, setUpcomingAssignments] = useState<Assignment[]>([]);
+  const [due_date, setDueDate] = useState("");
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  interface Course {
+    course_id: string;
+    course_color: string;
+    course_name: string;
+  }
+
+  interface Assignment {
+    assignment_id: string;
+    course_id: string;
+    assignment_name: string;
+    due_date: string;
+  }
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // ฟังก์ชันสำหรับการเปลี่ยนไปยังหน้า STD_Assignment
-  const handleNavigateToAssignment = (assignment_id: string) => {
-    navigate(`/stdassignment/${assignment_id}`, {
-      state: { assignment_id, course_id } // ส่ง assignment_id และ course_id ไปพร้อมกัน
-    });
+  const handleLogout = async () => {
+    try {
+      const resp = await axios.post("/api/logout");
+      if (resp.status === 200){
+        navigate("/landing");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   useEffect(() => {
-    const fetchPersonaldata = async () => {
+    const fetchPersonalData = async () => {      
       try {
-        const response = await fetch("/data.json");
-        const data = await response.json();
-        setProfileimage(data.profileimage);
+        const res = await axios.get("/api/QueryPersonDataByUserID");
+    
+        if (res.data && res.data.user && res.data.user.length > 0) {
+          const { user_image_url } = res.data.user[0];
+    
+          if (user_image_url) setProfileImage(user_image_url);
+          //if (user_first_name) setFirstName(user_first_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
       } catch (error) {
-        console.error("Error loading profile image:", error);
+        console.error("Error loading personal data:", error);
       }
     };
 
-    fetchPersonaldata();
+    const fetchPersonalUserGroup = async () => {
+      try {
+        const res = await axios.get("/api/api/QueryUserGroupByUserID");
+        if (res.data) {
+          const { user_group_name } = res.data;
+          if (user_group_name) setUserGroup(user_group_name);
+          console.log(res.data);
+          
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading user_group_name:", error);
+      }
+    };
+
+    // Assignments by course_id
+    const fetchAssignments = async () => {
+      try {
+        const res = await axios.get(`/api/api/QueryAssignmentsByCourseID?course_id=${course_id}`);
+        if (res.data) {          
+          const { assignments } = res.data;
+          console.log("assignments", assignments);
+          if ( assignments ) setAssignments(assignments);
+        }else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.log("Error loading assignments:", error);
+      }
+    };
+
+    const fetchUpComingAssignments = async () => {
+      try {
+        const res = await axios.get("/api/api/QueryAssignmentsByUserIDSorted");
+        if (res.data) {
+          const { assignments } = res.data;
+          console.log("upcoming assignments", assignments);
+          if ( assignments ) setUpcomingAssignments(assignments);
+        }else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.log("Error loading assignments:", error);
+      }
+    }
+
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get("/api/QueryCourseByUserID");
+        if (res.data) {
+          const { courses } = res.data;
+          console.log("courses", courses);
+          if (courses) setCourses(courses);
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      }
+    };
+
+    fetchCourses() ;
+    fetchPersonalUserGroup();
+    fetchPersonalData();
+    fetchAssignments();
+    fetchUpComingAssignments();
   }, [course_id]);
 
-  const getColorClass = (color: string) => {
-    switch (color.toLowerCase()) {
-      case "purple":
-        return "border-purple-300 text-purple-400";
-      case "yellow":
-        return "border-yellow-300 text-yellow-400";
-      case "green":
-        return "border-green-300 text-green-400";
-      case "red":
-        return "border-red-300 text-red-400";
-      case "pink":
-        return "border-pink-300 text-pink-400";
-      case "blue":
-        return "border-blue-300 text-blue-400";
-      case "orange":
-        return "border-orange-300 text-orange-400";
-      case "brown":
-        return "border-brown-300 text-brown-400";
-      default:
-        return "border-gray-300 text-gray-400";
-    }
-  };
+  const assignmentsWithColor = assignments.map((assignment) => {
+    const course = courses.find((course) => course.course_id === assignment.course_id);
+    const color = course ? course.course_color : "gray";
+    const course_name = course ? course.course_name : "Unknown Course";
+    return {
+      assignment_id: assignment.assignment_id,
+      assignment_name: assignment.assignment_name,
+      assignment_due_date: assignment.due_date,
+      color,
+      course_name: course_name,
+      course_id: assignment.course_id
+    };
+  });
+
+  const upcomingAssignmentsWithColor = upcomingAssignments.map((assignment) => {
+    const course = courses.find((course) => course.course_id === assignment.course_id);
+    const color = course ? course.course_color : "gray";
+    return { 
+      assignment_id: assignment.assignment_id,
+      assignment_name: assignment.assignment_name,
+      assignment_due_date: assignment.due_date,
+      color 
+    };
+  });
+
+  if (!course) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-B1 flex items-center min-h-screen w-full font-poppins">
@@ -93,28 +200,10 @@ export default function STD_Course() {
                   </div>
                 </div>
                 {/* แสดงผล assignments */}
-                {Array.isArray(course?.assignments) &&
-                  course.assignments.map((assignment) => {
-                    return (
-                      <div
-                        key={assignment.assignment_id}
-                        className={`flex items-center justify-between border-4 p-2.5 mb-2 rounded-lg shadow-sm h-[87px] cursor-pointer ${getColorClass(
-                          course.color // ใช้ color จาก course
-                        )}`}
-                        onClick={() => handleNavigateToAssignment(assignment.assignment_id)}  // เมื่อกด จะเรียกฟังก์ชันนำทาง
-                      >
-                        <div className="flex flex-col">
-                          <p className="text-xl">{assignment.title}</p>
-                          <p className="text-sm text-gray-600">
-                            Due Date: {assignment.due_date}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
               </div>
               <div className="basis-full md:basis-1/2 mt-3 md:mt-0 px-5">
-                <UpcomingElement courses={course} />
+              <UpcomingAssignment UpcomingAssignment={upcomingAssignmentsWithColor} /> 
               </div>
             </div>
           </div>
@@ -129,10 +218,10 @@ export default function STD_Course() {
           }`}
           onMouseLeave={() => setIsOpen(false)}
         >
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
-        </div>
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
+          </div>
         <div className="hidden xl:block">
-          <RightMain icons={icons} links={links} profileimage={profileimage} />
+          <RightMain icons={icons} links={links} profile_image={profile_image} user_group_name={user_group_name} handleLogout={handleLogout}/>
         </div>
       </div>
     </div>
