@@ -12,6 +12,8 @@ import { FaBars } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UpcomingAssignment from "../components/UpcomingAssignment";
+import TitleElement from "../components/TitleElement";
+import Assicon from "../icons/ion_list.png";
 
 export default function STD_Dashboard() {
   const navigate = useNavigate();
@@ -191,7 +193,8 @@ export default function STD_Dashboard() {
               <CourseList courses={courses} user_group_name="student"  />
             </div>
             <div className="flex flex-col lg:flex-row gap-4">
-              <div className="lg:flex-1">
+              <div className="flex-1 p-4 overflow-hidden font-poppins text-E1">
+                <TitleElement name="Assignment" icon={Assicon} />
                 <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
               </div>
               <div className="lg:flex-1">
