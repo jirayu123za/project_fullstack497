@@ -134,14 +134,30 @@ export default function InstructorDashboard() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/submit-assignment", {
-        due_date: new Date,
-        uploadedFiles,
-        students,
+      const formData = new FormData();  
+      // Append each file in uploadedFiles to FormData
+      uploadedFiles.forEach((file) => {
+        formData.append("files", file);
       });
-      console.log("ส่งงานสำเร็จ:", response.data);
+  
+      formData.append("user_id", user_id);
+      if (assignment_id) {
+        formData.append("assignment_id", assignment_id);
+      } else {
+        console.error("Assignment ID is undefined");
+      }
+      formData.append("user_group_name", user_group_name);
+      formData.append("user_name", user_first_name);
+  
+      const response = await axios.post("/api/api/CreateSubmission", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      console.log("File uploaded successfully:", response.data);
     } catch (error) {
-      console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
+      console.error("Error updating assignment:", error);
     }
   };
 
