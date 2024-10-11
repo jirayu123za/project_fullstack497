@@ -30,7 +30,7 @@ export default function InstructorDashboard() {
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [isDuePassed, setIsDuePassed] = useState(false);
+  const [isDuePassed, setIsDuePassed] = useState(false); 
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -83,9 +83,9 @@ export default function InstructorDashboard() {
           const formattedDate = dateObj.toISOString().split('T')[0];
           setDueDate(formattedDate);
 
-          // ตรวจสอบว่าผ่าน Due Date หรือไม่
+
           const now = new Date();
-          setIsDuePassed(dateObj < now); // ถ้า Due Date อยู่ในอดีต จะถูกตั้งเป็น true
+          setIsDuePassed(dateObj < now);
         }
         if (assignment_description) setDescription(assignment_description);
   
@@ -139,7 +139,6 @@ export default function InstructorDashboard() {
   const handleSubmit = async () => {
     try {
       const formData = new FormData();  
-      // Append each file in uploadedFiles to FormData
       uploadedFiles.forEach((file) => {
         formData.append("files", file);
       });
@@ -147,8 +146,6 @@ export default function InstructorDashboard() {
       formData.append("user_id", user_id);
       if (assignment_id) {
         formData.append("assignment_id", assignment_id);
-      } else {
-        console.error("Assignment ID is undefined");
       }
       formData.append("user_group_name", user_group_name);
       formData.append("user_name", user_first_name);
@@ -168,7 +165,6 @@ export default function InstructorDashboard() {
   return (
     <div className="bg-B1 flex items-center min-h-dvh min-w-full font-poppins">
       <div className="container mx-auto flex lg:flex-row gap-5 p-5">
-        {/* ซ้าย */}
         <div className="bg-white rounded-2xl flex-1 relative min-h-[900px]">
           <div>
             <LeftMain title="Assignment" icon={Assign} />
@@ -180,7 +176,6 @@ export default function InstructorDashboard() {
             </button>
           </div>
 
-          {/* กำหนด Due Date และปุ่มส่ง */}
           <div className="px-4 md:px-6 lg:px-10">
             <div className="flex justify-between items-center">
               <div>
@@ -202,7 +197,6 @@ export default function InstructorDashboard() {
                 </div>
               </div>
 
-              {/* แสดงปุ่ม Submit เมื่อยังไม่เลย Due Date */}
               {!isDuePassed && (
                 <div onClick={handleSubmit}>
                   <AssignmentButton text={"Submit"} color={"green"} />
@@ -214,11 +208,10 @@ export default function InstructorDashboard() {
               <div className="basis-5/6 h-full">
                 <AssignmentDetail user_group_name={user_group_name} assignment_description={description} onChange={(e) => setDescription(e.target.value)}/>
                   <div className="mt-2">
-                    <DropBox onFileUpload={handleFileUpload} />
+                    <DropBox onFileUpload={handleFileUpload} isDuePassed={isDuePassed} />
                   </div>
               </div>
 
-              {/* สถานะของนักศึกษา */}
               <div className="basis-1/6">
                   <AssignmentSubmitted submissions={students} />
                   <div className="flex flex-col space-y-2">
@@ -237,7 +230,7 @@ export default function InstructorDashboard() {
           </div>
         </div>
 
-        {/* ขวา */}
+        {/* Right */}
         <div
           className={`xl:block fixed inset-y-0 right-0 bg-white z-40 transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
           onMouseLeave={() => setIsOpen(false)}
