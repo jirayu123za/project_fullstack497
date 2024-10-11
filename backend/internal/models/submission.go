@@ -9,8 +9,8 @@ import (
 
 type Submission struct {
 	SubmissionID     uuid.UUID `gorm:"primaryKey"`
-	UserID           uuid.UUID `gorm:"not null"`
-	AssignmentID     uuid.UUID `gorm:"not null"`
+	UserID           uuid.UUID `gorm:"not null" json:"user_id"`
+	AssignmentID     uuid.UUID `gorm:"not null" json:"assignment_id"`
 	SubmissionFileID string    `gorm:"not null"`
 	SubmittedAt      time.Time `gorm:"not null"`
 	CreatedAt        time.Time
