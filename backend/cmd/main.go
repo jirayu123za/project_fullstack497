@@ -110,6 +110,7 @@ func main() {
 	apiGroup.Get("QueryCourseByUserIDStd", studentHandler.GetCourseByUserIDStd)
 	apiGroup.Get("QueryAssignmentByUserIDStd", studentHandler.GetAssignmentByUserIDStd)
 	apiGroup.Get("QueryAssignmentByUserIDSortedStd", studentHandler.GetAssignmentByUserIDSortedStd)
+	apiGroup.Get("QueryUpcomingAssignmentsStd", studentHandler.GetUpcomingAssignments)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
