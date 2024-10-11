@@ -100,7 +100,7 @@ export default function InstructorDashboard() {
   
   const fetchSubmissions = async () => {
     try {
-      const res = await axios.get(`/api/api/QuerySubmissionsByCourseIDAndAssignmentID?course_id=${course_id}&assignment_id=${assignment_id}`);
+      const res = await axios.get(`/api/api/QuerySubmissionsStatus?course_id=${course_id}&assignment_id=${assignment_id}`);
       if (res.data) {
         const { submissions } = res.data;
         if (submissions) setStudents(submissions);
