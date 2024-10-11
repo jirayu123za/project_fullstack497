@@ -111,10 +111,9 @@ export default function STD_Course() {
       }
     };
 
-    //! fix using assignment_id
     const fetchUpComingAssignments = async () => {
       try {
-        const res = await axios.get("/api/api/QueryAssignmentByUserIDSortedStd");
+        const res = await axios.get(`/api/api/QueryUpcomingAssignmentsStd?course_id=${course_id}`);
         if (res.data) {
           const { assignments } = res.data;
           console.log("upcoming assignments", assignments);
