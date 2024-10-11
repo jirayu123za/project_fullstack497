@@ -195,7 +195,7 @@ export default function STD_Dashboard() {
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 p-4 overflow-hidden font-poppins text-E1">
                 <TitleElement name="Assignment" icon={Assicon} />
-                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false} user_group_name={user_group_name}/> 
               </div>
               <div className="lg:flex-1">
                 <UpcomingAssignment UpcomingAssignment={upcomingAssignmentsWithColor} /> 

@@ -215,7 +215,7 @@ export default function INS_Course() {
                   </div>
                 </div>
 
-                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false} user_group_name={user_group_name}/> 
 
               </div>
               <div className="basis-full md:basis-1/2 px-10 mt-3 md:mt-0">

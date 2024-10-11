@@ -178,11 +178,6 @@ export default function STD_Course() {
     return <div>Loading...</div>;
   }
 
-  // useEffect(() => {
-  //   console.log("Assignments with color:", course.course_color );
-  //   console.log("Upcoming Assignments with color:", upcomingAssignmentsWithColor);
-  // },[]);
-
   return (
     <div className="bg-B1 flex items-center min-h-screen w-full font-poppins">
       <div className="container mx-auto flex flex-col lg:flex-row gap-5 p-5">
@@ -205,7 +200,7 @@ export default function STD_Course() {
                   </div>
                 </div>
                 {/* แสดงผล assignments */}
-                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false}/> 
+                <AssignmentList Assignment={assignmentsWithColor} showCourseName={false} user_group_name={user_group_name}/> 
               </div>
               <div className="basis-full md:basis-1/2 mt-3 md:mt-0 px-5">
               <UpcomingAssignment UpcomingAssignment={upcomingAssignmentsWithColor} /> 
