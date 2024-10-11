@@ -44,6 +44,7 @@ export default function INS_Course() {
     course_id: string;
     assignment_name: string;
     due_date: string;
+    assignment_due_date: string;
   }
 
   useEffect(() => {

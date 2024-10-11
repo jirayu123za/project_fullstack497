@@ -25,10 +25,10 @@ export default function STD_Course() {
   const [isOpen, setIsOpen] = useState(false);
   const [profile_image, setProfileImage] = useState("");
   const [user_group_name, setUserGroup] = useState("");
-  const [assignment_name, setAssignmentName] = useState("");  
-  const [assignment_description, setAssignmentDescription] = useState("");
+  //const [assignment_name, setAssignmentName] = useState("");  
+  //const [assignment_description, setAssignmentDescription] = useState("");
   const [upcomingAssignments, setUpcomingAssignments] = useState<Assignment[]>([]);
-  const [due_date, setDueDate] = useState("");
+  //const [due_date, setDueDate] = useState("");
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
 
@@ -39,6 +39,7 @@ export default function STD_Course() {
   }
 
   interface Assignment {
+    assignment_due_date: string;
     assignment_id: string;
     course_id: string;
     assignment_name: string;
@@ -155,7 +156,7 @@ export default function STD_Course() {
     return {
       assignment_id: assignment.assignment_id,
       assignment_name: assignment.assignment_name,
-      assignment_due_date: assignment.due_date,
+      assignment_due_date: assignment.assignment_due_date,
       color,
       course_name: course_name,
       course_id: assignment.course_id
