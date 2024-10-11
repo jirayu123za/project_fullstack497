@@ -96,7 +96,6 @@ export default function STD_Course() {
       }
     };
 
-    // Assignments by course_id
     const fetchAssignments = async () => {
       try {
         const res = await axios.get(`/api/api/QueryAssignmentsByCourseID?course_id=${course_id}`);
@@ -112,9 +111,10 @@ export default function STD_Course() {
       }
     };
 
+    //! fix using assignment_id
     const fetchUpComingAssignments = async () => {
       try {
-        const res = await axios.get("/api/api/QueryAssignmentsByUserIDSorted");
+        const res = await axios.get("/api/api/QueryAssignmentByUserIDSortedStd");
         if (res.data) {
           const { assignments } = res.data;
           console.log("upcoming assignments", assignments);
@@ -129,7 +129,7 @@ export default function STD_Course() {
 
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("/api/QueryCourseByUserID");
+        const res = await axios.get("/api/api/QueryCourseByUserIDStd");
         if (res.data) {
           const { courses } = res.data;
           console.log("courses", courses);
@@ -178,6 +178,11 @@ export default function STD_Course() {
     return <div>Loading...</div>;
   }
 
+  // useEffect(() => {
+  //   console.log("Assignments with color:", course.course_color );
+  //   console.log("Upcoming Assignments with color:", upcomingAssignmentsWithColor);
+  // },[]);
+
   return (
     <div className="bg-B1 flex items-center min-h-screen w-full font-poppins">
       <div className="container mx-auto flex flex-col lg:flex-row gap-5 p-5">
@@ -208,7 +213,7 @@ export default function STD_Course() {
             </div>
           </div>
           <div className="mx-10 mb-4">
-            <ProgressBarCourse course={course} />
+            {/** <ProgressBarCourse course={course} />*/}
           </div>
         </div>
         {/* Right */}
