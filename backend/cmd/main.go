@@ -73,6 +73,10 @@ func main() {
 	instructorService := services.NewInstructorService(instructorRepo, minioRepo)
 	instructorHandler := adapters.NewHttpInstructorHandler(instructorService, userService)
 
+	studentRepo := adapters.NewGormStudentRepository(db)
+	studentService := services.NewStudentService(studentRepo)
+	studentHandler := adapters.NewHttpStudentHandler(studentService)
+
 	authGroup := app.Group("/auth")
 	googleGroup := authGroup.Group("/google")
 	googleGroup.Get("/login", googleOAuthHandler.GetGoogleLoginURL)
@@ -102,6 +106,10 @@ func main() {
 	apiGroup.Get("/QuerySubmissionsByCourseIDAndAssignmentID", instructorHandler.GetSubmissionsByCourseIDAndAssignmentID)
 	apiGroup.Post("/UploadFiles", minioHandler.CreateFileToMinIO)
 	apiGroup.Post("UploadAssignmentFiles", instructorHandler.UploadAssignmentFile)
+
+	apiGroup.Get("QueryCourseByUserIDStd", studentHandler.GetCourseByUserIDStd)
+	apiGroup.Get("QueryAssignmentByUserIDStd", studentHandler.GetAssignmentByUserIDStd)
+	apiGroup.Get("QueryAssignmentByUserIDSortedStd", studentHandler.GetAssignmentByUserIDSortedStd)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)
