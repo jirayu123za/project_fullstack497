@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import LeftMain from "../components/LeftMain";
 import RightMain from "../components/RightMain";
 import AssignmentDetail from "../components/AssignmentDetail";
@@ -8,7 +9,6 @@ import joinicon from "../icons/material-symbols_join.png";
 import dashicon from "../icons/mdi_human-welcome.png";
 import exiticon from "../icons/vaadin_exit-o.png";
 import Assign from "../icons/ion_list.png";
-import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import AssignmentButton from "../components/AssignmentButton";
 import { MdOutlineAttachFile } from "react-icons/md";
@@ -30,6 +30,7 @@ export default function InstructorDashboard() {
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [isDuePassed, setIsDuePassed] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -81,6 +82,10 @@ export default function InstructorDashboard() {
           const dateObj = new Date(due_date);
           const formattedDate = dateObj.toISOString().split('T')[0];
           setDueDate(formattedDate);
+
+          // ตรวจสอบว่าผ่าน Due Date หรือไม่
+          const now = new Date();
+          setIsDuePassed(dateObj < now); // ถ้า Due Date อยู่ในอดีต จะถูกตั้งเป็น true
         }
         if (assignment_description) setDescription(assignment_description);
   
@@ -129,7 +134,6 @@ export default function InstructorDashboard() {
   const handleFileUpload = (file: File) => {
     setUploadedFiles((prevFiles) => [...prevFiles, file]);
     console.log(`Uploaded: ${file.name}`);
-    console.log(`อัปโหลด: ${file.name}`);
   };
 
   const handleSubmit = async () => {
@@ -197,9 +201,13 @@ export default function InstructorDashboard() {
                   </label>
                 </div>
               </div>
-              <div onClick={handleSubmit}>
-                <AssignmentButton text={"Submit"} color={"green"} />
-              </div>
+
+              {/* แสดงปุ่ม Submit เมื่อยังไม่เลย Due Date */}
+              {!isDuePassed && (
+                <div onClick={handleSubmit}>
+                  <AssignmentButton text={"Submit"} color={"green"} />
+                </div>
+              )}
             </div>
 
             <div className="mt-5 flex gap-3 ">
