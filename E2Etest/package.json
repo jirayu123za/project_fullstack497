@@ -1,0 +1,17 @@
+{
+  "name": "pf-testing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^13.15.0",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.2"
+  },
+  "description": ""
+}
