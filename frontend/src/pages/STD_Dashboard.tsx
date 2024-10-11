@@ -79,7 +79,7 @@ export default function STD_Dashboard() {
 
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("/api/QueryCourseByUserID");
+        const res = await axios.get("/api/api/QueryCourseByUserIDStd");
         if (res.data) {
           const { courses } = res.data;
           console.log("courses", courses);
@@ -111,9 +111,9 @@ export default function STD_Dashboard() {
 
     const fetchAssignments = async () => {
       try {
-        const res = await axios.get("/api/api/QueryAssignmentByUserID");
+        const res = await axios.get("/api/api/QueryAssignmentByUserIDStd");
         if (res.data) {
-          const { assignments } = res.data;
+          const { assignments } = res.data;          
           console.log("assignments", assignments);
           if ( assignments ) setAssignments(assignments);
         }else {
@@ -126,7 +126,7 @@ export default function STD_Dashboard() {
 
     const fetchUpComingAssignments = async () => {
       try {
-        const res = await axios.get("/api/api/QueryAssignmentsByUserIDSorted");
+        const res = await axios.get("/api/api/QueryAssignmentByUserIDSortedStd");
         if (res.data) {
           const { assignments } = res.data;
           console.log("upcoming assignments", assignments);
