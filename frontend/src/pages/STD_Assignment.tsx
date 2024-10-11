@@ -175,6 +175,7 @@ export default function InstructorDashboard() {
                       id="date"
                       type="date"
                       value={due_date}
+                      readOnly 
                       onChange={(e) => setDueDate(e.target.value)}
                     />
                   </label>
