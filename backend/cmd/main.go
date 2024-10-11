@@ -112,6 +112,7 @@ func main() {
 	apiGroup.Get("QueryAssignmentByUserIDSortedStd", studentHandler.GetAssignmentByUserIDSortedStd)
 	apiGroup.Get("QueryUpcomingAssignmentsStd", studentHandler.GetUpcomingAssignments)
 	apiGroup.Post("CreateSubmission", studentHandler.UploadAssignmentFile)
+	apiGroup.Get("QuerySubmissionsStatus", studentHandler.GetSubmissionsStatus)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)

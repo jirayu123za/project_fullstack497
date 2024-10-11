@@ -294,3 +294,69 @@ func (h *HttpStudentHandler) UploadAssignmentFile(c *fiber.Ctx) error {
 		"upload_ids": uploadIDs,
 	})
 }
+
+func (h *HttpStudentHandler) GetSubmissionsStatus(c *fiber.Ctx) error {
+	courseIDStr := c.Query("course_id")
+	assignmentIDStr := c.Query("assignment_id")
+
+	courseID, err := uuid.Parse(courseIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid course ID",
+			"error":   err.Error(),
+		})
+	}
+
+	assignmentID, err := uuid.Parse(assignmentIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid assignment ID",
+			"error":   err.Error(),
+		})
+	}
+
+	userToken := c.Cookies("jwt-token")
+	config.LoadEnv()
+	jwtSecret := os.Getenv("JWT_SECRET")
+	parsedToken, _ := jwt.ParseWithClaims(userToken, &jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		fmt.Println(jwtSecret)
+		return []byte(jwtSecret), nil
+	})
+
+	claims, ok := parsedToken.Claims.(*jwt.MapClaims)
+	if !ok || claims == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid JWT claims",
+		})
+	}
+
+	userID, err := uuid.Parse((*claims)["userID"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user_id in JWT",
+			"error":   err.Error(),
+		})
+	}
+
+	submissions, err := h.services.GetSubmissionsStatus(courseID, assignmentID, userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to get submissions status",
+			"error":   err.Error(),
+		})
+	}
+
+	var response []map[string]interface{}
+	for _, submission := range submissions {
+		response = append(response, map[string]interface{}{
+			"user_id":         submission.UserID,
+			"user_name":       submission.FirstName + " " + submission.LastName,
+			"user_submission": submission.Submission,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":     "Submission status found",
+		"submissions": response,
+	})
+}

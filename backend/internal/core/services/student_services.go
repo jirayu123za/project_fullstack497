@@ -16,6 +16,9 @@ type StudentService interface {
 	GetAssignmentByUserIDSortedStd(UserID uuid.UUID) ([]*models.Assignment, error)
 	GetUpcomingAssignments(UserID uuid.UUID, CourseID uuid.UUID) ([]*models.Assignment, error)
 
+	// R operations for Submissions
+	GetSubmissionsStatus(CourseID uuid.UUID, AssignmentID uuid.UUID, UserID uuid.UUID) ([]*models.User, error)
+
 	// Using minio
 	CreateSubmission(submission *models.Submission) error
 	CreateAssignmentFiles(userID, assignmentID uuid.UUID, userGroupName, userName string, files []*multipart.FileHeader) ([]uuid.UUID, error)
@@ -108,4 +111,12 @@ func (s *StudentServiceImpl) CreateAssignmentFiles(userID, assignmentID uuid.UUI
 	}
 
 	return fileIDs, nil
+}
+
+func (s *StudentServiceImpl) GetSubmissionsStatus(CourseID uuid.UUID, AssignmentID uuid.UUID, UserID uuid.UUID) ([]*models.User, error) {
+	Users, err := s.repo.FindSubmissionsStatus(CourseID, AssignmentID, UserID)
+	if err != nil {
+		return nil, err
+	}
+	return Users, nil
 }
