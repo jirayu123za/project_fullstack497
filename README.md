@@ -3,5 +3,5 @@
   - login
 - Instructor
   - login
-  - create Course
+  - Create Course
   - Create Assignment
