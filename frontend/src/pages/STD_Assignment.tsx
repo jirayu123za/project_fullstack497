@@ -19,7 +19,7 @@ export default function InstructorDashboard() {
   const navigate = useNavigate();
   const { course_id, assignment_id } = useParams();
   const icons = [dashicon, noticon, joinicon, exiticon];
-  const links = ["/insdash", "/notifications", "/join"];
+  const links = ["/insdash", "/notifications", "/std_join_course"];
   
   const [isOpen, setIsOpen] = useState(false);
   const [user_group_name, setUserGroup] = useState("");
@@ -30,7 +30,6 @@ export default function InstructorDashboard() {
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [currentStudentId, setCurrentStudentId] = useState<string | null>(null); // เพิ่ม state เพื่อเก็บรหัสนักศึกษา
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
