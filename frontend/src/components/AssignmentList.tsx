@@ -14,9 +14,10 @@ interface Assignment {
 interface AssignmentListProps {
   Assignment: Assignment[];
   showCourseName?: boolean;
+  user_group_name: string;
 }
 
-const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseName = true }) => {
+const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseName = true, user_group_name }) => {
   const navigate = useNavigate();
 
   const groupedAssignments = Assignment.reduce((acc, assignment) => {
@@ -30,8 +31,13 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ Assignment, showCourseN
   const handleClick = async (assignment_id: string, course_id: string) => {
     try {
       console.log("Assignment ID:", assignment_id, "course ID:", course_id, "Assignment", Assignment);
-      
-      navigate(`/course/${course_id}/assignment/${assignment_id}`);
+      if (user_group_name === "STUDENT") {
+        navigate(`/STDcourse/${course_id}/assignment/${assignment_id}`);
+      } else if (user_group_name === "INSTRUCTOR") {
+        navigate(`/course/${course_id}/assignment/${assignment_id}`);
+      } else {
+        console.error("Invalid user group name");
+      }
     } catch (error) {
       console.error("Error sending assignment ID:", error);
     }
