@@ -74,3 +74,10 @@ func (r *GormStudentRepository) FindUpcomingAssignments(UserID uuid.UUID, Course
 	}
 	return assignments, nil
 }
+
+func (r *GormStudentRepository) SaveSubmission(submission *models.Submission) error {
+	if result := r.db.Create(submission); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

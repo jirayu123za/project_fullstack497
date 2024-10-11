@@ -12,4 +12,7 @@ type StudentRepository interface {
 	FindAssignmentByUserID(UserID uuid.UUID) ([]*models.Assignment, error)
 	FindAssignmentByUserIDSorted(UserID uuid.UUID) ([]*models.Assignment, error)
 	FindUpcomingAssignments(UserID uuid.UUID, CourseID uuid.UUID) ([]*models.Assignment, error)
+
+	// Using minio
+	SaveSubmission(submission *models.Submission) error
 }

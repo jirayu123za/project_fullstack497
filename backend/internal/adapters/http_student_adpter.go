@@ -243,3 +243,54 @@ func (h *HttpStudentHandler) GetUpcomingAssignments(c *fiber.Ctx) (err error) {
 		"assignments": response,
 	})
 }
+
+func (h *HttpStudentHandler) UploadAssignmentFile(c *fiber.Ctx) error {
+	userIDStr := c.FormValue("user_id")
+	assignmentIDStr := c.FormValue("assignment_id")
+	userGroupName := c.FormValue("user_group_name")
+	userName := c.FormValue("user_name")
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid user ID",
+			"error":   err.Error(),
+		})
+	}
+
+	assignmentID, err := uuid.Parse(assignmentIDStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid assignment ID",
+			"error":   err.Error(),
+		})
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Failed to get files from request",
+			"error":   err.Error(),
+		})
+	}
+
+	files := form.File["files"]
+	if len(files) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "No files uploaded",
+		})
+	}
+
+	uploadIDs, err := h.services.CreateAssignmentFiles(userID, assignmentID, userGroupName, userName, files)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to upload files",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Files uploaded successfully",
+		"upload_ids": uploadIDs,
+	})
+}

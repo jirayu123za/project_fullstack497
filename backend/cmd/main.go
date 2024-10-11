@@ -74,7 +74,7 @@ func main() {
 	instructorHandler := adapters.NewHttpInstructorHandler(instructorService, userService)
 
 	studentRepo := adapters.NewGormStudentRepository(db)
-	studentService := services.NewStudentService(studentRepo)
+	studentService := services.NewStudentService(studentRepo, minioRepo)
 	studentHandler := adapters.NewHttpStudentHandler(studentService)
 
 	authGroup := app.Group("/auth")
@@ -111,6 +111,7 @@ func main() {
 	apiGroup.Get("QueryAssignmentByUserIDStd", studentHandler.GetAssignmentByUserIDStd)
 	apiGroup.Get("QueryAssignmentByUserIDSortedStd", studentHandler.GetAssignmentByUserIDSortedStd)
 	apiGroup.Get("QueryUpcomingAssignmentsStd", studentHandler.GetUpcomingAssignments)
+	apiGroup.Post("CreateSubmission", studentHandler.UploadAssignmentFile)
 
 	app.Post("/CreateUser", userHandler.CreateUser)
 	app.Get("/QueryUserById", userHandler.GetUserByID)

@@ -11,7 +11,7 @@ type Submission struct {
 	SubmissionID     uuid.UUID `gorm:"primaryKey"`
 	UserID           uuid.UUID `gorm:"not null"`
 	AssignmentID     uuid.UUID `gorm:"not null"`
-	SubmissionFileID uuid.UUID `gorm:"not null"`
+	SubmissionFileID string    `gorm:"not null"`
 	SubmittedAt      time.Time `gorm:"not null"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
