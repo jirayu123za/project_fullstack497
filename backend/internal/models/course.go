@@ -7,6 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// Course represents a course model
+// @Description Course model
+// @ID Course
 type Course struct {
 	CourseID   uuid.UUID `gorm:"primaryKey" json:"course_id"`
 	CourseName string    `gorm:"type:varchar(255);not null" json:"course_name"`

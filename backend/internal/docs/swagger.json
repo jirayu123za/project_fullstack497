@@ -1,0 +1,246 @@
+{
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+      "description": "This is the API documentation for your project.",
+      "title": "Project API",
+      "termsOfService": "http://example.com/terms/",
+      "contact": {
+        "name": "API Support",
+        "url": "http://www.example.com/support",
+        "email": "support@example.com"
+      },
+      "license": {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      },
+      "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/",
+    "paths": {
+      "/courses": {
+        "post": {
+          "summary": "Create a new course",
+          "description": "Create a course by providing course details",
+          "operationId": "createCourse",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "course",
+              "description": "Course Data",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/Course"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "Created",
+              "schema": {
+                "$ref": "#/definitions/Course"
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to parse request body"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to create course"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "summary": "Get all courses",
+          "description": "Retrieve a list of all courses",
+          "operationId": "getCourses",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Course"
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to get courses"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/courses/{course_id}": {
+        "get": {
+          "summary": "Get a course by its ID",
+          "description": "Retrieve a course by providing its course ID",
+          "operationId": "getCourseByID",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "course_id",
+              "in": "path",
+              "description": "Course ID",
+              "required": true,
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/Course"
+              }
+            },
+            "400": {
+              "description": "Invalid course ID",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid course_id"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to get course"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a course",
+          "description": "Delete a course by providing its course ID",
+          "operationId": "deleteCourse",
+          "parameters": [
+            {
+              "name": "course_id",
+              "in": "path",
+              "description": "Course ID",
+              "required": true,
+              "type": "string",
+              "format": "uuid"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Course deleted successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Course and related data deleted successfully"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid course ID",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid course_id"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to delete course"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "93bbe9c1-7bf6-4e67-bf36-ac1451b6c91f"
+          },
+          "course_name": {
+            "type": "string",
+            "example": "Introduction to Computer Science"
+          },
+          "course_code": {
+            "type": "string",
+            "example": "22123"
+          },
+          "color": {
+            "type": "string",
+            "example": "#FFFFFF"
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://example.com/image.jpg"
+          }
+        }
+      }
+    }
+  }

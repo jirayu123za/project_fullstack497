@@ -1,3 +1,20 @@
+// @title Project API
+// @version 1.0
+// @description This is the API documentation for your project.
+// @termsOfService http://example.com/terms/
+
+// @contact.name API Support
+// @contact.url http://www.example.com/support
+// @contact.email support@example.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:3000
+// @BasePath /
+
+// @schemes http https
+
 package main
 
 import (
@@ -13,6 +30,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/swagger"
 )
 
 func main() {
@@ -48,6 +66,9 @@ func main() {
 			"error":   nil,
 		})
 	})
+
+	app.Static("/swagger/doc.json", "./internal/docs/swagger.json")
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	googleOAuthRepo := adapters.NewOAuthRepository()
 	googleOAuthService := services.NewOAuthService(googleOAuthRepo)

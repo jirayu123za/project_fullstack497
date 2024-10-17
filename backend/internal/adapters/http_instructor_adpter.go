@@ -25,6 +25,17 @@ func NewHttpInstructorHandler(services services.InstructorService, userServices 
 	}
 }
 
+// CreateCourse godoc
+// @Summary Create a new course
+// @Description Create a course by providing course details
+// @Tags Courses
+// @Accept  json
+// @Produce  json
+// @Param course body models.Course true "Course Data"
+// @Success 201 {object} models.Course
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router api/CreateCourse [post]
 func (h *HttpInstructorHandler) CreateCourse(c *fiber.Ctx) error {
 	var course models.Course
 	if err := c.BodyParser(&course); err != nil {
@@ -89,6 +100,14 @@ func (h *HttpInstructorHandler) CreateCourse(c *fiber.Ctx) error {
 	})
 }
 
+// GetCourses godoc
+// @Summary Get all courses
+// @Description Retrieve a list of all courses
+// @Tags Courses
+// @Produce  json
+// @Success 200 {array} models.Course
+// @Failure 500 {object} fiber.Map
+// @Router api/QueryCourses [get]
 func (h *HttpInstructorHandler) GetCourses(c *fiber.Ctx) error {
 	courses, err := h.services.GetCourses()
 	if err != nil {
@@ -104,6 +123,16 @@ func (h *HttpInstructorHandler) GetCourses(c *fiber.Ctx) error {
 	})
 }
 
+// GetCourseByID godoc
+// @Summary Get a course by its ID
+// @Description Retrieve a course by providing its course ID
+// @Tags Courses
+// @Produce  json
+// @Param course_id query string true "Course ID"
+// @Success 200 {object} models.Course
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /courses/{course_id} [get]
 func (h *HttpInstructorHandler) GetCourseByID(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
@@ -127,6 +156,16 @@ func (h *HttpInstructorHandler) GetCourseByID(c *fiber.Ctx) error {
 	})
 }
 
+// UpdateCourse godoc
+// @Summary Update a course by its ID
+// @Description อัปเดตข้อมูล course
+// @Tags Courses
+// @Param course_id path string true "Course ID"
+// @Param course body models.Course true "Updated Course Data"
+// @Success 200 {object} models.Course
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /courses/{course_id} [put]
 func (h *HttpInstructorHandler) UpdateCourse(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
@@ -169,6 +208,15 @@ func (h *HttpInstructorHandler) UpdateCourse(c *fiber.Ctx) error {
 	})
 }
 
+// DeleteCourse godoc
+// @Summary Delete a course
+// @Description Delete a course by providing its course ID
+// @Tags Courses
+// @Param course_id query string true "Course ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /courses/{course_id} [delete]
 func (h *HttpInstructorHandler) DeleteCourse(c *fiber.Ctx) error {
 	// Parse course_id from query parameters
 	courseIDParam := c.Query("course_id")
@@ -1252,7 +1300,15 @@ func (h *HttpInstructorHandler) DeleteUserEnrollment(c *fiber.Ctx) error {
 	})
 }
 
-// Delete Enrollments, Assignments, InstructorLists, and Course
+// DeleteAssignmentsByCourseID godoc
+// @Summary Delete assignments by course ID
+// @Description Delete all assignments related to a specific course by its course ID
+// @Tags Assignments
+// @Param course_id query string true "Course ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /assignments/delete [delete]
 func (h *HttpInstructorHandler) DeleteAssignmentsByCourseID(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
@@ -1282,6 +1338,15 @@ func (h *HttpInstructorHandler) DeleteAssignmentsByCourseID(c *fiber.Ctx) error 
 	})
 }
 
+// DeleteInstructorListsByCourseID godoc
+// @Summary Delete instructor lists by course ID
+// @Description Delete all instructor lists related to a specific course by its course ID
+// @Tags InstructorLists
+// @Param course_id query string true "Course ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /instructors/lists/delete [delete]
 func (h *HttpInstructorHandler) DeleteInstructorListsByCourseID(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
@@ -1311,6 +1376,15 @@ func (h *HttpInstructorHandler) DeleteInstructorListsByCourseID(c *fiber.Ctx) er
 	})
 }
 
+// DeleteEnrollmentsByCourseID godoc
+// @Summary Delete enrollments by course ID
+// @Description Delete all enrollments related to a specific course by its course ID
+// @Tags Enrollments
+// @Param course_id query string true "Course ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400 {object} fiber.Map
+// @Failure 500 {object} fiber.Map
+// @Router /enrollments/delete [delete]
 func (h *HttpInstructorHandler) DeleteEnrollmentsByCourseID(c *fiber.Ctx) error {
 	courseIDParam := c.Query("course_id")
 	courseID, err := uuid.Parse(courseIDParam)
