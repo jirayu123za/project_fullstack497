@@ -1,3 +1,10 @@
+## Command
+
+```bash
+npm install cypress typescript dotenv
+
+npm run test
+```
 ## Testing
 - Student
   - login
