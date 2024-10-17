@@ -22,6 +22,8 @@
 
 `E2Etest` is a folder structure end to end testing that contains information about the E2E test
 
+You can read more description in folder backend, frontend, E2Etest on `Readme.md`.
+
 ## Configuration
 
 ```bash
