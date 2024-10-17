@@ -1,9 +1,18 @@
-## Command
+## Install
 
+To Install, run the following command
 
-npm install cypress typescript dotenv
+```bash
+  npm install cypress typescript dotenv
+```
 
-npm run test
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm run test
+```
 
 ## Testing
 - Student
