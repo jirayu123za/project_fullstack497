@@ -27,10 +27,22 @@ to start a docker container with the following command it contians the following
 docker compose up -d
 ```
 
-# Step 3: Run the Go Application
+# Step 3: Import base data in database
+
+First You need to import the following data from folder CSV_data folder in the repository directory and then import the data to database:
+`user_groups_202410180220.csv` this file will contain the following data: [user groups] import the following data from the repository directory to table user_groups
+
+Second You need to import the following data from folder CSV_data folder in the repository directory and then import the data to database:
+`users_202410180227.csv` this file will contain the following data: [example users] import the following data from the repository directory to table users
+
+# Step 4: Run the Go Application
 
 With the services running, you can now start the Go application. Run the following command from your project directory:
 
 ```bash
 go run cmd/main.go
 ```
+
+# Step 5: If you want to read the documentation for the API
+
+You can read the documentation at `http://localhost:3000/api/docs`
