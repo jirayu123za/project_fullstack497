@@ -17,8 +17,7 @@ To run Frontend, run the following command
 
 After the server is running, open your browser and go to:
 ```bash
-Accessing the Application
-After the server is running, open your browser and go to:
+http://localhost:5175/landing
 ```
 This will take you to the landing page of the application.
 
